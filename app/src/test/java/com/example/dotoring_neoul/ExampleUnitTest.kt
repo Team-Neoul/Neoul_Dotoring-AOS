@@ -1,4 +1,4 @@
-package com.example.myapplication
+package com.example.dotoring_neoul
 
 import org.junit.Test
 
