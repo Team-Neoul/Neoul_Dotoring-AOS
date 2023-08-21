@@ -15,4 +15,24 @@
     <string name="branch_mento">멘토</string>
     <string name="branch_wanna_grow_up">더 성장하고 싶은</string>
     <string name="branch_mentee">멘티</string>
+
+    <!--회원 가입 공통 화면 관련 string resource-->
+    <string name="register_title"><font color="#8BD045" >멘토</font>로 회원 가입</string>
+    <string name="register_Q">Q. </string>
+    <string name="register_A">A. </string>
+    <string name="register_nickname_duplication_check">중복 확인</string>
+
+    <!--회원 가입 첫번째 화면 관련 string resource-->
+    <string name="register1_q1"><font color="#8BD045">멘토</font>님은 어떤 분 인가요?</string>
+    <string name="register1_im">A. 저는</string>
+    <string name="register1_company">소속</string>
+    <string name="register1_belong_to">에 소속된</string>
+    <string name="register1_years">연차</string>
+    <string name="register1_years_of_experience">년 차</string>
+    <string name="register1_work">직무</string>
+    <string name="register1_">입니다.</string>
+    <string name="register1_majored">저는 대학교에서</string>
+    <string name="register1_major">학과</string>
+    <string name="register1_go">를 다녔어요.</string>
+    <string name="register1_next">다음</string>
 </resources>
