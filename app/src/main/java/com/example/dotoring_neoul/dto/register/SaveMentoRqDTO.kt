@@ -1,7 +1,7 @@
 package com.example.dotoring_neoul.dto.register
 
 // 인증서를 제외한 멘토 정보가 담긴 DTO
-data class MentoSignupRequestDTO(
+data class SaveMentoRqDTO(
     val company: String,
     val careerLevel: Int,
     val job: String,
