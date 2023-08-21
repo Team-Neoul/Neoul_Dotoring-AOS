@@ -42,4 +42,11 @@
     <string name="register2_upload_certificate_of_graduate"><b><u>졸업증명서</u></b> 업로드하기</string>
     <string name="register2_upload_choice"><font color="#979797">(선택)</font></string>
     <string name="register2_upload_extension">PDF 또는 이미지</string>
+
+    <!--회원 가입 세번째 화면 관련 string resource-->
+    <string name="register3_q3"><font color="#8BD045">어떻게</font> 불러드릴까요?</string>
+    <string name="register3_guide">3자 이상, 8자 이하, 숫자 1개 이상 입력하여 작성</string>
+    <string name="register3_input">닉네임</string>경
+    <string name="register3_error">이미 있는 닉네임입니다.</string>
+    <string name="register3_">라고 불러 주세요.</string>
 </resources>
