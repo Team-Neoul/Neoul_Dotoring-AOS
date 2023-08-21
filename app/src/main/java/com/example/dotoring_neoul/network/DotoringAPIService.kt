@@ -6,7 +6,7 @@ import com.example.dotoring_neoul.dto.login.LoginRequest
 import com.example.dotoring_neoul.dto.message.MessageRequest
 import com.example.dotoring_neoul.dto.register.EmailCertificationRequest
 import com.example.dotoring_neoul.dto.register.IdValidationRequest
-import com.example.dotoring_neoul.dto.register.MentoSignupRequestDTO
+import com.example.dotoring_neoul.dto.register.SaveMentoRqDTO
 import com.example.dotoring_neoul.dto.register.NicknameValidationRequest
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
@@ -108,7 +108,7 @@ interface DotoringAPIService {
 
     @POST("api/signup-mento")
     fun signUpAsMento(
-        @Body mentoSingupRequest: MentoSignupRequestDTO
+        @Body mentoSingupRequest: SaveMentoRqDTO
     ): Call<CommonResponse>
     /*
         @Multipart

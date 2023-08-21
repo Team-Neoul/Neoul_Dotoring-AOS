@@ -35,4 +35,11 @@
     <string name="register1_major">학과</string>
     <string name="register1_go">를 다녔어요.</string>
     <string name="register1_next">다음</string>
+
+    <!--회원 가입 두번째 화면 관련 string resource-->
+    <string name="register2_q2"><font color="#8BD045">증빙서류</font>를 업로드 해 주세요.</string>
+    <string name="register2_upload_certificate_of_employment"><b><u>재직증명서</u></b> 업로드하기</string>
+    <string name="register2_upload_certificate_of_graduate"><b><u>졸업증명서</u></b> 업로드하기</string>
+    <string name="register2_upload_choice"><font color="#979797">(선택)</font></string>
+    <string name="register2_upload_extension">PDF 또는 이미지</string>
 </resources>
