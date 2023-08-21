@@ -1,3 +1,9 @@
 <resources>
     <string name="app_name">Dotoring_Neoul</string>
+
+    <string name="university">&#60;전남대학교&#62; 선배와 후배를</string>
+    <string name="mentor_login1">한 공간에서 만나보세요.</string>
+    <string name="login_text">회원서비스 이용을 위해 로그인해 주세요.</string>
+    <string name="id">아이디</string>
+    <string name="password">비밀번호</string>
 </resources>
