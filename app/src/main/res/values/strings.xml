@@ -1,9 +1,18 @@
 <resources>
     <string name="app_name">Dotoring_Neoul</string>
 
+    <!--로그인 화면 관련 string resource-->
     <string name="university">&#60;전남대학교&#62; 선배와 후배를</string>
     <string name="mentor_login1">한 공간에서 만나보세요.</string>
     <string name="login_text">회원서비스 이용을 위해 로그인해 주세요.</string>
     <string name="id">아이디</string>
     <string name="password">비밀번호</string>
+
+    <!--회원 가입 분기 화면 관련 string resource-->
+    <string name="branch_logo_our_mentoring">우리들의 멘토링</string>
+    <string name="branch_logo_app_name">도토링</string>
+    <string name="branch_helper">후배들에게 도움을 주는</string>
+    <string name="branch_mento">멘토</string>
+    <string name="branch_wanna_grow_up">더 성장하고 싶은</string>
+    <string name="branch_mentee">멘티</string>
 </resources>
