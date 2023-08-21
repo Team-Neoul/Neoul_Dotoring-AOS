@@ -1,4 +1,4 @@
-package com.example.dotoring_neoul.ui.register
+package com.example.dotoring_neoul.ui.register.branch
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
