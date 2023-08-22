@@ -49,4 +49,9 @@
     <string name="register3_input">닉네임</string>경
     <string name="register3_error">이미 있는 닉네임입니다.</string>
     <string name="register3_">라고 불러 주세요.</string>
+
+    <!--회원 가입 네번째 화면 관련 string resource-->
+    <string name="register4_q4"><font color="#8BD045">멘토</font> 님을 더 알고 싶어요!</string>
+    <string name="register4_guide">10자 이상, 100자 이하로 작성</string>
+    <string name="register4_placeholder">멘토 분야에 대해 소개해 주세요.</string>
 </resources>
