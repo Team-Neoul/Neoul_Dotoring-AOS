@@ -53,7 +53,7 @@ import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
-import com.example.dotoring_neoul.navigation.AuthScreen
+import com.example.dotoring_neoul.AuthScreen
 import com.example.dotoring_neoul.ui.register.MentoInformation
 import kotlinx.coroutines.launch
 import androidx.compose.runtime.setValue
