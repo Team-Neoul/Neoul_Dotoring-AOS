@@ -4,6 +4,12 @@
     <!--공통 화면 관련 string resource-->
     <string name="main_dotoring">도토링</string>
 
+    <!--네비게이션바 화면 관련 string resource-->
+    <string name="navigation_home">홈</string>
+    <string name="navigation_calendar">일정</string>
+    <string name="navigation_message">쪽지함</string>
+    <string name="navigation_setting">마이페이지</string>
+
     <!--로그인 화면 관련 string resource-->
     <string name="university">&#60;전남대학교&#62; 선배와 후배를</string>
     <string name="mentor_login1">한 공간에서 만나보세요.</string>
