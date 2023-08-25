@@ -28,6 +28,7 @@ import androidx.compose.material.TextFieldDefaults
 import androidx.compose.material.TextFieldDefaults.indicatorLine
 import androidx.compose.material.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -42,9 +43,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.example.dotoring_neoul.ui.util.RegisterScreenTop
-import com.example.dotoring_neoul.ui.util.register.RegisterScreenNextButton
-import com.example.dotoring_neoul.ui.theme.DotoringTheme
+import com.example.dotoring.R
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.rememberCoroutineScope
@@ -53,16 +52,17 @@ import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
-import com.example.dotoring_neoul.AuthScreen
-import com.example.dotoring_neoul.ui.register.MentoInformation
 import kotlinx.coroutines.launch
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
-import com.example.dotoring.R
+import com.example.dotoring_neoul.navigation.AuthScreen
+import com.example.dotoring_neoul.ui.theme.DotoringTheme
 import com.example.dotoring_neoul.ui.theme.Green
+import com.example.dotoring_neoul.ui.util.RegisterScreenTop
 import com.example.dotoring_neoul.ui.util.bottomsheet.BottomSheetOption
-
+import com.example.dotoring_neoul.ui.util.register.MentoInformation
+import com.example.dotoring_neoul.ui.util.register.RegisterScreenNextButton
 
 // content - Introduce
 @Composable
@@ -299,7 +299,7 @@ fun MyModalBottomSheetLayout(text: String,selectedDataList: MutableList<String>,
             Spacer(modifier = Modifier.size(30.dp))
             Column() {
                 OptionDataList(
-                    optionDataList = OptionDataSource().loadOptions()
+                    optionDataList = registerFirstUiState.optionJobList
                 )
             }
         }
@@ -373,6 +373,10 @@ fun RegisterScreenFirst(
     val scope = rememberCoroutineScope()
     var majorBottomSheet by remember { mutableStateOf(false) }
     val registerFirstUiState by registerFirstViewModel.uiState.collectAsState()
+
+    LaunchedEffect(Unit) {
+        registerFirstViewModel.loadJobAndMajorList()
+    }
 
     if (majorBottomSheet) {
         ModalBottomSheetLayout(
