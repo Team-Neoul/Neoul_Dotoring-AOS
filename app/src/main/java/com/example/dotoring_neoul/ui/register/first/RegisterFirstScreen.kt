@@ -23,11 +23,13 @@ import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.ModalBottomSheetLayout
 import androidx.compose.material.ModalBottomSheetValue
 import androidx.compose.material.OutlinedButton
+import androidx.compose.material.OutlinedTextField
 import androidx.compose.material.Text
 import androidx.compose.material.TextFieldDefaults
 import androidx.compose.material.TextFieldDefaults.indicatorLine
 import androidx.compose.material.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -42,27 +44,28 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.example.dotoring_neoul.ui.util.RegisterScreenTop
-import com.example.dotoring_neoul.ui.util.register.RegisterScreenNextButton
-import com.example.dotoring_neoul.ui.theme.DotoringTheme
+import com.example.dotoring.R
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.focus.FocusDirection
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
-import com.example.dotoring_neoul.AuthScreen
-import com.example.dotoring_neoul.ui.register.MentoInformation
 import kotlinx.coroutines.launch
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
-import com.example.dotoring.R
+import com.example.dotoring_neoul.navigation.AuthScreen
+import com.example.dotoring_neoul.ui.theme.DotoringTheme
 import com.example.dotoring_neoul.ui.theme.Green
+import com.example.dotoring_neoul.ui.util.RegisterScreenTop
 import com.example.dotoring_neoul.ui.util.bottomsheet.BottomSheetOption
-
+import com.example.dotoring_neoul.ui.util.bottomsheet.SelectedData
+import com.example.dotoring_neoul.ui.util.register.MentoInformation
+import com.example.dotoring_neoul.ui.util.register.RegisterScreenNextButton
 
 // content - Introduce
 @Composable
@@ -123,8 +126,8 @@ private fun Introduce(
                     Spacer(modifier = Modifier.size(10.dp))
 
                     TextFieldIntroduceContent(
-                        value = registerFirstUiState.job,
-                        onValueChange = { registerFirstViewModel.updateUserJob(it)},
+                        value = registerFirstViewModel.toString(registerFirstViewModel.selectedJobList),
+                        onValueChange = { },
                         placeholder = stringResource(id = R.string.register1_work),
                         text = stringResource(R.string.register1_),
                         keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
@@ -134,6 +137,7 @@ private fun Introduce(
                         onClick = onJobClick
                     )
                 }
+                Log.d("리스트", "selectedJobList: ${registerFirstViewModel.selectedJobList.toString()}")
 
                 Spacer(modifier = Modifier.size(18.dp))
 
@@ -147,8 +151,8 @@ private fun Introduce(
                     Spacer(modifier = Modifier.size(10.dp))
 
                     TextFieldIntroduceContent(
-                        value = registerFirstUiState.major,
-                        onValueChange = {  registerFirstViewModel.updateUserMajor(it)},
+                        value = registerFirstViewModel.toString(registerFirstViewModel.selectedMajorList),
+                        onValueChange = { },
                         placeholder = stringResource(id = R.string.register1_major),
                         text = stringResource(id = R.string.register1_go),
                         keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
@@ -257,7 +261,17 @@ private fun TextFieldIntroduceContent(
 
 // ModalBottomSheetLayout - sheetContent
 @Composable
-fun MyModalBottomSheetLayout(text: String,selectedDataList: MutableList<String>, registerFirstUiState: RegisterFirstUiState) {
+fun MyModalBottomSheetLayout(
+    text: String,
+    selectedDataList: List<String>,
+    optionDataList: List<String>,
+    updateChosenList: (String) -> Unit,
+    registerFirstUiState: RegisterFirstUiState,
+    registerFirstViewModel: RegisterFirstViewModel
+) {
+    // val selectedDataList by remember { mutableStateOf(mutableListOf<String>()) }
+    // var selectedDataList by remember { mutableStateOf(registerFirstUiState.chosenMajorList)}
+
     Row(
         modifier = Modifier.padding(top = 30.dp)
 
@@ -280,7 +294,7 @@ fun MyModalBottomSheetLayout(text: String,selectedDataList: MutableList<String>,
                 Spacer(modifier = Modifier.weight(5f))
 
                 ResetButton(
-                    onClick = { selectedDataList.clear() },
+                    onClick = { registerFirstViewModel.removeAll(selectedDataList) },
                     text = "초기화",
                 )
                 Spacer(modifier = Modifier.weight(1f))
@@ -289,24 +303,30 @@ fun MyModalBottomSheetLayout(text: String,selectedDataList: MutableList<String>,
 
             Spacer(modifier = Modifier.size(20.dp))
 
-            Column() {
-                SelectedDataList(
-                    selectedDataList = selectedDataList,
-                    registerFirstUiState = registerFirstUiState
-                )
+
+            LazyColumn() {
+                items(selectedDataList) {item ->
+                    SelectedData(item, onClick = { registerFirstViewModel.remove(selectedDataList, item)})
+                }
             }
 
             Spacer(modifier = Modifier.size(30.dp))
-            Column() {
-                OptionDataList(
-                    optionDataList = OptionDataSource().loadOptions()
-                )
-            }
-        }
 
+            LazyColumn() {
+                items(optionDataList) {option ->
+                    BottomSheetOption(option) {
+                        registerFirstViewModel.add(selectedDataList, option)
+                        Log.d("리스트", "selectedDataList: $selectedDataList")
+                    }
+                    Spacer(modifier = Modifier.size(3.dp))
+                }
+            }
+
+        }
         Spacer(modifier = Modifier.weight(1f))
     }
 }
+
 
 // ModalBottomSheetLayout - content
 @Composable
@@ -374,12 +394,27 @@ fun RegisterScreenFirst(
     var majorBottomSheet by remember { mutableStateOf(false) }
     val registerFirstUiState by registerFirstViewModel.uiState.collectAsState()
 
+    val chosenMajorList = registerFirstViewModel.selectedMajorList
+    val chosenJobList = registerFirstViewModel.selectedJobList
+
+    val updateChosenMajorList: (String) -> Unit = { x: String -> registerFirstViewModel.updateChosenMajorList(x) }
+    val updateChosenJobList: (String) -> Unit = { x: String -> registerFirstViewModel.updateChosenJobList(x) }
+
+    LaunchedEffect(Unit) {
+        registerFirstViewModel.loadJobAndMajorList()
+    }
+
     if (majorBottomSheet) {
         ModalBottomSheetLayout(
             sheetContent = {
-                MyModalBottomSheetLayout("학과 선택", registerFirstUiState.chosenMajorList,
-                    registerFirstUiState)
-            },
+                MyModalBottomSheetLayout(
+                    text = "학과 선택",
+                    selectedDataList = chosenMajorList,
+                    optionDataList = registerFirstUiState.optionMajorList,
+                    updateChosenList = updateChosenMajorList,
+                    registerFirstUiState = registerFirstUiState,
+                    registerFirstViewModel = registerFirstViewModel
+                )},
             sheetState = filterBottomSheetState,
             sheetShape = RoundedCornerShape(topStart = 20.dp, topEnd = 20.dp),
             sheetBackgroundColor = Green,
@@ -416,10 +451,18 @@ fun RegisterScreenFirst(
         }
     } else {
         ModalBottomSheetLayout(
-            sheetContent = { MyModalBottomSheetLayout("직무 분야 선택", registerFirstUiState.chosenJobList,
-                registerFirstUiState) },
+            sheetContent = {
+                MyModalBottomSheetLayout(
+                    text = "직무 분야 선택",
+                    selectedDataList = chosenJobList,
+                    optionDataList = registerFirstUiState.optionJobList,
+                    updateChosenList = updateChosenJobList,
+                    registerFirstUiState = registerFirstUiState,
+                    registerFirstViewModel = registerFirstViewModel
+
+                )},
             sheetState = filterBottomSheetState,
-            sheetShape = RoundedCornerShape(topStart = 20.dp, topEnd = 20.dp),
+            sheetShape = RoundedCornerShape(topStart = 43.dp, topEnd = 43.dp),
             sheetBackgroundColor = Green,
             sheetContentColor = Color.White
         ) {
@@ -491,25 +534,29 @@ fun RegisterScreenFirst(
 }
 
 @Composable
-fun OptionDataList(optionDataList: List<String>) {
+fun OptionDataList(optionDataList: List<String>, selectedDataList: MutableList<String>, updateChosenList: (String) -> Unit) {
     LazyColumn() {
         items(optionDataList) {option ->
-            BottomSheetOption(option)
-            Spacer(modifier = Modifier.size(8.dp))
+            BottomSheetOption(option) {
+                selectedDataList.add(option)
+                updateChosenList(option)
+            }
+            Spacer(modifier = Modifier.size(3.dp))
         }
     }
 }
-
+/*
 @Composable
-fun SelectedDataList(selectedDataList: MutableList<String>, registerFirstUiState: RegisterFirstUiState,
+fun SelectedDataList(
+    selectedDataList: MutableList<String>,
 ) {
     LazyColumn() {
-        items(selectedDataList) {selection ->
-            registerFirstUiState.chosenJobList.add(selection)
-            Spacer(modifier = Modifier.size(8.dp))
+        items(selectedDataList) {item ->
+            SelectedData(item, onClick = { registerFirstViewModel.remove(selectedDataList, item)})
         }
     }
-}
+
+}*/
 
 @Composable
 fun ResetButton(onClick: () -> Unit, text: String) {
@@ -553,5 +600,31 @@ private fun RegisterScreenPreview() {
         FirstRegistserScreen(
             navController = rememberNavController(), onMajorClick = {}, onJobClick = {}
         )
+    }
+}
+
+@Preview(showSystemUi = true)
+@Composable
+private fun HelloScreenPreview() {
+    DotoringTheme {
+        HelloScreen()
+    }
+}
+
+@Composable
+fun HelloScreen() {
+    var name by rememberSaveable { mutableStateOf("") }
+
+    HelloContent(name = name, onNameChange = { name = it })
+}
+
+@Composable
+fun HelloContent(name: String, onNameChange: (String) -> Unit) {
+    Column(modifier = Modifier.padding(16.dp)) {
+        Text(
+            text = "Hello, $name",
+            modifier = Modifier.padding(bottom = 8.dp)
+        )
+        OutlinedTextField(value = name, onValueChange = onNameChange, label = { Text("Name") })
     }
 }

@@ -9,6 +9,10 @@ data class RegisterFirstUiState(
     val major: String = "",
 
     // BottomSheet OptionList
+    val optionJobList: List<String> = listOf(),
+    val optionMajorList: List<String> = listOf(),
+
+    // BottomSheet ChosenList
     val chosenJobList: MutableList<String> = mutableListOf(),
     val chosenMajorList: MutableList<String> = mutableListOf(),
 
