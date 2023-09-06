@@ -2,9 +2,12 @@ package com.example.dotoring_neoul.network
 
 import com.example.dotoring_neoul.MyApplication
 import com.example.dotoring_neoul.dto.CommonResponse
+import com.example.dotoring_neoul.dto.login.FindIdRequest
+import com.example.dotoring_neoul.dto.login.FindPwdRequest
 import com.example.dotoring_neoul.dto.login.LoginRequest
 import com.example.dotoring_neoul.dto.message.MessageRequest
 import com.example.dotoring_neoul.dto.register.EmailCertificationRequest
+import com.example.dotoring_neoul.dto.register.EmailCodeRequest
 import com.example.dotoring_neoul.dto.register.IdValidationRequest
 import com.example.dotoring_neoul.dto.register.SaveMentoRqDTO
 import com.example.dotoring_neoul.dto.register.NicknameValidationRequest
@@ -178,6 +181,21 @@ interface DotoringAPIService {
         @Query("page") page: Int,
         @Query("size") size: Int
     ): Call<CommonResponse>
+
+    @POST("api/member/code")
+    fun getCode(
+        @Body EmailCodeRequest: EmailCodeRequest
+    ): Call<CommonResponse>
+    @POST("api/member/loginId")
+    fun findId(
+        @Body FindIdRequest: FindIdRequest
+    ): Call<CommonResponse>
+
+    @POST("api/member/password")
+    fun findPwd(
+        @Body FindPwdRequest: FindPwdRequest
+    ): Call<CommonResponse>
+
 
 
 
