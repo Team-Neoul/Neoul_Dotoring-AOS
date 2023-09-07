@@ -17,6 +17,10 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
+/**
+ * id, pwd 상태관리
+ * login 관련 통신
+ */
 class LoginViewModel: ViewModel() {
     private val _uiState = MutableStateFlow(LoginUiState())
     val uiState: StateFlow<LoginUiState> = _uiState.asStateFlow()
@@ -48,6 +52,11 @@ class LoginViewModel: ViewModel() {
     }
 
 
+    /**
+     * 입력된 id와 pwd 백엔드에 post 요청
+     * 통신 성공 시 success, response, code 값 받음
+     * 로그인 성공 시 header에서 토큰 받아와 시스템 변수(prefs)에 저장
+     */
     fun sendLogin(navController: NavHostController) {
         //navController.navigate(Graph.HOME)
         val sendLoginRequest= LoginRequest(loginId = uiState.value.id, password = uiState.value.pwd)

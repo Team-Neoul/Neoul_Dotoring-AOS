@@ -45,7 +45,9 @@ import com.example.dotoring_neoul.ui.theme.DotoringTheme
 import com.example.dotoring_neoul.ui.theme.Gray
 import com.example.dotoring_neoul.ui.theme.Navy
 
-
+/**
+ * 쪽지함 
+ */
 @Composable
 fun MessageBoxScreen(messageBoxViewModel: MessageBoxViewModel = viewModel(), navController: NavHostController
 ) {

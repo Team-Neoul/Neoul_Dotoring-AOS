@@ -3,6 +3,10 @@ package com.example.dotoring_neoul.ui.login.data
 import android.content.Context
 import android.content.SharedPreferences
 
+/**
+ * 받아온 token을 시스템 변수로 설정하거나
+ * 시스템 변수인 token을 받아오는 기능을 구현
+ */
 class PreferenceUtil(context: Context) {
     private val prefs: SharedPreferences =
         context.getSharedPreferences("prefs_name", Context.MODE_PRIVATE)

@@ -53,6 +53,9 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.example.dotoring.R
 
+/**
+ * 로그인 관련 화면 구성
+ */
 @Composable
 fun LoginScreen(loginViewModel: LoginViewModel= viewModel(), navController: NavHostController) {
     val loginUiState by loginViewModel.uiState.collectAsState()
@@ -152,7 +155,9 @@ fun LoginScreen(loginViewModel: LoginViewModel= viewModel(), navController: NavH
 
 }
 
-
+/**
+ * 아이디, 비밀번호 작성하는 textField
+ */
 @Composable
 fun LoginField(value:String, onValueChange:(String)->Unit, textField: String, onDone: (KeyboardActionScope.() -> Unit)? = null,
                onNext: (KeyboardActionScope.() -> Unit)? = null, ) {
