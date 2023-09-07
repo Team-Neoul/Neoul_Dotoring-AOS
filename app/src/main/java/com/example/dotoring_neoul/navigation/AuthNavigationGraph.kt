@@ -4,7 +4,6 @@ import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.navigation
-import com.example.dotoring_neoul.AuthScreen
 import com.example.dotoring_neoul.ui.login.LoginScreen
 import com.example.dotoring_neoul.ui.register.fifth.FifthRegisterScreen
 import com.example.dotoring_neoul.ui.register.first.RegisterScreenFirst
