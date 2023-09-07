@@ -18,6 +18,9 @@ import androidx.compose.ui.unit.sp
 import com.example.dotoring.R
 import com.example.dotoring_neoul.ui.theme.DotoringTheme
 
+/**
+ * 홈화면 도토링 Logo 부분 Composable
+ */
 @Composable
 fun DotoringLogo() {
     val dotoringIcon = R.drawable.ic_dotoring_gray

@@ -4,6 +4,7 @@ import android.util.Log
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -14,12 +15,14 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.ExperimentalMaterialApi
+import androidx.compose.material.MaterialTheme
 import androidx.compose.material.ModalBottomSheetLayout
 import androidx.compose.material.ModalBottomSheetValue
 import androidx.compose.material.OutlinedButton
@@ -30,7 +33,10 @@ import androidx.compose.material.TextFieldDefaults.indicatorLine
 import androidx.compose.material.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.State
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.currentRecomposeScope
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -56,6 +62,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import kotlinx.coroutines.launch
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.toMutableStateList
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import com.example.dotoring_neoul.navigation.AuthScreen
@@ -67,6 +74,9 @@ import com.example.dotoring_neoul.ui.util.bottomsheet.SelectedData
 import com.example.dotoring_neoul.ui.util.register.MentoInformation
 import com.example.dotoring_neoul.ui.util.register.RegisterScreenNextButton
 
+/**
+ * 분기 화면 Composable
+ */
 // content - Introduce
 @Composable
 private fun Introduce(
@@ -98,9 +108,12 @@ private fun Introduce(
                         value = registerFirstUiState.company,
                         onValueChange = {
                             registerFirstViewModel.updateUserCompany(it)
-//                            if (it != "") {
-//                                            registerFirstViewModel.updateCareerFieldState()
-//                            }
+                            if(registerFirstUiState.company == "") {
+                                registerFirstViewModel.updateCompanyFieldState(true)
+                            } else {
+                                registerFirstViewModel.updateCompanyFieldState(false)
+                            }
+                            registerFirstViewModel.enableNextButton()
                         },
                         placeholder = stringResource(id = R.string.register1_company),
                         text = stringResource(R.string.register1_belong_to),
@@ -114,7 +127,15 @@ private fun Introduce(
 
                     TextFieldIntroduceContent(
                         value = registerFirstUiState.careerLevel,
-                        onValueChange = { registerFirstViewModel.updateUserCareer(it) },
+                        onValueChange = {
+                            registerFirstViewModel.updateUserCareer(it)
+                            if(registerFirstUiState.careerLevel == "") {
+                                registerFirstViewModel.updateCareerFieldState(true)
+                            } else {
+                                registerFirstViewModel.updateCareerFieldState(false)
+                            }
+                            registerFirstViewModel.enableNextButton()
+                        },
                         placeholder = stringResource(id = R.string.register1_years),
                         text = stringResource(R.string.register1_years_of_experience),
                         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number, imeAction = ImeAction.Next),
@@ -127,7 +148,14 @@ private fun Introduce(
 
                     TextFieldIntroduceContent(
                         value = registerFirstViewModel.toString(registerFirstViewModel.selectedJobList),
-                        onValueChange = { },
+                        onValueChange = {
+                            if(registerFirstUiState.chosenJobList.toString() == "") {
+                                registerFirstViewModel.updateJobFieldState(true)
+                            } else {
+                                registerFirstViewModel.updateJobFieldState(false)
+                            }
+                            registerFirstViewModel.enableNextButton()
+                        },
                         placeholder = stringResource(id = R.string.register1_work),
                         text = stringResource(R.string.register1_),
                         keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
@@ -152,7 +180,14 @@ private fun Introduce(
 
                     TextFieldIntroduceContent(
                         value = registerFirstViewModel.toString(registerFirstViewModel.selectedMajorList),
-                        onValueChange = { },
+                        onValueChange = {
+                            if(registerFirstUiState.chosenMajorList.toString() == "") {
+                                registerFirstViewModel.updateMajorFieldState(true)
+                            } else {
+                                registerFirstViewModel.updateMajorFieldState(false)
+                            }
+                            registerFirstViewModel.enableNextButton()
+                        },
                         placeholder = stringResource(id = R.string.register1_major),
                         text = stringResource(id = R.string.register1_go),
                         keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
@@ -169,7 +204,9 @@ private fun Introduce(
 }
 
 
-
+/**
+ * TextField Composable
+ */
 // IntroduceContent - 소속, 연차
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
@@ -259,7 +296,9 @@ private fun TextFieldIntroduceContent(
     }
 }
 
-// ModalBottomSheetLayout - sheetContent
+/**
+ * ModalBottomSheet Composable
+ */
 @Composable
 fun MyModalBottomSheetLayout(
     text: String,
@@ -315,7 +354,10 @@ fun MyModalBottomSheetLayout(
             LazyColumn() {
                 items(optionDataList) {option ->
                     BottomSheetOption(option) {
+//                        selectedDataList.add(option)
+//                        updateChosenList(option)
                         registerFirstViewModel.add(selectedDataList, option)
+                        /*{리컴포지션 TODO}*/
                         Log.d("리스트", "selectedDataList: $selectedDataList")
                     }
                     Spacer(modifier = Modifier.size(3.dp))
@@ -328,7 +370,9 @@ fun MyModalBottomSheetLayout(
 }
 
 
-// ModalBottomSheetLayout - content
+/**
+ * 회원 가입 첫번째 화면 내부 Composable
+ */
 @Composable
 fun FirstRegistserScreen(
     registerFirstViewModel: RegisterFirstViewModel = viewModel(),
@@ -382,7 +426,9 @@ fun FirstRegistserScreen(
 }
 
 
-// 메인 화면
+/**
+ * 회원 가입 첫번째 화면 Composable
+ */
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun RegisterScreenFirst(
@@ -416,7 +462,7 @@ fun RegisterScreenFirst(
                     registerFirstViewModel = registerFirstViewModel
                 )},
             sheetState = filterBottomSheetState,
-            sheetShape = RoundedCornerShape(topStart = 20.dp, topEnd = 20.dp),
+            sheetShape = RoundedCornerShape(topStart = 43.dp, topEnd = 43.dp),
             sheetBackgroundColor = Green,
             sheetContentColor = Color.White
         ) {
@@ -533,7 +579,7 @@ fun RegisterScreenFirst(
     }*/
 }
 
-@Composable
+/*@Composable
 fun OptionDataList(optionDataList: List<String>, selectedDataList: MutableList<String>, updateChosenList: (String) -> Unit) {
     LazyColumn() {
         items(optionDataList) {option ->
@@ -544,7 +590,7 @@ fun OptionDataList(optionDataList: List<String>, selectedDataList: MutableList<S
             Spacer(modifier = Modifier.size(3.dp))
         }
     }
-}
+}*/
 /*
 @Composable
 fun SelectedDataList(
@@ -558,6 +604,9 @@ fun SelectedDataList(
 
 }*/
 
+/**
+ * ModalBottomSheet 초기화 버튼 Composable
+ */
 @Composable
 fun ResetButton(onClick: () -> Unit, text: String) {
     OutlinedButton(
@@ -593,6 +642,9 @@ fun ResetButton(onClick: () -> Unit, text: String) {
     }
 }
 
+/**
+ * 회원 가입 첫번째 화면 미리보기
+ */
 @Preview(showSystemUi = true)
 @Composable
 private fun RegisterScreenPreview() {

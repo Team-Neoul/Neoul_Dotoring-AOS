@@ -1,5 +1,8 @@
 package com.example.dotoring_neoul.ui.detail
 
+/**
+ * 멘티 세부 정보 화면 UiState
+ */
 data class MentiDetailedUiState(
     val profileImage: String = "",
     val nickname: String = "도토리",
