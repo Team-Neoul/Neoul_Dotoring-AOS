@@ -94,4 +94,23 @@
     <string name="home_recommended_mentee">추천멘티</string>
     <string name="home_major">학과</string>
     <string name="home_job_objectives">희망 직무</string>
+
+
+    <!--아이디 찾기 화면 관련 string resource-->
+    <string name="find_id">아이디 찾기</string>
+    <string name="find_id_ment">회원가입에서 사용한 \n<b>이메일</b>을 입력해 주세요.</string>
+    <string name="text">"<b>"볼드처리"</b>"일반텍스트</string>
+    <string name="find_id_email">이메일</string>
+    <string name="code">인증 코드</string>
+    <string name="send_code">인증 코드 발송</string>
+    <string name="verify_code">인증하기</string>
+
+    <!--비밀번호 찾기 화면 관련 string resource-->
+    <string name="find_pwd">비밀번호 찾기</string>
+    <string name="find_pwd_ment">회원가입에서 사용한 \n<b>아이디와</b> <b>이메일</b>을 입력해 주세요.</string>
+    <string name="send_pwd_ment">메일로 새로운 비밀번호를 발송해 드릴게요.</string>
+
+    <!--쪽지함 상세 화면 관련 string resource-->
+    <string name="message_info">쪽지 내용은 300자 이내로 제한됩니다.</string>
+    <string name="message_textField">내용을 입력해 주세요.</string>
 </resources>

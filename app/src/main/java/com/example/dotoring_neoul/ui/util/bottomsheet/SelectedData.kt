@@ -22,11 +22,10 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.dotoring.R
-import com.example.dotoring_neoul.ui.util.data.SelectedDataSource
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
-fun SelectedData ( selectedData:String ) {
+fun SelectedData ( selectedData:String, onClick: () -> Unit ) {
     val interactionSource = remember { MutableInteractionSource() }
 
     Box(
@@ -59,7 +58,7 @@ fun SelectedData ( selectedData:String ) {
             )
         }
 
-        IconButton (onClick = { SelectedDataSource().deleteSelectedData(selectedData) })
+        IconButton (onClick = onClick)
         {
             Icon(
                 painter = painterResource(id = R.drawable.ic_filter_cancel),
