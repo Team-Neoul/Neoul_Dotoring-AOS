@@ -16,6 +16,11 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
+/**
+ * renderMessageBoxScreen: 채팅방 내역을 렌더링
+ * MessageBoxScreen에 들어가면 renderMessageBoxScreen이 실행
+ */
+
 class MessageBoxViewModel : ViewModel() {
     private val _uiState = MutableStateFlow(MessageBoxUiState())
     val uiState: StateFlow<MessageBoxUiState> = _uiState.asStateFlow()
