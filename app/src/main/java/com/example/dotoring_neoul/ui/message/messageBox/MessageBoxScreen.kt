@@ -46,7 +46,7 @@ import com.example.dotoring_neoul.ui.theme.Gray
 import com.example.dotoring_neoul.ui.theme.Navy
 
 /**
- * 쪽지함 
+ * 쪽지함 리스트 LazyColumn으로 리스트 하나씩 제공
  */
 @Composable
 fun MessageBoxScreen(messageBoxViewModel: MessageBoxViewModel = viewModel(), navController: NavHostController
