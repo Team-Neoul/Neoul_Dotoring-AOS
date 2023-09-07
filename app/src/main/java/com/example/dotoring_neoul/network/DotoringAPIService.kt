@@ -102,29 +102,47 @@ class AppInterceptor : Interceptor {
 
 interface DotoringAPIService {
 
+    /**
+     * nicknameValidation: 닉네임 중복확인을 위한 api
+     * */
     @POST("api/member/valid-nickname")
     fun nicknameValidation(
         @Body nicknameValidationRequest: NicknameValidationRequest
     ): Call<CommonResponse>
 
+    /**
+     * loginIdValidation: 아이디 중복확인을 위한 api
+     * */
     @POST("api/member/valid-loginId")
     fun loginIdValidation(
         @Body loginValidationRequest: IdValidationRequest
     ): Call<CommonResponse>
 
+    /**
+     * sendAuthenticationCode: 이메일 확인 코드를 위한 api
+     * */
     @GET("api/member/code")
     fun sendAuthenticationCode(
         @Query("email", encoded = true) email: String
     ): Call<CommonResponse>
 
+    /**
+     * emailCertification: 이메일 확인을 위한 api
+     * */
     @POST("api/member/valid-code")
     fun emailCertification(
         @Body emailCertificationRequest: EmailCertificationRequest
     ): Call<CommonResponse>
 
+    /**
+     * getJobAndMajorList: 직무를 받아오는 api
+     * */
     @GET("api/member/job-major")
     fun getJobAndMajorList(): Call<CommonResponse>
 
+    /**
+     * signUpAsMento: 멘토로 회원가입을 진행하는 api
+     * */
     @POST("api/signup-mento")
     fun signUpAsMento(
         @Body mentoSingupRequest: SaveMentoRqDTO
@@ -138,9 +156,13 @@ interface DotoringAPIService {
     //        @Body finalSignUpRequest: FinalSignUpRequest
         ):Call <CommonResponse>*/
 
+    /**
+     * searchMentee: 홈에서 menti를 받아오는 api
+     * */
     @GET("api/menti")
     fun searchMentee(
     ): Call<CommonResponse>
+
 
     @GET("api/menti")
     fun searchMenteeWithMajors(
@@ -168,6 +190,9 @@ interface DotoringAPIService {
         @Path("id") id: Int
     ): Call<CommonResponse>
 
+    /**
+     * doLogin: 로그인을 진행하는 api
+     * */
     @POST("member/login")
     fun doLogin(
         @Body loginRequest: LoginRequest
@@ -177,6 +202,9 @@ interface DotoringAPIService {
     fun reissue(
     ): Call<CommonResponse>
 
+    /**
+     * inSendMessage: 쪽지함에서 쪽지를 보내는 api
+     * */
     @POST("api/mento/letter/in/1")
     fun inSendMessage(
         @Body MessageRequest: MessageRequest
@@ -187,10 +215,16 @@ interface DotoringAPIService {
         @Body MessageRequest: MessageRequest
     ): Call<CommonResponse>
 
+    /**
+     * loadMessageBox: 쪽지함 리스트를 받아오는 api
+     * */
     @GET("api/mento/room")
     fun loadMessageBox(
     ): Call<CommonResponse>
 
+    /**
+     * loadDetailedMessage: 쪽지함 상세 리스트를 받아오는 api
+     * */
     @GET("api/mento/letter/{roomPk}")
     fun loadDetailedMessage(
         @Path("roomPk") roomPk: Long,
@@ -198,14 +232,22 @@ interface DotoringAPIService {
         @Query("size") size: Int
     ): Call<CommonResponse>
 
+    /**
+     * getCode: 이메일로 코드를 보내는 api
+     * */
     @POST("api/member/code")
     fun getCode(
         @Body EmailCodeRequest: EmailCodeRequest
     ): Call<CommonResponse>
+
+    /**
+     * findId: 아이디를 받아오는 api
+     * */
     @POST("api/member/loginId")
     fun findId(
         @Body FindIdRequest: FindIdRequest
     ): Call<CommonResponse>
+
 
     @POST("api/member/password")
     fun findPwd(
