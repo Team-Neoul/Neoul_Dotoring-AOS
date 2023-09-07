@@ -68,6 +68,9 @@ import com.example.dotoring_neoul.ui.util.bottomsheet.BottomSheetOption
 import com.example.dotoring_neoul.ui.util.bottomsheet.SelectedData
 import kotlinx.coroutines.launch
 
+/**
+ * 홈화면 BottomSheet Composable
+ */
 @Composable
 fun MyModalBottomSheetLayout(
     text: String,
@@ -133,6 +136,9 @@ fun MyModalBottomSheetLayout(
     }
 }
 
+/**
+ * 홈화면 내부 구현 Composable
+ */
 @Composable
 fun InterMainScreen(
     homeViewModel: HomeViewModel = viewModel(),
@@ -229,6 +235,10 @@ fun InterMainScreen(
         }
     }
 }
+
+/**
+ * 전체 홈화면 Composable
+ */
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun MainScreen(
@@ -348,6 +358,9 @@ fun MainScreen(
     }
 }
 
+/**
+ * 홈화면 Bottom Navigation Bar Composable
+ */
 @Composable
 fun HomeScreen(navController: NavHostController = rememberNavController()) {
     Scaffold (
@@ -359,6 +372,10 @@ fun HomeScreen(navController: NavHostController = rememberNavController()) {
     }
 }
 
+
+/**
+ * 홈화면 필터링 버튼 Composable
+ */
 @Composable
 private fun FilteringButton(onClick: () -> Unit, width: Dp, text: String) {
     Button(
@@ -380,6 +397,10 @@ private fun FilteringButton(onClick: () -> Unit, width: Dp, text: String) {
     }
 }
 
+
+/**
+ * 멘티 카드 리스트로 보여주는 Composable
+ */
 @Composable
 private fun MenteeList(menteeList: List<Mentee>, navController: NavHostController) {
     LazyColumn() {
@@ -390,6 +411,9 @@ private fun MenteeList(menteeList: List<Mentee>, navController: NavHostControlle
     }
 }
 
+/**
+ * 검색 기능 도입 이후 사용할 Composable
+ */
 @Composable
 private fun SearchField(value: String, onValueChange: (String) -> Unit) {
     Box(
@@ -426,6 +450,10 @@ private fun SearchField(value: String, onValueChange: (String) -> Unit) {
     }
 }
 
+
+/**
+ * 홈화면 미리보기를 위한 Composable
+ */
 @Preview(showBackground = true)
 @Composable
 fun HomeScreenPreview() {
@@ -448,6 +476,10 @@ fun ChoiceBottomSheet() {
     }
 }*/
 
+
+/**
+ * Bottom Navigation Sheet Composable
+ */
 @Composable
 fun BottomBar(navController: NavHostController) {
     val screens = listOf(
@@ -476,6 +508,10 @@ fun BottomBar(navController: NavHostController) {
     }
 }
 
+
+/**
+ * 홈화면 Bottom Navigation Bar Composable
+ */
 @Composable
 fun RowScope.AddItem(
     screen: BottomNavScreen,
@@ -506,6 +542,10 @@ fun RowScope.AddItem(
     )
 }
 
+
+/**
+ * 홈화면 Bottom Navigation Sheet에서 초기화 버튼 Composable
+ */
 @Composable
 fun ResetButton(onClick: () -> Unit, text: String) {
     OutlinedButton(

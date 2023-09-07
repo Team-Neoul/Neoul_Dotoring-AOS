@@ -31,6 +31,9 @@ import androidx.navigation.NavController
 import coil.compose.AsyncImage
 import com.example.dotoring.R
 
+/**
+ * 멘티 세부 정보 화면 Composable
+ */
 @Composable
 fun MenteeDetailed(menteeDetailedViewModel: MentiDetailedViewModel = viewModel(),
                    navController: NavController,

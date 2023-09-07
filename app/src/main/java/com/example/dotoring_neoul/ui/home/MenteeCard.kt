@@ -32,7 +32,9 @@ import com.example.dotoring_neoul.navigation.Graph
 import com.example.dotoring_neoul.ui.detail.MenteeDetail
 import com.example.dotoring_neoul.ui.detail.MentiDetailedViewModel
 
-
+/**
+ * 멘티 카드 composable
+ */
 @Composable
 fun MenteeCard(mentee: Mentee, navController: NavHostController, menteeDetailedViewModel: MentiDetailedViewModel = viewModel()) {
 

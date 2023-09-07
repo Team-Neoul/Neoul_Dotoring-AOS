@@ -9,8 +9,8 @@ import com.example.dotoring_neoul.dto.message.MessageRequest
 import com.example.dotoring_neoul.dto.register.EmailCertificationRequest
 import com.example.dotoring_neoul.dto.register.EmailCodeRequest
 import com.example.dotoring_neoul.dto.register.IdValidationRequest
-import com.example.dotoring_neoul.dto.register.SaveMentoRqDTO
 import com.example.dotoring_neoul.dto.register.NicknameValidationRequest
+import com.example.dotoring_neoul.dto.register.SaveMentoRqDTO
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import okhttp3.Interceptor

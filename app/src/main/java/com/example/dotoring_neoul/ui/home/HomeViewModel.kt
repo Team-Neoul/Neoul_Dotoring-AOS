@@ -35,6 +35,10 @@ class HomeViewModel: ViewModel() {
             }
         }*/
 
+
+    /**
+     * 선택 직무 리스트 업데이트
+     */
     fun updateChosenJobList(job: String) {
         val tempList: MutableList<String> = _uiState.value.chosenJobList
         tempList.add(job)
@@ -46,6 +50,9 @@ class HomeViewModel: ViewModel() {
         }
     }
 
+    /**
+     * 선택 학과 리스트 업데이트
+     */
     fun updateChosenMajorList(major: String) {
         val tempList: MutableList<String> = _uiState.value.chosenMajorList
         tempList.add(major)
@@ -57,6 +64,9 @@ class HomeViewModel: ViewModel() {
         }
     }
 
+    /**
+     * 리스트 전체 지우기
+     */
     fun removeAll(list: List<String>) {
         if(list == selectedMajorList) {
             _selectedMajorList.clear()
@@ -65,6 +75,9 @@ class HomeViewModel: ViewModel() {
         }
     }
 
+    /**
+     * 리스트 한 요소 지우기
+     */
     fun remove(list: List<String>, item: String) {
         if(list == selectedMajorList) {
             _selectedMajorList.remove(item)
@@ -73,6 +86,9 @@ class HomeViewModel: ViewModel() {
         }
     }
 
+    /**
+     * 리스트에 한 요소 더하기
+     */
     fun add(list: List<String>, item: String) {
         if(list == selectedMajorList) {
             _selectedMajorList.add(item)
@@ -80,6 +96,10 @@ class HomeViewModel: ViewModel() {
             _selectedJobList.add(item)
         }
     }
+
+    /**
+     * 멘티 리스트 로딩
+     */
     fun loadMentiList() {
         Log.d("홈통신", "loadMentiList함수 실행")
 
@@ -208,6 +228,9 @@ class HomeViewModel: ViewModel() {
             })
     }
 
+    /**
+     * 학과 선택한 경우 멘티 리스트 업데이트
+     */
     fun loadMentiListWithMajors() {
         Log.d("홈통신", "loadMentiList함수 실행")
 
