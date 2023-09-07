@@ -13,7 +13,7 @@ fun RootNavigationGraph(navController: NavHostController) {
         route = Graph.ROOT,
         startDestination = Graph.AUTHENTICATION
     ) {
-        com.example.dotoring_neoul.authNavGraph(navController = navController)
+        authNavGraph(navController = navController)
         composable(route = Graph.HOME) {
             HomeScreen()
         }

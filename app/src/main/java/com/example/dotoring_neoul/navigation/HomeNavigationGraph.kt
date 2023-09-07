@@ -8,8 +8,12 @@ import androidx.navigation.compose.navigation
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import com.example.dotoring.BottomNavScreen
 import com.example.dotoring_neoul.ui.home.MainScreen
+import com.example.dotoring_neoul.ui.message.messageBox.MessageBoxScreen
+import com.example.dotoring_neoul.ui.message.messageDetail.MessageDetailScreen
+import com.example.dotoring_neoul.ui.detail.MenteeDetail
+import com.example.dotoring_neoul.ui.detail.MenteeDetailed
+
 
 @Composable
 fun HomeNavGraph(navController: NavHostController, modifier: Modifier = Modifier) {
@@ -23,14 +27,13 @@ fun HomeNavGraph(navController: NavHostController, modifier: Modifier = Modifier
         }
 
         composable(route = BottomNavScreen.Calendar.route) {
-            CalenderScreen()
+
         }
         composable(route = BottomNavScreen.Message.route) {
             MessageBoxScreen(navController = navController)
         }
 
         composable(route = BottomNavScreen.Mypage.route) {
-            MyPageScreen()
         }
 
         mentiDetailNavGraph(navController)
