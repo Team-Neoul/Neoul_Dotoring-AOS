@@ -29,7 +29,6 @@ import retrofit2.http.Query
 import java.io.IOException
 import java.net.CookieManager
 
-
 private const val BASE_URL =
     "http://172.20.10.4:8080/"
 
@@ -38,6 +37,9 @@ private const val BASE_URL =
 //    level = HttpLoggingInterceptor.Level.BODY
 //}
 
+/**
+ * Interceptor에 AppInterceptor를 적용하여 토큰 적용
+ * */
 val client: OkHttpClient = OkHttpClient.Builder()
     .addInterceptor(AppInterceptor())
     .cookieJar(JavaNetCookieJar(CookieManager()))
@@ -53,23 +55,37 @@ val registerClient: OkHttpClient = OkHttpClient.Builder()
     })
     .build()
 
+/**
+ * Gson을 사용하기 위한 설정
+ * */
 val gson : Gson = GsonBuilder()
     .setLenient()
     .create()
 
+/**
+ * 요청에 BASE_URL 삽입하여 통신하기 위한 retrofit 설정
+ * */
 val retrofit: Retrofit = Retrofit.Builder()
     .baseUrl(BASE_URL)
     .addConverterFactory(GsonConverterFactory.create(gson))
     .client(client)
     .build()
 
+/**
+ * 요청에 BASE_URL 삽입하여 통신하기 위한 retrofit 설정
+ * */
 val registerRetrofit: Retrofit = Retrofit.Builder()
     .baseUrl(BASE_URL)
     .addConverterFactory(GsonConverterFactory.create(gson))
     .client(registerClient)
     .build()
 
-
+/**
+ * 토큰을 저장하기 위한 Interceptor
+ * accesToken에는 헤더의 Authorization에서 받아온 accessToken 토큰을 String값으로 저장
+ * refreshToken에는 헤더의 Cookie에서 받아온 refreshToken 토큰을 String값으로 저장
+ * Request를 보낼 때에는 Header에 이전 요청에서 저장되었던 토큰 값들을 넣어서 요청하는 builder 이용
+ * */
 class AppInterceptor : Interceptor {
     @Throws(IOException::class)
     override fun intercept(chain: Interceptor.Chain) : Response = with(chain) {
