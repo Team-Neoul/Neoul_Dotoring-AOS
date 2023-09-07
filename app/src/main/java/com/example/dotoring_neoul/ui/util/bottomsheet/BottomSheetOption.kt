@@ -1,6 +1,7 @@
 package com.example.dotoring_neoul.ui.util.bottomsheet
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.size
@@ -23,11 +24,10 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.dotoring.R
-import com.example.dotoring_neoul.ui.util.data.SelectedDataSource
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
-fun BottomSheetOption(data: String) {
+fun BottomSheetOption(data: String, onClick: () -> Unit = {}) {
     val interactionSource = remember { MutableInteractionSource() }
 
     val colors = TextFieldDefaults.textFieldColors(
@@ -57,7 +57,8 @@ fun BottomSheetOption(data: String) {
                     colors = colors,
                     focusedIndicatorLineThickness = 1.dp,
                     unfocusedIndicatorLineThickness = 1.dp
-                ),
+                )
+                .clickable (onClick = onClick),
             textStyle = LocalTextStyle.current.copy(
                 fontSize = 15.sp,
                 color = colorResource(id = R.color.white),
@@ -80,7 +81,7 @@ fun BottomSheetOption(data: String) {
         }
 
         IconButton(
-            onClick = { SelectedDataSource().addSelectedData(data) } // SelectedDataList에 Data 추가
+            onClick = onClick // SelectedDataList에 Data 추가
         ) {
             Icon(
                 painter = painterResource(id = R.drawable.ic_filter_choose),
