@@ -16,6 +16,10 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
+/**
+ * 쪽지함 상세의 기능 및 통신 구현
+ * writeContent 상태관리, sendMessage, renderMessageDetailScreen 기능 구현
+ */
 class MessageDetailViewModel: ViewModel() {
 
     private val _uiState = MutableStateFlow(MessageDetailUiState())
@@ -36,6 +40,10 @@ class MessageDetailViewModel: ViewModel() {
         }
     }
 
+    /**
+     * 쪽지 송신 기능 구현
+     * sendMessage: writeContent에 작성한 내용 송신하는 기능 구현,송신 후 renderMessageDetailScreen을 호출하여 리렌더링
+     */
     fun sendMessage(navController: NavHostController){
         val sendMessageRequest= MessageRequest(content = uiState.value.writeContent)
         Log.d("송신", "통신함수 실행:" + sendMessageRequest.content)
@@ -89,6 +97,12 @@ class MessageDetailViewModel: ViewModel() {
 //        }
 //
 //    }
+
+
+    /**
+     * 쪽지 상세 렌더링 기능 구현
+     * renderMessageDetailScreen: 메시지 리스트를 서버에서 받아와 하나씩 화면에 띄움
+     * */
     fun renderMessageDetailScreen(navController: NavHostController, roomPk: Long) {
 
 
