@@ -13,6 +13,9 @@ import com.example.dotoring_neoul.ui.register.sixth.SixthRegisterScreen
 import com.example.dotoring_neoul.ui.register.third.ThirdRegisterScreen
 import com.example.dotoring_neoul.ui.util.register.MentoInformation
 
+/**
+ * 로그인 및 회원가입 화면 네비게이션 빌더
+ */
 fun NavGraphBuilder.authNavGraph(navController: NavHostController) {
     navigation(
         route = Graph.AUTHENTICATION,
@@ -77,6 +80,9 @@ fun NavGraphBuilder.authNavGraph(navController: NavHostController) {
     }
 }
 
+/**
+ * 네비게이션 가능한 로그인 및 회원가입 화면 정의
+ */
 sealed class AuthScreen(val route: String) {
     object Login : AuthScreen(route = "LOGIN")
     object Waiting : AuthScreen(route = "WAITING")

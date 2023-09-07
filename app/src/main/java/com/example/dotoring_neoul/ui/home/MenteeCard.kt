@@ -32,7 +32,9 @@ import com.example.dotoring_neoul.navigation.Graph
 import com.example.dotoring_neoul.ui.detail.MenteeDetail
 import com.example.dotoring_neoul.ui.detail.MentiDetailedViewModel
 
-
+/**
+ * 멘티 카드 composable
+ */
 @Composable
 fun MenteeCard(mentee: Mentee, navController: NavHostController, menteeDetailedViewModel: MentiDetailedViewModel = viewModel()) {
 
@@ -42,7 +44,7 @@ fun MenteeCard(mentee: Mentee, navController: NavHostController, menteeDetailedV
     val spaceBetweenPhotoAndDescription: Dp = 10.dp
 
     val nickname = mentee.nickname
-    val profileImage = "http://172.20.10.4:8080/files/${mentee.profileImage}"
+    val profileImage = "http://192.168.0.32:8080/files/${mentee.profileImage}"
     Log.d("profileImage", "$profileImage")
     val major = mentee.major
     val job = mentee.job
