@@ -1,2 +1,2 @@
 # Neoul_Dotoring-AOS
-도토리 모으기 게임
+너울팀 Dotoring 안드로이드 레포지토리입니다.
