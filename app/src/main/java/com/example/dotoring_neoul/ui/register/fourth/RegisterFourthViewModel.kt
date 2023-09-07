@@ -9,6 +9,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 
+
 class RegisterFourthViewModel: ViewModel() {
 
     private val _uiState = MutableStateFlow(RegisterFourthUiState())
@@ -20,6 +21,9 @@ class RegisterFourthViewModel: ViewModel() {
     var btnState by mutableStateOf(false)
         private set
 
+    /**
+     * 소개 입력받는 텍스트 필드 업데이트
+     */
     fun updateIntroductionInput(introduction: String) {
         introductionInput = introduction
 
@@ -28,6 +32,9 @@ class RegisterFourthViewModel: ViewModel() {
         }
     }
 
+    /**
+     * 회원 가입 네번째 화면 다음 버튼 활성화
+     */
     fun enableNextButton() {
         btnState = true
 

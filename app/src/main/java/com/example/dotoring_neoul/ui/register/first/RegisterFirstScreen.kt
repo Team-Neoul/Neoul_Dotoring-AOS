@@ -74,6 +74,9 @@ import com.example.dotoring_neoul.ui.util.bottomsheet.SelectedData
 import com.example.dotoring_neoul.ui.util.register.MentoInformation
 import com.example.dotoring_neoul.ui.util.register.RegisterScreenNextButton
 
+/**
+ * 분기 화면 Composable
+ */
 // content - Introduce
 @Composable
 private fun Introduce(
@@ -201,7 +204,9 @@ private fun Introduce(
 }
 
 
-
+/**
+ * TextField Composable
+ */
 // IntroduceContent - 소속, 연차
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
@@ -291,7 +296,9 @@ private fun TextFieldIntroduceContent(
     }
 }
 
-// ModalBottomSheetLayout - sheetContent
+/**
+ * ModalBottomSheet Composable
+ */
 @Composable
 fun MyModalBottomSheetLayout(
     text: String,
@@ -363,7 +370,9 @@ fun MyModalBottomSheetLayout(
 }
 
 
-// ModalBottomSheetLayout - content
+/**
+ * 회원 가입 첫번째 화면 내부 Composable
+ */
 @Composable
 fun FirstRegistserScreen(
     registerFirstViewModel: RegisterFirstViewModel = viewModel(),
@@ -417,7 +426,9 @@ fun FirstRegistserScreen(
 }
 
 
-// 메인 화면
+/**
+ * 회원 가입 첫번째 화면 Composable
+ */
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun RegisterScreenFirst(
@@ -568,7 +579,7 @@ fun RegisterScreenFirst(
     }*/
 }
 
-@Composable
+/*@Composable
 fun OptionDataList(optionDataList: List<String>, selectedDataList: MutableList<String>, updateChosenList: (String) -> Unit) {
     LazyColumn() {
         items(optionDataList) {option ->
@@ -579,7 +590,7 @@ fun OptionDataList(optionDataList: List<String>, selectedDataList: MutableList<S
             Spacer(modifier = Modifier.size(3.dp))
         }
     }
-}
+}*/
 /*
 @Composable
 fun SelectedDataList(
@@ -593,6 +604,9 @@ fun SelectedDataList(
 
 }*/
 
+/**
+ * ModalBottomSheet 초기화 버튼 Composable
+ */
 @Composable
 fun ResetButton(onClick: () -> Unit, text: String) {
     OutlinedButton(
@@ -628,6 +642,9 @@ fun ResetButton(onClick: () -> Unit, text: String) {
     }
 }
 
+/**
+ * 회원 가입 첫번째 화면 미리보기
+ */
 @Preview(showSystemUi = true)
 @Composable
 private fun RegisterScreenPreview() {

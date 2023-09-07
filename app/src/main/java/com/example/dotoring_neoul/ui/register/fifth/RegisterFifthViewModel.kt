@@ -19,6 +19,9 @@ class RegisterFifthViewModel: ViewModel() {
     var btnState by mutableStateOf(false)
         private set
 
+    /**
+     * 동의합니다 버튼 toggle하는 함수
+     */
     fun accept () {
         acceptance = !acceptance
         btnState = acceptance
