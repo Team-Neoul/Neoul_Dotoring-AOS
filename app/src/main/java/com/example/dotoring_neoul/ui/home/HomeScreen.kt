@@ -45,12 +45,12 @@ import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import com.example.dotoring.BottomNavScreen
 import com.example.dotoring.R
-import com.example.dotoring.navigation.HomeNavGraph
+import com.example.dotoring_neoul.navigation.HomeNavGraph
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.layout.ContentScale
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.dotoring_neoul.navigation.BottomNavScreen
 import com.example.dotoring_neoul.ui.theme.DotoringTheme
 
 @Composable
