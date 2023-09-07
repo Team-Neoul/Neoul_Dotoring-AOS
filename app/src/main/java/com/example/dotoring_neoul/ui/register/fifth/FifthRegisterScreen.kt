@@ -31,7 +31,9 @@ import com.example.dotoring_neoul.ui.util.RegisterScreenTop
 import com.example.dotoring_neoul.ui.util.register.MentoInformation
 import com.example.dotoring_neoul.ui.util.register.RegisterScreenNextButton
 
-
+/**
+ * 회원가입 다섯번째 화면 Composable
+ */
 @Composable
 fun FifthRegisterScreen(
     registerFifthViewModel: RegisterFifthViewModel = viewModel(),
@@ -108,6 +110,9 @@ fun FifthRegisterScreen(
     }
 }
 
+/**
+ * 회원 가입 다섯번째 화면 미리보기
+ */
 @Preview(showSystemUi = true)
 @Composable
 private fun RegisterScreenPreview() {

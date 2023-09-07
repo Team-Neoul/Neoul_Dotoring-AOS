@@ -40,6 +40,9 @@ import com.example.dotoring_neoul.ui.util.RegisterScreenTop
 import com.example.dotoring_neoul.ui.util.register.MentoInformation
 import com.example.dotoring_neoul.ui.util.register.RegisterScreenNextButton
 
+/**
+ * 네번째 회원 가입 화면 composable
+ */
 @Composable
 fun FourthRegisterScreen(
     registerFourthViewModel: RegisterFourthViewModel = viewModel(),
@@ -99,6 +102,9 @@ fun FourthRegisterScreen(
     }
 }
 
+/**
+ * 회원 가입 네번째 화면 텍스트필드 composable
+ */
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun RoundedCornerTextField(
@@ -167,6 +173,9 @@ fun RoundedCornerTextField(
     }
 }
 
+/**
+ * 회원 가입 네번째 화면 미리보기
+ */
 @Preview(showSystemUi = true)
 @Composable
 private fun RegisterScreenPreview() {

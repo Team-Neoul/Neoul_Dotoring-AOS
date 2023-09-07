@@ -1,5 +1,8 @@
 package com.example.dotoring_neoul.ui.register.first
 
+/**
+ * 회원가입 첫번째 화면 Ui State
+ */
 data class RegisterFirstUiState(
 
     // TextField 값
