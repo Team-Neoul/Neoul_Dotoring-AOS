@@ -23,9 +23,9 @@ class RegisterFirstViewModel(): ViewModel() {
         get() = _selectedMajorList
 
 
-    private val _selectedJobList = mutableListOf<String>().toMutableStateList()
-    val selectedJobList: List<String>
-        get() = _selectedJobList
+    private val _selectedFieldList = mutableListOf<String>().toMutableStateList()
+    val selectedFieldList: List<String>
+        get() = _selectedFieldList
 
     fun toString(list: List<String>): String {
         var rString: String = ""
@@ -42,7 +42,7 @@ class RegisterFirstViewModel(): ViewModel() {
         if(list == selectedMajorList) {
             _selectedMajorList.clear()
         } else {
-            _selectedJobList.clear()
+            _selectedFieldList.clear()
         }
     }
 
@@ -50,7 +50,7 @@ class RegisterFirstViewModel(): ViewModel() {
         if(list == selectedMajorList) {
             _selectedMajorList.remove(item)
         } else {
-            _selectedJobList.remove(item)
+            _selectedFieldList.remove(item)
         }
     }
 
@@ -58,7 +58,7 @@ class RegisterFirstViewModel(): ViewModel() {
         if(list == selectedMajorList) {
             _selectedMajorList.add(item)
         } else {
-            _selectedJobList.add(item)
+            _selectedFieldList.add(item)
         }
     }
 
@@ -105,9 +105,9 @@ class RegisterFirstViewModel(): ViewModel() {
         }
     }
 
-    fun updateUserJob(userJob: String) {
+    fun updateUserField(userField: String) {
         _uiState.update { currentState ->
-            currentState.copy(job = userJob)
+            currentState.copy(field = userField)
         }
     }
 
@@ -123,13 +123,13 @@ class RegisterFirstViewModel(): ViewModel() {
         }
     }
 
-    fun updateChosenJobList(job: String) {
-        val tempList: MutableList<String> = _uiState.value.chosenJobList
+    fun updateChosenFieldList(job: String) {
+        val tempList: MutableList<String> = _uiState.value.chosenFieldList
         tempList.add(job)
 
         _uiState.update { currentState ->
             currentState.copy(
-                chosenJobList = tempList
+                chosenFieldList = tempList
             )
         }
     }
@@ -169,70 +169,120 @@ class RegisterFirstViewModel(): ViewModel() {
         }
     }
 
-    fun loadJobAndMajorList() {
-        Log.d("직업 학과 목록", "loadJobList 실행")
+    fun loadFieldList() {
+        Log.d("직업 학과 목록", "loadFieldList 실행")
 
-        DotoringRegisterAPI.retrofitService.getJobAndMajorList()
+        DotoringRegisterAPI.retrofitService.getFieldList()
             .enqueue(object : Callback<CommonResponse> {
+                /**
+                * 통신 요청이 성공한 경우, 서버의 응답을 처리하기 위한 함수
+                */
                 override fun onResponse(call: Call<CommonResponse>, response: Response<CommonResponse>) {
-                    Log.d("직업 학과 목록", "getJobList - onResponse")
-                    Log.d("직업 학과 목록", "getJobList - response.code(): ${response.code()}")
-                    Log.d("직업 학과 목록", "getJobList - response.body(): ${response.body()}")
+                    Log.d("멘토링 분야 리스트", "getFieldList - onResponse")
+                    Log.d("멘토링 분야 리스트", "getFieldList - response.code(): ${response.code()}")
+                    Log.d("멘토링 분야 리스트", "getFieldList - response.body(): ${response.body()}")
 
-                    val jsonObject = Gson().toJson(response.body())
-                    Log.d("직업 학과 목록", "getJobList - jsonObject: $jsonObject")
+                    val json = Gson().toJson(response.body())
+                    Log.d("멘토링 분야 리스트", "getFieldList - jsonObject: $json")
 
-                    val jo = JSONObject(jsonObject.toString())
-                    Log.d("직업 학과 목록", "getJobList - jsonObject: $jo")
+                    val jsonObject = JSONObject(json.toString())
+                    Log.d("멘토링 분야 리스트", "getFieldList - jsonObject: $jsonObject")
 
-                    val jsonObjectSuccess = jo.getBoolean("success")
+                    val jsonObjectSuccess = jsonObject.getBoolean("success")
 
                     if (jsonObjectSuccess) {
-                        Log.d("직업 학과 목록", "getJobList - success")
+                        Log.d("멘토링 분야 리스트", "getFieldList - success")
 
-                        val responseJsonObject = jo.getJSONObject("response")
-                        Log.d("직업 학과 목록", "responseJsonObject: $responseJsonObject")
+                        val responseJsonObject = jsonObject.getJSONObject("response")
+                        Log.d("멘토링 분야 리스트", "responseJsonObject: $responseJsonObject")
 
-                        val jobs = responseJsonObject.optJSONArray("jobs")
-                        Log.d("직업 학과 목록", "jobs: $jobs")
+                        val fields = responseJsonObject.optJSONArray("fields")
+                        Log.d("멘토링 분야 리스트", "fields: $fields")
 
-                        val majors = responseJsonObject.optJSONArray("majors")
-                        Log.d("직업 학과 목록", "majors: $majors")
+                        if (fields != null && fields.length() > 0) {
+                            val uiFieldList: MutableList<String> = mutableListOf()
 
-                        if (jobs != null && jobs.length() > 0) {
-                            val uiJobList: MutableList<String> = mutableListOf()
+                            for (i in 0 until fields.length()) {
 
-                            for (i in 0 until jobs.length()) {
-                                val jobString = jobs.optString(i)
+                                val fieldString = fields.optString(i)
+                                uiFieldList.add(fieldString)
 
-                                uiJobList.add(jobString)
                             }
 
                             _uiState.update { currentState ->
-                                currentState.copy(optionJobList = uiJobList)
+                                currentState.copy(optionFieldList = uiFieldList)
                             }
                         }
+
+                    } else {
+                        Log.d("멘토링 분야 리스트", "응답이 실패하거나 데이터가 없습니다.")
+                    }
+                }
+
+                /**
+                 * 통신 요청이 실패한 경우, 실패 이유를 보여주기 위한 함수
+                 */
+                override fun onFailure(call: Call<CommonResponse>, t: Throwable) {
+                    Log.d("멘토링 분야 리스트", "통신 실패: $t")
+                }
+            })
+    }
+
+    fun loadMajorList() {
+        Log.d("직업 학과 목록", "loadMajorList 실행")
+
+        DotoringRegisterAPI.retrofitService.getMajorList()
+            .enqueue(object : Callback<CommonResponse> {
+                /**
+                 * 통신 요청이 성공한 경우, 서버의 응답을 처리하기 위한 함수
+                 */
+                override fun onResponse(call: Call<CommonResponse>, response: Response<CommonResponse>) {
+                    Log.d("학과 리스트", "loadMajorList - onResponse")
+                    Log.d("학과 리스트", "loadMajorList - response.code(): ${response.code()}")
+                    Log.d("학과 리스트", "loadMajorList - response.body(): ${response.body()}")
+
+                    val json = Gson().toJson(response.body())
+                    Log.d("학과 리스트", "loadMajorList - jsonObject: $json")
+
+                    val jsonObject = JSONObject(json.toString())
+                    Log.d("학과 리스트", "loadMajorList - jsonObject: $jsonObject")
+
+                    val jsonObjectSuccess = jsonObject.getBoolean("success")
+
+                    if (jsonObjectSuccess) {
+                        Log.d("학과 리스트", "loadMajorList - success")
+
+                        val responseJsonObject = jsonObject.getJSONObject("response")
+                        Log.d("학과 리스트", "responseJsonObject: $responseJsonObject")
+
+                        val majors = responseJsonObject.optJSONArray("majors")
+                        Log.d("학과 리스트", "majors: $majors")
 
                         if (majors != null && majors.length() > 0) {
                             val uiMajorList: MutableList<String> = mutableListOf()
 
                             for (i in 0 until majors.length()) {
-                                val majorString = majors.optString(i)
 
+                                val majorString = majors.optString(i)
                                 uiMajorList.add(majorString)
+
                             }
 
                             _uiState.update { currentState ->
                                 currentState.copy(optionMajorList = uiMajorList)
                             }
                         }
+
                     } else {
-                        Log.d("작업 학과 목록", "응답이 실패하거나 데이터가 없습니다.")
+                        Log.d("학과 리스트", "응답이 실패하거나 데이터가 없습니다.")
                     }
                 }
 
+                /**
+                 * 통신 요청이 실패한 경우, 실패 이유를 보여주기 위한 함수
+                 */
                 override fun onFailure(call: Call<CommonResponse>, t: Throwable) {
-                    Log.d("작업 학과 목록", "통신 실패: $t")
+                    Log.d("학과 리스트", "통신 실패: $t")
                 }
             })
     }
