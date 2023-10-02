@@ -27,6 +27,9 @@ class RegisterFirstViewModel(): ViewModel() {
     val selectedFieldList: List<String>
         get() = _selectedFieldList
 
+    /**
+     * 선택한 직무나 학과 리스트 받아 스트링으로 변환
+     */
     fun toString(list: List<String>): String {
         var rString: String = ""
         list.forEach {
@@ -38,6 +41,10 @@ class RegisterFirstViewModel(): ViewModel() {
             return ""
         }
     }
+
+    /**
+     * 선택한 직무, 학과 리스트 전부 지우기
+     */
     fun removeAll(list: List<String>) {
         if(list == selectedMajorList) {
             _selectedMajorList.clear()
@@ -46,6 +53,9 @@ class RegisterFirstViewModel(): ViewModel() {
         }
     }
 
+    /**
+     * 선택한 직무, 학과 리스트에서 한 요소만 지우기
+     */
     fun remove(list: List<String>, item: String) {
         if(list == selectedMajorList) {
             _selectedMajorList.remove(item)
@@ -54,6 +64,9 @@ class RegisterFirstViewModel(): ViewModel() {
         }
     }
 
+    /**
+     * 선택한 직무, 학과 리스트에서 한 요소 추가하기
+     */
     fun add(list: List<String>, item: String) {
         if(list == selectedMajorList) {
             _selectedMajorList.add(item)
@@ -69,12 +82,18 @@ class RegisterFirstViewModel(): ViewModel() {
     private val _uiState = MutableStateFlow(RegisterFirstUiState())
     val uiState: StateFlow<RegisterFirstUiState> = _uiState.asStateFlow()
 
+    /**
+     * 소속 텍스트필드 업데이트하는 함수
+     */
     fun updateUserCompany(userCompany: String) {
         _uiState.update { currentState ->
             currentState.copy(company = userCompany)
         }
     }
 
+    /**
+     * 회사 텍스트필드 상태 업데이트하는 함수
+     */
     fun updateCompanyFieldState(emptyField: Boolean) {
         if (emptyField) {
             _uiState.update { currentState ->
@@ -87,12 +106,18 @@ class RegisterFirstViewModel(): ViewModel() {
         }
     }
 
+    /**
+     * 근무연차 업데이트하는 함수
+     */
     fun updateUserCareer(userCareer: String) {
         _uiState.update { currentState ->
             currentState.copy(careerLevel = userCareer)
         }
     }
 
+    /**
+     * 소속 업데이트하는 함수
+     */
     fun updateCareerFieldState(emptyField: Boolean) {
         if (emptyField) {
             _uiState.update { currentState ->
@@ -111,6 +136,9 @@ class RegisterFirstViewModel(): ViewModel() {
         }
     }
 
+    /**
+     * 직무 필드 상태 업데이트하는 함수
+     */
     fun updateJobFieldState(emptyField: Boolean) {
         if (emptyField) {
             _uiState.update { currentState ->
@@ -134,12 +162,18 @@ class RegisterFirstViewModel(): ViewModel() {
         }
     }
 
+    /**
+     * 소속 업데이트하는 함수
+     */
     fun updateUserMajor(userMajor: String) {
         _uiState.update { currentState ->
             currentState.copy(major = userMajor)
         }
     }
 
+    /**
+     * 학과 텍스트필드 업데이트하는 함수
+     */
     fun updateMajorFieldState(emptyField: Boolean) {
         if (emptyField) {
             _uiState.update { currentState ->
@@ -152,12 +186,18 @@ class RegisterFirstViewModel(): ViewModel() {
         }
     }
 
+    /**
+     * 다음으로 가는 버튼 활성화
+     */
     fun enableNextButton() {
         _uiState.update { currentState ->
             currentState.copy(firstBtnState = true)
         }
     }
 
+    /**
+     * 선택된 학과 리스트 업데이트
+     */
     fun updateChosenMajorList(major: String) {
         val tempList: MutableList<String> = _uiState.value.chosenMajorList
         tempList.add(major)

@@ -4,6 +4,9 @@ import com.example.dotoring.R
 import androidx.annotation.DrawableRes
 import androidx.annotation.StringRes
 
+/**
+ * 네비게이션바 아이콘 등 지정
+ */
 sealed class BottomNavScreen(
     val route: String,
     @StringRes val resourceId: Int,

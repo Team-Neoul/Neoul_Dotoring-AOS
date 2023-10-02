@@ -62,6 +62,13 @@ import com.example.dotoring_neoul.ui.theme.Green
 import com.example.dotoring_neoul.ui.theme.Navy
 import kotlinx.coroutines.launch
 
+
+/**
+ * 쪽지함 상세
+ *
+ * BackdropScaffold를 이용하여 대화내역과 텍스트입력 및 전송을 나누어 구현
+ * 버튼으로 BackdropValue인 Revealed, Concealed를 조정
+ */
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun MessageDetailScreen(messageDetailViewModel: MessageDetailViewModel = viewModel(), navController: NavHostController) {
@@ -200,7 +207,10 @@ fun MessageDetailScreen(messageDetailViewModel: MessageDetailViewModel = viewMod
     )
 }
 
-
+/**
+ * 쪽지 작성 textField
+ * 송신버튼을 textField 안에 구현
+ */
 @OptIn(ExperimentalComposeUiApi::class, ExperimentalMaterialApi::class)
 @Composable
 fun MessageField(scaffoldState: BackdropScaffoldState, navController: NavHostController, value:String, onValueChange:(String)->Unit, textField: String, messageDetailViewModel: MessageDetailViewModel = viewModel()) {
@@ -254,7 +264,9 @@ fun MessageField(scaffoldState: BackdropScaffoldState, navController: NavHostCon
 
 
 
-
+/**
+ * textField 안에 들어가는 송신버튼 구현
+ */
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun MessageButton(scaffoldState: BackdropScaffoldState) {
@@ -290,7 +302,10 @@ fun MessageButton(scaffoldState: BackdropScaffoldState) {
         }}
 }
 
-
+/**
+ * 멘티의 대화 내용을 담는 Box
+ * 대화 리스트를 불러올 때 Boolean값에 따라 ChatBox 유형이 결정됨
+ */
 //text: String, name: String, time: String
 @Composable
 fun MentiChatBox(messageDetailViewModel: MessageDetailViewModel = viewModel(), messageDetail: MessageDetail) {
@@ -321,6 +336,11 @@ fun MentiChatBox(messageDetailViewModel: MessageDetailViewModel = viewModel(), m
         }
     }
 }
+
+/**
+ * 멘토의 대화 내용을 담는 Box
+ * 대화 리스트를 불러올 때 Boolean값에 따라 ChatBox 유형이 결정됨
+ */
 @Composable
 fun MentoChatBox(messageDetailViewModel: MessageDetailViewModel = viewModel(), messageDetail: MessageDetail) {
     val messageDetailUiState by messageDetailViewModel.uiState.collectAsState()

@@ -24,6 +24,9 @@ import androidx.compose.ui.unit.sp
 import com.example.dotoring.R
 import com.example.dotoring_neoul.ui.theme.DotoringTheme
 
+/**
+ * 분기 화면 Composable
+ */
 @Composable
 fun RegisterBranchScreen() {
     Column(
