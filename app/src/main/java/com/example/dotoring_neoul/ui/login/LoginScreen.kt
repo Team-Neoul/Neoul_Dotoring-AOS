@@ -52,6 +52,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.example.dotoring.R
+import com.example.dotoring_neoul.navigation.AuthScreen
 
 /**
  * 로그인 관련 화면 구성
@@ -143,7 +144,7 @@ fun LoginScreen(loginViewModel: LoginViewModel= viewModel(), navController: NavH
                 Text(text = "  |  ", fontSize = 12.sp)
                 Text("회원가입", fontSize = 12.sp, color= colorResource(id = R.color.grey_500), modifier = Modifier
                     .clickable {
-//
+                        navController.navigate(AuthScreen.Register1.route)
                     }
                 )
 

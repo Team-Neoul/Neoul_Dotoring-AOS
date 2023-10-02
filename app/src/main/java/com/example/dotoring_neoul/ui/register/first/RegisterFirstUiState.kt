@@ -8,15 +8,15 @@ data class RegisterFirstUiState(
     // TextField 값
     val company: String = "",
     val careerLevel: String = "",
-    val job: String = "",
+    val field: String = "",
     val major: String = "",
 
     // BottomSheet OptionList
-    val optionJobList: List<String> = listOf(),
+    val optionFieldList: List<String> = listOf(),
     val optionMajorList: List<String> = listOf(),
 
     // BottomSheet ChosenList
-    val chosenJobList: MutableList<String> = mutableListOf(),
+    val chosenFieldList: MutableList<String> = mutableListOf(),
     val chosenMajorList: MutableList<String> = mutableListOf(),
 
     // 버튼 활성화 조건과 버튼 활성화 여부에 관한 state

@@ -30,7 +30,7 @@ import java.io.IOException
 import java.net.CookieManager
 
 private const val BASE_URL =
-    "http://172.20.10.4:8080/"
+    "http://192.168.0.60:8080/"
 
 
 //val interceptor = HttpLoggingInterceptor().apply {
@@ -102,6 +102,7 @@ class AppInterceptor : Interceptor {
 
 interface DotoringAPIService {
 
+
     /**
      * nicknameValidation: 닉네임 중복확인을 위한 api
      * */
@@ -134,15 +135,18 @@ interface DotoringAPIService {
         @Body emailCertificationRequest: EmailCertificationRequest
     ): Call<CommonResponse>
 
-    /**
-     * getJobAndMajorList: 직무를 받아오는 api
-     * */
+    /* 희망 직무와 학과 리스트 불러오기 */
     @GET("api/member/job-major")
     fun getJobAndMajorList(): Call<CommonResponse>
 
-    /**
-     * signUpAsMento: 멘토로 회원가입을 진행하는 api
-     * */
+    /* 희망 멘토링 분야 리스트 불러오기 */
+    @GET("api/fields")
+    fun getFieldList(): Call<CommonResponse>
+
+    /* 학과 리스트 불러오기 */
+    @GET("api/majors")
+    fun getMajorList(): Call<CommonResponse>
+
     @POST("api/signup-mento")
     fun signUpAsMento(
         @Body mentoSingupRequest: SaveMentoRqDTO

@@ -147,15 +147,8 @@ private fun Introduce(
                     Spacer(modifier = Modifier.size(10.dp))
 
                     TextFieldIntroduceContent(
-                        value = registerFirstViewModel.toString(registerFirstViewModel.selectedJobList),
-                        onValueChange = {
-                            if(registerFirstUiState.chosenJobList.toString() == "") {
-                                registerFirstViewModel.updateJobFieldState(true)
-                            } else {
-                                registerFirstViewModel.updateJobFieldState(false)
-                            }
-                            registerFirstViewModel.enableNextButton()
-                        },
+                        value = registerFirstViewModel.toString(registerFirstViewModel.selectedFieldList),
+                        onValueChange = { },
                         placeholder = stringResource(id = R.string.register1_work),
                         text = stringResource(R.string.register1_),
                         keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
@@ -165,7 +158,7 @@ private fun Introduce(
                         onClick = onJobClick
                     )
                 }
-                Log.d("리스트", "selectedJobList: ${registerFirstViewModel.selectedJobList.toString()}")
+                Log.d("리스트", "selectedFieldList: ${registerFirstViewModel.selectedFieldList.toString()}")
 
                 Spacer(modifier = Modifier.size(18.dp))
 
@@ -408,7 +401,7 @@ fun FirstRegistserScreen(
                     val mentoInfo = MentoInformation(
                         company = registerFirstUiState.company,
                         careerLevel = registerFirstUiState.careerLevel.toInt(),
-                        job = registerFirstUiState.job,
+                        job = registerFirstUiState.field,
                         major = registerFirstUiState.major
                     )
                     navController.currentBackStackEntry?.savedStateHandle?.set(
@@ -441,13 +434,14 @@ fun RegisterScreenFirst(
     val registerFirstUiState by registerFirstViewModel.uiState.collectAsState()
 
     val chosenMajorList = registerFirstViewModel.selectedMajorList
-    val chosenJobList = registerFirstViewModel.selectedJobList
+    val chosenFieldList = registerFirstViewModel.selectedFieldList
 
     val updateChosenMajorList: (String) -> Unit = { x: String -> registerFirstViewModel.updateChosenMajorList(x) }
-    val updateChosenJobList: (String) -> Unit = { x: String -> registerFirstViewModel.updateChosenJobList(x) }
+    val updateChosenFieldList: (String) -> Unit = { x: String -> registerFirstViewModel.updateChosenFieldList(x) }
 
     LaunchedEffect(Unit) {
-        registerFirstViewModel.loadJobAndMajorList()
+        registerFirstViewModel.loadFieldList()
+        registerFirstViewModel.loadMajorList()
     }
 
     if (majorBottomSheet) {
@@ -500,9 +494,9 @@ fun RegisterScreenFirst(
             sheetContent = {
                 MyModalBottomSheetLayout(
                     text = "직무 분야 선택",
-                    selectedDataList = chosenJobList,
-                    optionDataList = registerFirstUiState.optionJobList,
-                    updateChosenList = updateChosenJobList,
+                    selectedDataList = chosenFieldList,
+                    optionDataList = registerFirstUiState.optionFieldList,
+                    updateChosenList = updateChosenFieldList,
                     registerFirstUiState = registerFirstUiState,
                     registerFirstViewModel = registerFirstViewModel
 
