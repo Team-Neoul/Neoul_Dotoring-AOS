@@ -27,6 +27,11 @@ class RegisterFirstViewModel(): ViewModel() {
     val selectedFieldList: List<String>
         get() = _selectedFieldList
 
+    private val _uiState = MutableStateFlow(RegisterFirstUiState())
+    val uiState: StateFlow<RegisterFirstUiState> = _uiState.asStateFlow()
+
+
+
     fun toString(list: List<String>): String {
         var rString: String = ""
         list.forEach {
@@ -62,28 +67,9 @@ class RegisterFirstViewModel(): ViewModel() {
         }
     }
 
-    /*fun removeAll() {
-        _selectedList.removeAll()
-    }*/
-
-    private val _uiState = MutableStateFlow(RegisterFirstUiState())
-    val uiState: StateFlow<RegisterFirstUiState> = _uiState.asStateFlow()
-
     fun updateUserCompany(userCompany: String) {
         _uiState.update { currentState ->
             currentState.copy(company = userCompany)
-        }
-    }
-
-    fun updateCompanyFieldState(emptyField: Boolean) {
-        if (emptyField) {
-            _uiState.update { currentState ->
-                currentState.copy(fillCompanyField = false)
-            }
-        } else {
-            _uiState.update { currentState ->
-                currentState.copy(fillCompanyField = true)
-            }
         }
     }
 
@@ -93,8 +79,38 @@ class RegisterFirstViewModel(): ViewModel() {
         }
     }
 
-    fun updateCareerFieldState(emptyField: Boolean) {
-        if (emptyField) {
+
+    fun updateChosenFieldList(fieldList: List<String>) {
+        _uiState.update { currentState ->
+            currentState.copy(
+                chosenFieldList = fieldList.toMutableList()
+            )
+        }
+    }
+
+    fun updateChosenMajorList(majorList: List<String>) {
+        _uiState.update { currentState ->
+            currentState.copy(
+                chosenMajorList = majorList.toMutableList()
+            )
+        }
+    }
+
+    fun updateCompanyFieldState() {
+        if (uiState.value.company == "") {
+            _uiState.update { currentState ->
+                currentState.copy(fillCompanyField = false)
+            }
+        } else {
+            _uiState.update { currentState ->
+                currentState.copy(fillCompanyField = true)
+            }
+        }
+        Log.d("다음 버튼 활성화 함수", "uiState.value.fillCompanyField: ${uiState.value.fillCompanyField}")
+    }
+
+    fun updateCareerFieldState() {
+        if (uiState.value.careerLevel == "") {
             _uiState.update { currentState ->
                 currentState.copy(fillCareerField = false)
             }
@@ -103,16 +119,11 @@ class RegisterFirstViewModel(): ViewModel() {
                 currentState.copy(fillCareerField = true)
             }
         }
+        Log.d("다음 버튼 활성화 함수", "uiState.value.fillCareerField: ${uiState.value.fillCareerField}")
     }
 
-    fun updateUserField(userField: String) {
-        _uiState.update { currentState ->
-            currentState.copy(field = userField)
-        }
-    }
-
-    fun updateJobFieldState(emptyField: Boolean) {
-        if (emptyField) {
+    fun updateFieldFieldState() {
+        if (uiState.value.chosenFieldList.isEmpty()) {
             _uiState.update { currentState ->
                 currentState.copy(fillJobField = false)
             }
@@ -121,52 +132,36 @@ class RegisterFirstViewModel(): ViewModel() {
                 currentState.copy(fillJobField = true)
             }
         }
+        Log.d("다음 버튼 활성화 함수", "uiState.value.fillJobField: ${uiState.value.fillJobField}")
     }
 
-    fun updateChosenFieldList(job: String) {
-        val tempList: MutableList<String> = _uiState.value.chosenFieldList
-        tempList.add(job)
 
-        _uiState.update { currentState ->
-            currentState.copy(
-                chosenFieldList = tempList
-            )
-        }
-    }
-
-    fun updateUserMajor(userMajor: String) {
-        _uiState.update { currentState ->
-            currentState.copy(major = userMajor)
-        }
-    }
-
-    fun updateMajorFieldState(emptyField: Boolean) {
-        if (emptyField) {
+    fun updateMajorFieldState() {
+        if (uiState.value.chosenMajorList.isEmpty()) {
             _uiState.update { currentState ->
-                currentState.copy(fillCareerField = false)
+                currentState.copy(fillMajorField = false)
             }
         } else {
             _uiState.update { currentState ->
-                currentState.copy(fillCareerField = true)
+                currentState.copy(fillMajorField = true)
             }
         }
+        Log.d("다음 버튼 활성화 함수", "uiState.value.fillMajorField: ${uiState.value.fillMajorField}")
+
     }
 
     fun enableNextButton() {
-        _uiState.update { currentState ->
-            currentState.copy(firstBtnState = true)
+        if (uiState.value.fillCompanyField && uiState.value.fillCareerField && uiState.value.fillJobField && uiState.value.fillMajorField) {
+            _uiState.update { currentState ->
+                currentState.copy(firstBtnState = true)
+            }
+        } else {
+            _uiState.update { currentState ->
+                currentState.copy(firstBtnState = false)
+            }
         }
-    }
+        Log.d("다음 버튼 활성화 함수", "registerFirstUiState.firstBtnState: ${uiState.value.firstBtnState}")
 
-    fun updateChosenMajorList(major: String) {
-        val tempList: MutableList<String> = _uiState.value.chosenMajorList
-        tempList.add(major)
-
-        _uiState.update { currentState ->
-            currentState.copy(
-                chosenMajorList = tempList
-            )
-        }
     }
 
     fun loadFieldList() {
