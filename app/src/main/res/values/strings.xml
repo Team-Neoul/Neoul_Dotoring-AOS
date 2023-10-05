@@ -38,8 +38,8 @@
     <string name="register1_belong_to">에 소속된</string>
     <string name="register1_years">연차</string>
     <string name="register1_years_of_experience">년 차</string>
-    <string name="register1_work">직무</string>
-    <string name="register1_">입니다.</string>
+    <string name="register1_work">멘토링 분야</string>
+    <string name="register1_">멘토입니다.</string>
     <string name="register1_majored">저는 대학교에서</string>
     <string name="register1_major">학과</string>
     <string name="register1_go">를 다녔어요.</string>
