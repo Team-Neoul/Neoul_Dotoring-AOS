@@ -54,6 +54,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import kotlinx.coroutines.launch
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import com.example.dotoring_neoul.navigation.AuthScreen
@@ -95,10 +96,15 @@ private fun Introduce(
                     TextFieldIntroduceContent(
                         value = registerFirstUiState.company,
                         onValueChange = {
+
                             registerFirstViewModel.updateUserCompany(it)
-//                            if (it != "") {
-//                                            registerFirstViewModel.updateCareerFieldState()
-//                            }
+                            Log.d("onValueChange 테스트", "registerFirstViewModel.updateUserCompany 실행 - it: ${it}")
+
+                            if (it == "") {
+                                registerFirstViewModel.updateCompanyFieldState()
+                                registerFirstViewModel.enableNextButton()
+                                Log.d("onValueChange 테스트 뒤", "onValueChange it == null")
+                            }
                         },
                         placeholder = stringResource(id = R.string.register1_company),
                         text = stringResource(R.string.register1_belong_to),
@@ -116,7 +122,14 @@ private fun Introduce(
 
                     TextFieldIntroduceContent(
                         value = registerFirstUiState.careerLevel,
-                        onValueChange = { registerFirstViewModel.updateUserCareer(it) },
+                        onValueChange = {
+
+                            registerFirstViewModel.updateUserCareer(it)
+                            if (registerFirstUiState.careerLevel == "") {
+                                registerFirstViewModel.updateCareerFieldState()
+
+                            }
+                                        },
                         placeholder = stringResource(id = R.string.register1_years),
                         text = stringResource(R.string.register1_years_of_experience),
                         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number, imeAction = ImeAction.Next),
@@ -347,7 +360,6 @@ fun FirstRegistserScreen(
     onJobClick: () -> Unit
 ) {
     val registerFirstUiState by registerFirstViewModel.uiState.collectAsState()
-    var enabled by remember { mutableStateOf(false) }
 
     Column(
         modifier = Modifier
@@ -384,7 +396,7 @@ fun FirstRegistserScreen(
                     )
                     navController.navigate(AuthScreen.Register2.route)
                 },
-                enabled = enabled
+                enabled = registerFirstUiState.firstBtnState
             )
         }
 
@@ -416,6 +428,22 @@ fun RegisterScreenFirst(
     LaunchedEffect(Unit) {
         registerFirstViewModel.loadFieldList()
         registerFirstViewModel.loadMajorList()
+
+        // State Change Callacbk
+        snapshotFlow { filterBottomSheetState.isVisible }.collect { isVisible ->
+            if (isVisible) {
+                // Sheet is visible
+            } else {
+                // Not visible
+                Log.d("filterBottomSheetState", "filterBottomSheetState.isVisible: ${filterBottomSheetState.isVisible}")
+                registerFirstViewModel.updateChosenMajorList(chosenMajorList)
+                registerFirstViewModel.updateMajorFieldState()
+                registerFirstViewModel.updateChosenFieldList(chosenFieldList)
+                registerFirstViewModel.updateFieldFieldState()
+                registerFirstViewModel.enableNextButton()
+
+            }
+        }
     }
 
     if (majorBottomSheet) {
@@ -445,9 +473,9 @@ fun RegisterScreenFirst(
 
                         } else {
                             filterBottomSheetState.hide()
-                            registerFirstViewModel.updateChosenFieldList(chosenFieldList)
+                            /*registerFirstViewModel.updateChosenFieldList(chosenFieldList)
                             registerFirstViewModel.updateFieldFieldState()
-                            registerFirstViewModel.enableNextButton()
+                            registerFirstViewModel.enableNextButton()*/
                         }
                     }
                 },
@@ -460,9 +488,9 @@ fun RegisterScreenFirst(
 
                         } else {
                             filterBottomSheetState.hide()
-                            registerFirstViewModel.updateChosenMajorList(chosenMajorList)
+                            /*registerFirstViewModel.updateChosenMajorList(chosenMajorList)
                             registerFirstViewModel.updateMajorFieldState()
-                            registerFirstViewModel.enableNextButton()
+                            registerFirstViewModel.enableNextButton()*/
                         }
                     }
                 },
@@ -497,9 +525,9 @@ fun RegisterScreenFirst(
 
                         } else {
                             filterBottomSheetState.hide()
-                            registerFirstViewModel.updateChosenFieldList(chosenFieldList)
+                            /*registerFirstViewModel.updateChosenFieldList(chosenFieldList)
                             registerFirstViewModel.updateFieldFieldState()
-                            registerFirstViewModel.enableNextButton()
+                            registerFirstViewModel.enableNextButton()*/
                         }
                     }
                 },
@@ -512,9 +540,9 @@ fun RegisterScreenFirst(
 
                         } else {
                             filterBottomSheetState.hide()
-                            registerFirstViewModel.updateChosenMajorList(chosenMajorList)
+                            /*registerFirstViewModel.updateChosenMajorList(chosenMajorList)
                             registerFirstViewModel.updateMajorFieldState()
-                            registerFirstViewModel.enableNextButton()
+                            registerFirstViewModel.enableNextButton()*/
                         }
                     }
                 },
