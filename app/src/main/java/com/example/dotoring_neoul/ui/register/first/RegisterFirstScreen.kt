@@ -4,7 +4,6 @@ import android.util.Log
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.interaction.MutableInteractionSource
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -15,28 +14,22 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material.MaterialTheme
 import androidx.compose.material.ModalBottomSheetLayout
 import androidx.compose.material.ModalBottomSheetValue
 import androidx.compose.material.OutlinedButton
-import androidx.compose.material.OutlinedTextField
 import androidx.compose.material.Text
 import androidx.compose.material.TextFieldDefaults
 import androidx.compose.material.TextFieldDefaults.indicatorLine
 import androidx.compose.material.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.State
 import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.currentRecomposeScope
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -54,7 +47,6 @@ import com.example.dotoring.R
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.focus.FocusDirection
 import androidx.compose.ui.focus.onFocusChanged
 import androidx.compose.ui.platform.LocalFocusManager
@@ -62,7 +54,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import kotlinx.coroutines.launch
 import androidx.compose.runtime.setValue
-import androidx.compose.runtime.toMutableStateList
+import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import com.example.dotoring_neoul.navigation.AuthScreen
@@ -74,9 +66,6 @@ import com.example.dotoring_neoul.ui.util.bottomsheet.SelectedData
 import com.example.dotoring_neoul.ui.util.register.MentoInformation
 import com.example.dotoring_neoul.ui.util.register.RegisterScreenNextButton
 
-/**
- * 분기 화면 Composable
- */
 // content - Introduce
 @Composable
 private fun Introduce(
@@ -107,13 +96,15 @@ private fun Introduce(
                     TextFieldIntroduceContent(
                         value = registerFirstUiState.company,
                         onValueChange = {
+
                             registerFirstViewModel.updateUserCompany(it)
-                            if(registerFirstUiState.company == "") {
-                                registerFirstViewModel.updateCompanyFieldState(true)
-                            } else {
-                                registerFirstViewModel.updateCompanyFieldState(false)
+                            Log.d("onValueChange 테스트", "registerFirstViewModel.updateUserCompany 실행 - it: ${it}")
+
+                            if (it == "") {
+                                registerFirstViewModel.updateCompanyFieldState()
+                                registerFirstViewModel.enableNextButton()
+                                Log.d("onValueChange 테스트 뒤", "onValueChange it == null")
                             }
-                            registerFirstViewModel.enableNextButton()
                         },
                         placeholder = stringResource(id = R.string.register1_company),
                         text = stringResource(R.string.register1_belong_to),
@@ -121,6 +112,10 @@ private fun Introduce(
                         keyboardActions = KeyboardActions(onNext = { focusManager.moveFocus(
                             FocusDirection.Next)}),
                         readOnly = false,
+                        onLooseFocus = {
+                            registerFirstViewModel.updateCompanyFieldState()
+                            registerFirstViewModel.enableNextButton()
+                        }
                     )
 
                     Spacer(modifier = Modifier.size(10.dp))
@@ -128,20 +123,23 @@ private fun Introduce(
                     TextFieldIntroduceContent(
                         value = registerFirstUiState.careerLevel,
                         onValueChange = {
+
                             registerFirstViewModel.updateUserCareer(it)
-                            if(registerFirstUiState.careerLevel == "") {
-                                registerFirstViewModel.updateCareerFieldState(true)
-                            } else {
-                                registerFirstViewModel.updateCareerFieldState(false)
+                            if (registerFirstUiState.careerLevel == "") {
+                                registerFirstViewModel.updateCareerFieldState()
+
                             }
-                            registerFirstViewModel.enableNextButton()
-                        },
+                                        },
                         placeholder = stringResource(id = R.string.register1_years),
                         text = stringResource(R.string.register1_years_of_experience),
                         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number, imeAction = ImeAction.Next),
                         keyboardActions = KeyboardActions(onNext = { focusManager.moveFocus(
                             FocusDirection.Next) }),
                         readOnly = false,
+                        onLooseFocus = {
+                            registerFirstViewModel.updateCareerFieldState()
+                            registerFirstViewModel.enableNextButton()
+                        }
                     )
 
                     Spacer(modifier = Modifier.size(10.dp))
@@ -173,14 +171,7 @@ private fun Introduce(
 
                     TextFieldIntroduceContent(
                         value = registerFirstViewModel.toString(registerFirstViewModel.selectedMajorList),
-                        onValueChange = {
-                            if(registerFirstUiState.chosenMajorList.toString() == "") {
-                                registerFirstViewModel.updateMajorFieldState(true)
-                            } else {
-                                registerFirstViewModel.updateMajorFieldState(false)
-                            }
-                            registerFirstViewModel.enableNextButton()
-                        },
+                        onValueChange = { },
                         placeholder = stringResource(id = R.string.register1_major),
                         text = stringResource(id = R.string.register1_go),
                         keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
@@ -197,9 +188,7 @@ private fun Introduce(
 }
 
 
-/**
- * TextField Composable
- */
+
 // IntroduceContent - 소속, 연차
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
@@ -211,7 +200,8 @@ private fun TextFieldIntroduceContent(
     keyboardActions: KeyboardActions,
     keyboardOptions: KeyboardOptions,
     readOnly: Boolean,
-    onClick: () -> Unit = {}
+    onClick: () -> Unit = {},
+    onLooseFocus: () -> Unit = {}
 ) {
     val interactionSource = remember { MutableInteractionSource() }
 
@@ -245,7 +235,8 @@ private fun TextFieldIntroduceContent(
                         Log.d("test", "test - isFocused")
                         onClick()
                         Log.d("test", "test - onClick")
-
+                    } else {
+                        onLooseFocus()
                     }
                 },
             visualTransformation = VisualTransformation.None,
@@ -289,15 +280,13 @@ private fun TextFieldIntroduceContent(
     }
 }
 
-/**
- * ModalBottomSheet Composable
- */
+// ModalBottomSheetLayout - sheetContent
 @Composable
 fun MyModalBottomSheetLayout(
     text: String,
     selectedDataList: List<String>,
     optionDataList: List<String>,
-    updateChosenList: (String) -> Unit,
+    updateChosenList: (List<String>) -> Unit,
     registerFirstUiState: RegisterFirstUiState,
     registerFirstViewModel: RegisterFirstViewModel
 ) {
@@ -347,11 +336,10 @@ fun MyModalBottomSheetLayout(
             LazyColumn() {
                 items(optionDataList) {option ->
                     BottomSheetOption(option) {
-//                        selectedDataList.add(option)
-//                        updateChosenList(option)
-                        registerFirstViewModel.add(selectedDataList, option)
-                        /*{리컴포지션 TODO}*/
-                        Log.d("리스트", "selectedDataList: $selectedDataList")
+                        if(option !in selectedDataList) {
+                            registerFirstViewModel.add(selectedDataList, option)
+                            Log.d("리스트", "selectedDataList: $selectedDataList")
+                        }
                     }
                     Spacer(modifier = Modifier.size(3.dp))
                 }
@@ -363,9 +351,7 @@ fun MyModalBottomSheetLayout(
 }
 
 
-/**
- * 회원 가입 첫번째 화면 내부 Composable
- */
+// ModalBottomSheetLayout - content
 @Composable
 fun FirstRegistserScreen(
     registerFirstViewModel: RegisterFirstViewModel = viewModel(),
@@ -419,16 +405,16 @@ fun FirstRegistserScreen(
 }
 
 
-/**
- * 회원 가입 첫번째 화면 Composable
- */
+// 메인 화면
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
 fun RegisterScreenFirst(
     registerFirstViewModel: RegisterFirstViewModel = viewModel(),
     navController: NavHostController
 ) {
-    val filterBottomSheetState = rememberModalBottomSheetState(ModalBottomSheetValue.Hidden)
+    val filterBottomSheetState = rememberModalBottomSheetState(
+        initialValue = ModalBottomSheetValue.Hidden,
+       )
     val scope = rememberCoroutineScope()
     var majorBottomSheet by remember { mutableStateOf(false) }
     val registerFirstUiState by registerFirstViewModel.uiState.collectAsState()
@@ -436,12 +422,28 @@ fun RegisterScreenFirst(
     val chosenMajorList = registerFirstViewModel.selectedMajorList
     val chosenFieldList = registerFirstViewModel.selectedFieldList
 
-    val updateChosenMajorList: (String) -> Unit = { x: String -> registerFirstViewModel.updateChosenMajorList(x) }
-    val updateChosenFieldList: (String) -> Unit = { x: String -> registerFirstViewModel.updateChosenFieldList(x) }
+    val updateChosenMajorList: (List<String>) -> Unit = { x: List<String> -> registerFirstViewModel.updateChosenMajorList(x) }
+    val updateChosenFieldList: (List<String>) -> Unit = { x: List<String> -> registerFirstViewModel.updateChosenFieldList(x) }
 
     LaunchedEffect(Unit) {
         registerFirstViewModel.loadFieldList()
         registerFirstViewModel.loadMajorList()
+
+        // State Change Callacbk
+        snapshotFlow { filterBottomSheetState.isVisible }.collect { isVisible ->
+            if (isVisible) {
+                // Sheet is visible
+            } else {
+                // Not visible
+                Log.d("filterBottomSheetState", "filterBottomSheetState.isVisible: ${filterBottomSheetState.isVisible}")
+                registerFirstViewModel.updateChosenMajorList(chosenMajorList)
+                registerFirstViewModel.updateMajorFieldState()
+                registerFirstViewModel.updateChosenFieldList(chosenFieldList)
+                registerFirstViewModel.updateFieldFieldState()
+                registerFirstViewModel.enableNextButton()
+
+            }
+        }
     }
 
     if (majorBottomSheet) {
@@ -471,6 +473,9 @@ fun RegisterScreenFirst(
 
                         } else {
                             filterBottomSheetState.hide()
+                            /*registerFirstViewModel.updateChosenFieldList(chosenFieldList)
+                            registerFirstViewModel.updateFieldFieldState()
+                            registerFirstViewModel.enableNextButton()*/
                         }
                     }
                 },
@@ -483,6 +488,9 @@ fun RegisterScreenFirst(
 
                         } else {
                             filterBottomSheetState.hide()
+                            /*registerFirstViewModel.updateChosenMajorList(chosenMajorList)
+                            registerFirstViewModel.updateMajorFieldState()
+                            registerFirstViewModel.enableNextButton()*/
                         }
                     }
                 },
@@ -517,6 +525,9 @@ fun RegisterScreenFirst(
 
                         } else {
                             filterBottomSheetState.hide()
+                            /*registerFirstViewModel.updateChosenFieldList(chosenFieldList)
+                            registerFirstViewModel.updateFieldFieldState()
+                            registerFirstViewModel.enableNextButton()*/
                         }
                     }
                 },
@@ -529,6 +540,9 @@ fun RegisterScreenFirst(
 
                         } else {
                             filterBottomSheetState.hide()
+                            /*registerFirstViewModel.updateChosenMajorList(chosenMajorList)
+                            registerFirstViewModel.updateMajorFieldState()
+                            registerFirstViewModel.enableNextButton()*/
                         }
                     }
                 },
@@ -598,9 +612,6 @@ fun SelectedDataList(
 
 }*/
 
-/**
- * ModalBottomSheet 초기화 버튼 Composable
- */
 @Composable
 fun ResetButton(onClick: () -> Unit, text: String) {
     OutlinedButton(
@@ -636,9 +647,6 @@ fun ResetButton(onClick: () -> Unit, text: String) {
     }
 }
 
-/**
- * 회원 가입 첫번째 화면 미리보기
- */
 @Preview(showSystemUi = true)
 @Composable
 private fun RegisterScreenPreview() {
@@ -646,31 +654,5 @@ private fun RegisterScreenPreview() {
         FirstRegistserScreen(
             navController = rememberNavController(), onMajorClick = {}, onJobClick = {}
         )
-    }
-}
-
-@Preview(showSystemUi = true)
-@Composable
-private fun HelloScreenPreview() {
-    DotoringTheme {
-        HelloScreen()
-    }
-}
-
-@Composable
-fun HelloScreen() {
-    var name by rememberSaveable { mutableStateOf("") }
-
-    HelloContent(name = name, onNameChange = { name = it })
-}
-
-@Composable
-fun HelloContent(name: String, onNameChange: (String) -> Unit) {
-    Column(modifier = Modifier.padding(16.dp)) {
-        Text(
-            text = "Hello, $name",
-            modifier = Modifier.padding(bottom = 8.dp)
-        )
-        OutlinedTextField(value = name, onValueChange = onNameChange, label = { Text("Name") })
     }
 }
