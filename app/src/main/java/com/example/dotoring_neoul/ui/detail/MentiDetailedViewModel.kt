@@ -15,6 +15,9 @@ class MentiDetailedViewModel: ViewModel() {
     private val _uiState = MutableStateFlow(MentiDetailedUiState())
     val uiState: StateFlow<MentiDetailedUiState> = _uiState.asStateFlow()
 
+    /**
+     * 멘티 정보 불러오는 통신
+     */
     fun loadMentiInfo(menteeDetail: MenteeDetail) {
         Log.d("업데이트", "loadMentiInfo 실행")
         _uiState.update { currentState ->

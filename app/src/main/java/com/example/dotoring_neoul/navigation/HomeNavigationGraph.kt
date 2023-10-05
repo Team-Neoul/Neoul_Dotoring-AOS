@@ -14,7 +14,9 @@ import com.example.dotoring_neoul.ui.message.messageDetail.MessageDetailScreen
 import com.example.dotoring_neoul.ui.detail.MenteeDetail
 import com.example.dotoring_neoul.ui.detail.MenteeDetailed
 
-
+/**
+ * 로그인 이후 화면 네비게이션 그래프
+ */
 @Composable
 fun HomeNavGraph(navController: NavHostController, modifier: Modifier = Modifier) {
     NavHost(
@@ -43,6 +45,9 @@ fun HomeNavGraph(navController: NavHostController, modifier: Modifier = Modifier
     }
 }
 
+/**
+ * 멘티 디테일 화면 네비게이션 그래프
+ */
 fun NavGraphBuilder.mentiDetailNavGraph(navController: NavHostController) {
     navigation(
         route = Graph.MENTI_DETAILS,
@@ -59,6 +64,9 @@ fun NavGraphBuilder.mentiDetailNavGraph(navController: NavHostController) {
     }
 }
 
+/**
+ * 메세지 디테일 네비게이션 그래프
+ */
 fun NavGraphBuilder.messageDetailNavGraph(navController: NavHostController) {
     navigation(
         route = Graph.MESSAGE_DETAILS,
@@ -82,11 +90,16 @@ fun NavGraphBuilder.messageDetailNavGraph(navController: NavHostController) {
 }
 
 
-
+/**
+ * 메세지 디테일 화면 오브젝트
+ */
 sealed class MessageDetailScreen(val route: String) {
     object MessageDetailed: MessageDetailScreen(route = "MESSAGE_DETAILED" )
 }
 
+/**
+ * 멘티 디테일 화면 오브젝트
+ */
 sealed class MentiDetailScreen(val route: String) {
     object MentiDetailed: MentiDetailScreen(route = "MENTI_DETAILED")
 }

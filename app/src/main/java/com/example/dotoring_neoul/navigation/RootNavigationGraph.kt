@@ -6,6 +6,9 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.example.dotoring_neoul.ui.home.HomeScreen
 
+/**
+ * 전체 네비게이션 그래프 정의
+ */
 @Composable
 fun RootNavigationGraph(navController: NavHostController) {
     NavHost(
@@ -20,6 +23,9 @@ fun RootNavigationGraph(navController: NavHostController) {
     }
 }
 
+/**
+ * 전체 네비게이션 그래프 오브젝트 정의
+ */
 object Graph {
     const val ROOT = "root_graph"
     const val AUTHENTICATION = "auth_graph"

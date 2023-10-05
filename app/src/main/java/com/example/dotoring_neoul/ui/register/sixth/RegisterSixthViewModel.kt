@@ -348,8 +348,8 @@ class RegisterSixthViewModel: ViewModel() {
         val saveMentoRqDTO: SaveMentoRqDTO = SaveMentoRqDTO(
             company = mentoInformation.company,
             careerLevel = mentoInformation.careerLevel,
-            job = mentoInformation.job,
-            major = mentoInformation.major,
+            job = "경영",
+            major = "경영학부",
             nickname = mentoInformation.nickname,
             introduction = mentoInformation.introduction,
             loginId = uiState.value.memberId,

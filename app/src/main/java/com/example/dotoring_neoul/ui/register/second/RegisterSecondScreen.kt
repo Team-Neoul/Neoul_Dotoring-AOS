@@ -34,6 +34,9 @@ import com.example.dotoring_neoul.ui.util.RegisterScreenTop
 import com.example.dotoring_neoul.ui.util.register.MentoInformation
 import com.example.dotoring_neoul.ui.util.register.RegisterScreenNextButton
 import de.charlex.compose.HtmlText
+/**
+ * 이미지 업로드 버튼 Composable
+ */
 @Composable
 private fun ImageUploadButton(
     registerSecondViewModel: RegisterSecondViewModel = viewModel(),
