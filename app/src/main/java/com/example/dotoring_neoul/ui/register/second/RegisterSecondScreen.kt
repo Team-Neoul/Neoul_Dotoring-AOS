@@ -43,6 +43,8 @@ private fun ImageUploadButton(
     uploadEmploymentFile: Boolean
 ) {
 
+    val registerSecondUiState by registerSecondViewModel.uiState.collectAsState()
+
     /*    var selectedImageUri by remember {
             mutableStateOf<Uri?>(null)
         }
@@ -70,6 +72,7 @@ private fun ImageUploadButton(
         if (selectedUri != null) {
             Log.d("uri", "selectedUri: file selected $selectedUri")
             Log.d("uri", "selectedUri: file path ${selectedUri.path}")
+
             if (uploadEmploymentFile) {
                 registerSecondViewModel.uploadEmploymentFile()
                 registerSecondViewModel.updateEmploymentCertification(selectedUri)
@@ -154,6 +157,7 @@ fun SecondRegisterScreen(
 
             RegisterScreenNextButton(
                 onClick = {
+                    Log.d("파일 업로드 테스트", "employmentFileUploaded: ${registerSecondUiState.employmentFileUploaded}")
                     val mentoInfo = MentoInformation(
                         company = mentoInformation.company,
                         careerLevel = mentoInformation.careerLevel,
@@ -168,7 +172,7 @@ fun SecondRegisterScreen(
                     )
                     navController.navigate(AuthScreen.Register3.route)
                 },
-                enabled = true )
+                enabled = registerSecondUiState.employmentFileUploaded )
         }
 
         Spacer(modifier = Modifier.weight(3f))
