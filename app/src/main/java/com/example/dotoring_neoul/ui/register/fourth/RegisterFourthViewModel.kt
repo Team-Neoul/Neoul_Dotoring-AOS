@@ -18,8 +18,6 @@ class RegisterFourthViewModel: ViewModel() {
     var introductionInput by mutableStateOf("")
         private set
 
-    var btnState by mutableStateOf(false)
-        private set
 
     /**
      * 소개 입력받는 텍스트 필드 업데이트
@@ -28,18 +26,16 @@ class RegisterFourthViewModel: ViewModel() {
         introductionInput = introduction
 
         _uiState.update { currentState ->
-            currentState.copy(introduction = introductionInput)
+            currentState.copy(mentorIntroduction = introductionInput)
         }
     }
 
     /**
      * 회원 가입 네번째 화면 다음 버튼 활성화
      */
-    fun enableNextButton() {
-        btnState = true
-
+    fun updateNextButtonState(nextButtonEnabled: Boolean) {
         _uiState.update { currentState ->
-            currentState.copy(btnState = btnState)
+            currentState.copy(nextButtonState = nextButtonEnabled)
         }
     }
 }

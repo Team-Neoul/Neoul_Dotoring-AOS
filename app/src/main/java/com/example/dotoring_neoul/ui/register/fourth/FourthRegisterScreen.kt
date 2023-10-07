@@ -4,6 +4,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -35,6 +36,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.example.dotoring.R
 import com.example.dotoring_neoul.navigation.AuthScreen
+import com.example.dotoring_neoul.ui.register.third.DuplicationCheckState
 import com.example.dotoring_neoul.ui.theme.DotoringTheme
 import com.example.dotoring_neoul.ui.util.RegisterScreenTop
 import com.example.dotoring_neoul.ui.util.register.MentoInformation
@@ -68,11 +70,34 @@ fun FourthRegisterScreen(
             Spacer(modifier = Modifier.size(10.dp))
 
             RoundedCornerTextField(
-                value = registerFourthUiState.introduction,
-                onValueChange = {registerFourthViewModel.updateIntroductionInput(it)},
+                value = registerFourthUiState.mentorIntroduction,
+                onValueChange = {
+                    registerFourthViewModel.updateIntroductionInput(it)
+
+                    if(it.length in 10..100) {
+                        registerFourthViewModel.updateNextButtonState(true)
+                    } else {
+                        registerFourthViewModel.updateNextButtonState(false)
+                    }
+                                },
                 onDone = {
                     focusManager.clearFocus()
-                    registerFourthViewModel.enableNextButton() }
+                }
+            )
+
+            Spacer(modifier = Modifier.height(1.dp))
+
+            Text(
+                text = if(!registerFourthUiState.nextButtonState) {
+                    stringResource(id = R.string.register4_error_condition_not_satisfied)
+
+                } else {
+                                                                         ""
+                                                                         },
+                modifier = Modifier
+                    .padding(start = 2.dp, top = 3.dp),
+                color = Color(0xffff7B7B),
+                fontSize = 10.sp
             )
 
             Spacer(modifier = Modifier.weight(5f))
@@ -87,7 +112,7 @@ fun FourthRegisterScreen(
                         employmentCertification = mentoInformation.employmentCertification,
                         graduateCertification = mentoInformation.graduateCertification,
                         nickname = mentoInformation.nickname,
-                        introduction = registerFourthUiState.introduction
+                        introduction = registerFourthUiState.mentorIntroduction
                     )
                     navController.currentBackStackEntry?.savedStateHandle?.set(
                         key = "mentoInfo",
@@ -95,7 +120,7 @@ fun FourthRegisterScreen(
                     )
                     navController.navigate(AuthScreen.Register5.route)
                 },
-                enabled = registerFourthUiState.btnState)
+                enabled = registerFourthUiState.nextButtonState)
 
             Spacer(modifier = Modifier.weight(4f))
         }
