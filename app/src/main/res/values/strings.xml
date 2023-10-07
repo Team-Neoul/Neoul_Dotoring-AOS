@@ -55,8 +55,10 @@
     <!--회원 가입 세번째 화면 관련 string resource-->
     <string name="register3_q3"><font color="#8BD045">어떻게</font> 불러드릴까요?</string>
     <string name="register3_guide">3자 이상, 8자 이하, 숫자 1개 이상 입력하여 작성</string>
-    <string name="register3_input">닉네임</string>경
-    <string name="register3_error">이미 있는 닉네임입니다.</string>
+    <string name="register3_input">닉네임</string>
+    <string name="register3_error_condition_not_satisfied">3자 이상, 8자 이하, 숫자 1개 이상 입력하여 작성해주세요.</string>
+    <string name="register3_error_nickname_duplication">이미 있는 닉네임입니다.</string>
+    <string name="register3_nickname_certified">사용 가능한 닉네임입니다.</string>
     <string name="register3_">라고 불러 주세요.</string>
 
     <!--회원 가입 네번째 화면 관련 string resource-->
