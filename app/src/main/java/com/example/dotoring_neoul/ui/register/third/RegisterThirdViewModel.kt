@@ -8,11 +8,12 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.graphics.Color
 import com.example.dotoring_neoul.dto.CommonResponse
 import com.example.dotoring_neoul.dto.register.NicknameValidationRequest
 import com.example.dotoring_neoul.network.DotoringRegisterAPI
+import com.google.gson.Gson
 import kotlinx.coroutines.flow.update
+import org.json.JSONObject
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -35,28 +36,45 @@ class RegisterThirdViewModel: ViewModel() {
         }
     }
 
-    fun updateNicknameCertifiedState() {
+    fun updateNicknameConditionErrorState(isError: Boolean) {
         _uiState.update { currentState ->
-            currentState.copy(nicknameCertified = true)
+            currentState.copy(nicknameConditionError = isError)
+        }
+
+        enableNextButtonState()
+
+        if(!isError) {
+            enableDuplicationCheckButtonState(true)
+        } else {
+            enableDuplicationCheckButtonState(false)
         }
     }
-    fun toggleNicknameErrorTextColor() {
-        if( _uiState.value.nicknameCertified ) {
+
+    fun updateNicknameDuplicationErrorState(errorState: DuplicationCheckState) {
+        _uiState.update { currentState ->
+            currentState.copy(nicknameDuplicationError = errorState)
+        }
+
+        enableNextButtonState()
+    }
+
+    private fun enableDuplicationCheckButtonState(buttonEnabled: Boolean) {
+        _uiState.update { currentState ->
+            currentState.copy(duplicationCheckButtonState = buttonEnabled)
+        }
+    }
+
+    private fun enableNextButtonState() {
+        if (uiState.value.nicknameDuplicationError != DuplicationCheckState.DuplicationCheckSuccess || uiState.value.nicknameConditionError) {
             _uiState.update { currentState ->
-                currentState.copy(nicknameErrorColor = Color.Transparent)
+                currentState.copy(nextButtonState = false)
             }
         } else {
             _uiState.update { currentState ->
-                currentState.copy(nicknameErrorColor = Color(0xffff7B7B))
+                currentState.copy(nextButtonState = true)
             }
         }
-    }
-    fun enableBtnState() {
-        btnState = true
 
-        _uiState.update { currentState ->
-            currentState.copy(btnState = btnState)
-        }
     }
 
     fun verifyNickname() {
@@ -67,27 +85,32 @@ class RegisterThirdViewModel: ViewModel() {
         verifyNicknameResponseCall.enqueue(object: Callback<CommonResponse> {
             override fun onResponse(call: Call<CommonResponse>, response: Response<CommonResponse>) {
 
-                Log.d("통신", "onResponse")
-                Log.d("통신", "닉네임 중복 확인: ${response.body()}")
-                Log.d("통신", "닉네임 중복 확인: ${response.code()}")
+                Log.d("닉네임 중복 확인", "onResponse")
+                Log.d("닉네임 중복 확인", "닉네임 중복 확인: ${response.body()}")
+                Log.d("닉네임 중복 확인", "닉네임 중복 확인: ${response.code()}")
 
+                val json = Gson().toJson(response.body())
+                Log.d("닉네임 중복 확인", "verifyNickname - json: $json")
 
-                if (response.isSuccessful && response.body() != null) {
-                    Log.d("통신", "Success")
+                val jsonObject = JSONObject(json.toString())
+                Log.d("닉네임 중복 확인", "verifyNickname - jsonObject: $jsonObject")
 
-                    _uiState.update { currentState ->
-                        currentState.copy(nicknameCertified = true)
-                    }
+                val jsonObjectSuccess = jsonObject.getBoolean("success")
+                Log.d("닉네임 중복 확인", "verifyNickname - jsonObjectSuccess: $jsonObjectSuccess")
 
-                    updateNicknameCertifiedState()
-                    toggleNicknameErrorTextColor()
-                    enableBtnState()
+                if (jsonObjectSuccess) {
+
+                    updateNicknameDuplicationErrorState(DuplicationCheckState.DuplicationCheckSuccess)
+
+                } else {
+                    updateNicknameDuplicationErrorState(DuplicationCheckState.DuplicationCheckFail)
                 }
             }
+
             override fun onFailure(call: Call<CommonResponse>, t: Throwable) {
                 val string = t.message.toString()
-                Log.d("통신", "통신 실패: $string")
-                Log.d("통신", "요청 내용 - $verifyNicknameResponseCall")
+                Log.d("닉네임 중복 확인", "통신 실패: $string")
+                Log.d("닉네임 중복 확인", "요청 내용 - $verifyNicknameResponseCall")
             }
         })
 

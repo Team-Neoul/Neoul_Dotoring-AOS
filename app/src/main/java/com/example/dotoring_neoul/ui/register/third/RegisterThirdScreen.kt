@@ -13,6 +13,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
@@ -30,6 +31,7 @@ import com.example.dotoring_neoul.ui.util.RegisterScreenTop
 import com.example.dotoring_neoul.ui.util.register.CommonTextField
 import com.example.dotoring_neoul.ui.util.register.MentoInformation
 import com.example.dotoring_neoul.ui.util.register.RegisterScreenNextButton
+import java.util.regex.Pattern
 
 @Composable
 fun ThirdRegisterScreen(
@@ -41,6 +43,8 @@ fun ThirdRegisterScreen(
     val registerThirdUiState by registerThirdViewModel.uiState.collectAsState()
 
     val focusManager = LocalFocusManager.current
+
+    val nicknamePattern = "^(?=.*?[0-9])[a-zA-Z0-9가-힣]{3,8}\$"
 
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
@@ -70,7 +74,13 @@ fun ThirdRegisterScreen(
                 ) {
                     CommonTextField(
                         value = registerThirdUiState.nickname,
-                        onValueChange = { registerThirdViewModel.updateNickname(it) },
+                        onValueChange = {
+                            val nicknameCondition = Pattern.matches(nicknamePattern, it)
+
+                            registerThirdViewModel.updateNickname(it)
+                            registerThirdViewModel.updateNicknameConditionErrorState(!nicknameCondition)
+                            registerThirdViewModel.updateNicknameDuplicationErrorState(DuplicationCheckState.NonChecked)
+                        },
                         placeholder = "닉네임",
                         width = 250.dp,
                         imeAction = ImeAction.Done,
@@ -80,15 +90,25 @@ fun ThirdRegisterScreen(
                         onClick = {
                             registerThirdViewModel.verifyNickname()
                         },
-                        text = stringResource(id = R.string.register_nickname_duplication_check)
+                        text = stringResource(id = R.string.register_nickname_duplication_check),
+                        enabled = registerThirdUiState.duplicationCheckButtonState
                     )
                 }
 
                 Text(
-                    text = stringResource(id = R.string.register3_error),
+                    text = if(registerThirdUiState.nicknameConditionError && registerThirdUiState.nicknameDuplicationError == DuplicationCheckState.NonChecked) {
+                        stringResource(R.string.register3_error_condition_not_satisfied)
+                    } else if (!registerThirdUiState.nicknameConditionError && registerThirdUiState.nicknameDuplicationError == DuplicationCheckState.NonChecked){
+                        "중복확인 버튼을 눌러주세요."
+                    } else if (!registerThirdUiState.nicknameConditionError && registerThirdUiState.nicknameDuplicationError == DuplicationCheckState.DuplicationCheckFail){
+                        stringResource(R.string.register3_error_nickname_duplication)
+                    } else if (!registerThirdUiState.nicknameConditionError && registerThirdUiState.nicknameDuplicationError == DuplicationCheckState.DuplicationCheckSuccess){
+                        stringResource(R.string.register3_nickname_certified)
+                    } else { "" },
                     modifier = Modifier
                         .padding(start = 2.dp, top = 3.dp),
-                    color = registerThirdUiState.nicknameErrorColor,
+                    color = if(registerThirdUiState.nicknameConditionError || registerThirdUiState.nicknameDuplicationError != DuplicationCheckState.DuplicationCheckSuccess) { Color(0xffff7B7B) }
+                            else { Color(0xff8BD045) },
                     fontSize = 10.sp
                 )
 
@@ -100,8 +120,6 @@ fun ThirdRegisterScreen(
                         .wrapContentWidth(Alignment.Start)
                 )
             }
-
-
         }
 
         Spacer(modifier = Modifier.weight(1.5f))
@@ -121,7 +139,7 @@ fun ThirdRegisterScreen(
                 value = mentoInfo
             )
             navController.navigate(AuthScreen.Register4.route)
-        },enabled = registerThirdUiState.btnState)
+        },enabled = registerThirdUiState.nextButtonState)
 
         Spacer(modifier = Modifier.weight(8f))
     }
