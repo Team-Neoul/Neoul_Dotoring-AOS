@@ -1,59 +1,89 @@
-package com.example.dotoring_neoul.ui.register.sixthpackage
+package com.example.dotoring_neoul.ui.register.sixth
 
+import android.annotation.SuppressLint
+import android.app.Application
+import android.content.ContentResolver
+import android.content.Context
+import android.database.Cursor
+import android.net.Uri
 import com.example.dotoring_neoul.dto.CommonResponse
 import com.example.dotoring_neoul.dto.register.EmailCertificationRequest
 import com.example.dotoring_neoul.dto.register.IdValidationRequest
-import com.example.dotoring_neoul.dto.register.SaveMentoRqDTO
 import com.example.dotoring_neoul.network.DotoringRegisterAPI
-import com.example.dotoring_neoul.ui.register.sixth.RegisterSixthUiState
 import com.example.dotoring_neoul.ui.util.register.MentoInformation
-import android.net.Uri
 import android.os.CountDownTimer
-import android.os.Environment
+import android.provider.MediaStore
+import android.provider.OpenableColumns
 import android.util.Log
-import androidx.compose.ui.graphics.Color
-import androidx.lifecycle.ViewModel
+import androidx.core.net.toUri
+import androidx.lifecycle.AndroidViewModel
 import com.google.gson.Gson
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
+import okhttp3.MediaType
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import okhttp3.RequestBody.Companion.asRequestBody
+import okhttp3.RequestBody.Companion.toRequestBody
+import okhttp3.internal.toImmutableList
+import okio.BufferedSink
+import okio.source
 import org.json.JSONObject
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import java.io.File
+import java.io.FileOutputStream
+import java.io.IOException
+import java.io.OutputStream
 
-class RegisterSixthViewModel: ViewModel() {
+class RegisterSixthViewModel(application: Application): AndroidViewModel(application) {
+
     private val _uiState = MutableStateFlow(RegisterSixthUiState())
     val uiState: StateFlow<RegisterSixthUiState> = _uiState.asStateFlow()
 
+
+    /**
+     *  ID와 관련된 함수
+     */
     fun updateUserId(idInput: String) {
         _uiState.update { currentState ->
             currentState.copy(memberId = idInput)
         }
     }
 
-    fun toggleErrorTextColor() {
-        if( _uiState.value.idError ) {
-            _uiState.update { currentState ->
-                currentState.copy(idErrorTextColor = Color(0xffff7B7B))
-            }
-        } else {
-            _uiState.update { currentState ->
-                currentState.copy(idErrorTextColor = Color.Transparent)
-            }
+    fun updateIdConditionState(isIdConditionSatisfied: Boolean) {
+        _uiState.update { currentState ->
+            currentState.copy(isIdConditionSatisfied = isIdConditionSatisfied)
         }
     }
 
+    fun updateIdValidationState(isIdAvailable: IdDuplicationCheckState) {
+        _uiState.update { currentState ->
+            currentState.copy(isIdAvailable = isIdAvailable)
+        }
+
+        updateToLoginButtonState()
+    }
+
+    /**
+     *  Password와 관련된 함수
+     */
     fun updateUserPassword(passwordInput: String) {
         _uiState.update { currentState ->
             currentState.copy(password = passwordInput)
         }
+    }
+
+    fun updatePasswordConditionState(isPasswordConditionSatisfied: Boolean) {
+        _uiState.update { currentState ->
+            currentState.copy(isPasswordConditionSatisfied = isPasswordConditionSatisfied)
+        }
+
+        updateToLoginButtonState()
     }
 
     fun updatePasswordCertification(pwCertificationInput: String) {
@@ -63,27 +93,22 @@ class RegisterSixthViewModel: ViewModel() {
     }
 
     fun passwordErrorCheck() {
-        if (_uiState.value.password == _uiState.value.passwordCertification) {
+        if (uiState.value.password == uiState.value.passwordCertification) {
             _uiState.update { currentState ->
-                currentState.copy(passwordCertified = true)
+                currentState.copy(isPasswordCertified = true)
             }
         } else {
             _uiState.update { currentState ->
-                currentState.copy(passwordCertified = false)
+                currentState.copy(isPasswordCertified = false)
             }
         }
 
-        if( _uiState.value.passwordCertified ) {
-            _uiState.update { currentState ->
-                currentState.copy(passwordErrorTextColor = Color.Transparent)
-            }
-        } else {
-            _uiState.update { currentState ->
-                currentState.copy(passwordErrorTextColor = Color(0xffff7B7B))
-            }
-        }
+        updateToLoginButtonState()
     }
 
+    /**
+     *  Email과 관련된 함수
+     */
     fun updateEmail(emailInput: String) {
 
 //        val emailInput = emailInput.replace("@", "%40")
@@ -93,33 +118,69 @@ class RegisterSixthViewModel: ViewModel() {
         }
     }
 
+    fun updateEmailConditionState(isEmailConditionSatisfied: Boolean) {
+        Log.d("테스트 - 이메일 조건 검증 확인", "updateEmailConditionState - isEmailConditionSatisfied: $isEmailConditionSatisfied")
+
+        _uiState.update { currentState ->
+            currentState.copy(isEmailConditionSatisfied = isEmailConditionSatisfied)
+        }
+    }
+
+    /**
+     *  Email 인증 코드와 관련된 함수
+     */
     fun updateValidationCode (codeInput: String) {
         _uiState.update { currentState ->
             currentState.copy(validationCode = codeInput)
         }
     }
 
-    fun toggleEmailErrorTextColor() {
-        if( _uiState.value.emailValidated ) {
+    fun updateCodeState (codeState: CodeState) {
+        _uiState.update { currentState ->
+            currentState.copy(codeState = codeState)
+        }
+    }
+
+    private fun updateToLoginButtonState () {
+        Log.d("로그인 하러 가기 버튼 상태", "updateToLoginButtonState - uiState.value.isToLoginButtonEnabled: ${uiState.value.isToLoginButtonEnabled}")
+        Log.d("로그인 하러 가기 버튼 상태", "updateToLoginButtonState - uiState.value.isIdAvailable: ${uiState.value.isIdAvailable}")
+        Log.d("로그인 하러 가기 버튼 상태", "updateToLoginButtonState - uiState.value.isPasswordConditionSatisfied: ${uiState.value.isPasswordConditionSatisfied}")
+        Log.d("로그인 하러 가기 버튼 상태", "updateToLoginButtonState - uiState.value.isPasswordCertified: ${uiState.value.isPasswordCertified}")
+        Log.d("로그인 하러 가기 버튼 상태", "updateToLoginButtonState - uiState.value.emailValidationState: ${uiState.value.emailValidationState}")
+
+        if(uiState.value.emailValidationState == EmailValidationState.Valid
+            && uiState.value.isPasswordCertified
+            && uiState.value.isPasswordConditionSatisfied
+            && uiState.value.isIdAvailable == IdDuplicationCheckState.DuplicationCheckSuccess) {
             _uiState.update { currentState ->
-                currentState.copy(emailErrorTextColor = Color.Transparent)
+                currentState.copy(isToLoginButtonEnabled = true)
             }
         } else {
             _uiState.update { currentState ->
-                currentState.copy(emailErrorTextColor = Color(0xffff7B7B))
+                currentState.copy(isToLoginButtonEnabled = false)
             }
         }
     }
 
-    fun updateBtnState () {
+    fun updateEmailValidationState (emailValidationState: EmailValidationState) {
         _uiState.update { currentState ->
-            currentState.copy(btnState = true)
+            currentState.copy(emailValidationState = emailValidationState)
+        }
+
+        updateToLoginButtonState()
+    }
+
+    fun updateEmailValidationButtonState (isValidationButtonEnabled: Boolean) {
+        _uiState.update { currentState ->
+            currentState.copy(isValidationButtonEnabled = isValidationButtonEnabled)
         }
     }
 
     fun startTimer () {
-        object : CountDownTimer(300000, 1000) {
+        updateCodeState(CodeState.Valid)
+        updateEmailValidationButtonState(true)
 
+        object : CountDownTimer(300000, 1000) {
             override fun onTick(millisUntilFinished: Long) {
                 val totalSeconds = millisUntilFinished / 1000
                 val minutes = totalSeconds / 60
@@ -133,257 +194,297 @@ class RegisterSixthViewModel: ViewModel() {
 
             override fun onFinish() {
                 _uiState.update { currentState ->
-                    currentState.copy(certificationPeriod = "시간 초과")
+                    currentState.copy(certificationPeriod = "인증 시간 초과")
                 }
+                updateCodeState(CodeState.Expired)
+                updateEmailValidationButtonState(false)
             }
         }.start()
     }
 
     fun userIdDuplicationCheck() {
-        Log.d("통신", "userIdDuplicationCheck - 시작")
+        Log.d("통신 - 아이디 중복 확인", "userIdDuplicationCheck() - 시작")
 
         val idValidationRequest = IdValidationRequest(loginId = uiState.value.memberId)
-        Log.d("통신", "userIdDuplicationCheck - $idValidationRequest")
+        Log.d("통신 - 아이디 중복 확인", "userIdDuplicationCheck - $idValidationRequest")
 
         val idValidationRequestCall: Call<CommonResponse> = DotoringRegisterAPI.retrofitService.loginIdValidation(idValidationRequest)
 
         idValidationRequestCall.enqueue(object: Callback<CommonResponse> {
             override fun onResponse(call: Call<CommonResponse>, response: Response<CommonResponse>) {
-                Log.d("통신", "userIdDuplicationCheck - onResponse")
-                Log.d("통신", "userIdDuplicationCheck - response.code(): ${response.code()}")
+                Log.d("통신 - 아이디 중복 확인", "userIdDuplicationCheck - onResponse")
+                Log.d("통신 - 아이디 중복 확인", "userIdDuplicationCheck - response.body(): ${response.body()}")
+                Log.d("통신 - 아이디 중복 확인", "userIdDuplicationCheck - response.code(): ${response.code()}")
 
-                val jsonObject = Gson().toJson(response.body())
-                Log.d("통신", "userIdDuplicationCheck - jsonObject: $jsonObject")
+                val json = Gson().toJson(response.body())
+                Log.d("통신 - 아이디 중복 확인", "userIdDuplicationCheck - json: $json")
 
-                val jo = JSONObject(jsonObject)
-                val jsonObjectSuccess = jo.getBoolean("success")
+                val jsonObject = JSONObject(json)
+                Log.d("통신 - 아이디 중복 확인", "userIdDuplicationCheck - jsonObject: $jsonObject")
+
+                val jsonObjectSuccess = jsonObject.getBoolean("success")
 
                 if (jsonObjectSuccess) {
-                    Log.d("통신", "userIdDuplicationCheck - success")
-
-                    _uiState.update { currentState ->
-                        currentState.copy(idAvailable = true)
-                    }
+                    Log.d("통신 - 아이디 중복 확인", "userIdDuplicationCheck - success")
+                    updateIdValidationState(IdDuplicationCheckState.DuplicationCheckSuccess)
+                } else {
+                    updateIdValidationState(IdDuplicationCheckState.DuplicationCheckFail)
                 }
             }
+
             override fun onFailure(call: Call<CommonResponse>, t: Throwable) {
-                Log.d("통신", "통신 실패: $t")
-                Log.d("회원 가입 통신", "요청 내용 - $idValidationRequestCall")
+                Log.d("통신 - 아이디 중복 확인", "통신 실패: $t")
+                Log.d("통신 - 아이디 중복 확인", "요청 내용 - $idValidationRequestCall")
             }
         })
     }
 
     fun sendAuthenticationCode() {
         val email = uiState.value.email
-        Log.d("통신", "sendAuthenticationCode - 시작")
-        Log.d("통신", "sendAuthenticationCode - $email")
+        Log.d("통신 - 인증 코드 보내기", "sendAuthenticationCode - 시작")
+        Log.d("통신 - 인증 코드 보내기", "sendAuthenticationCode - $email")
 
         val authenticationCodeRequestCall: Call<CommonResponse> = DotoringRegisterAPI.retrofitService.sendAuthenticationCode(email = uiState.value.email)
 
         authenticationCodeRequestCall.enqueue(object: Callback<CommonResponse> {
             override fun onResponse(call: Call<CommonResponse>, response: Response<CommonResponse>) {
-                Log.d("통신", "sendAuthenticationCode - onResponse")
-                Log.d("통신", "sendAuthenticationCode - response.body() : ${response.body()}")
-                Log.d("통신", "sendAuthenticationCode - response.code() : ${response.code()}")
+                Log.d("통신 - 인증 코드 보내기", "sendAuthenticationCode - onResponse")
+                Log.d("통신 - 인증 코드 보내기", "sendAuthenticationCode - response.body() : ${response.body()}")
+                Log.d("통신 - 인증 코드 보내기", "sendAuthenticationCode - response.code() : ${response.code()}")
 
-                val jsonObject = Gson().toJson(response.body())
-                val jo = JSONObject(jsonObject)
-                val jsonObjectSuccess = jo.getBoolean("success")
+                val json = Gson().toJson(response.body())
+                Log.d("통신 - 인증 코드 보내기", "sendAuthenticationCode - json : $json")
+                val jsonObject = JSONObject(json)
+                Log.d("통신 - 인증 코드 보내기", "sendAuthenticationCode - jsonObject : $jsonObject")
+                val jsonObjectSuccess = jsonObject.getBoolean("success")
+                Log.d("통신 - 인증 코드 보내기", "sendAuthenticationCode - jsonObjectSuccess : $jsonObjectSuccess")
 
                 if (jsonObjectSuccess) {
+                    val response = jsonObject.getJSONObject("response")
+                    val emailVerificationCode = response.optJSONObject("emailVerificationCode")
+                    val emailVerificationCodeToString = emailVerificationCode?.toString() ?: ""
 
+                    _uiState.update { currentState ->
+                        currentState.copy(validationCode = emailVerificationCodeToString)
+                    }
+
+                    Log.d("테스트 - 이메일 코드 확인", "sendAuthenticationCode - emailVerificationCodeToString: ${uiState.value.validationCode}")
                 }
             }
             override fun onFailure(call: Call<CommonResponse>, t: Throwable) {
-                Log.d("통신", "통신 실패: $t")
-                Log.d("회원 가입 통신", "요청 내용 - $authenticationCodeRequestCall")
+                Log.d("통신 - 인증 코드 보내기", "통신 실패: $t")
+                Log.d("통신 - 인증 코드 보내기", "요청 내용 - $authenticationCodeRequestCall")
             }
         })
     }
 
     fun codeCertification() {
-        Log.d("통신", "codeCertification - 시작")
+        Log.d("통신 - 코드 인증 하기", "codeCertification - 시작")
 
         val codeCertificationRequest = EmailCertificationRequest(emailVerificationCode = uiState.value.validationCode, email = uiState.value.email)
-        Log.d("통신", "codeCertification - Request: $codeCertificationRequest")
+        Log.d("통신 - 코드 인증 하기", "codeCertification - codeCertificationRequest: $codeCertificationRequest")
 
         val codeCertificationRequestCall: Call<CommonResponse> = DotoringRegisterAPI.retrofitService.emailCertification(codeCertificationRequest)
 
         codeCertificationRequestCall.enqueue(object: Callback<CommonResponse> {
             override fun onResponse(call: Call<CommonResponse>, response: Response<CommonResponse>) {
-                Log.d("통신", "codeCertification - onResponse")
-                Log.d("통신", "codeCertification - response.body() : ${response.body()}")
-                Log.d("통신", "codeCertification - response.code() : ${response.code()}")
+                Log.d("통신 - 코드 인증 하기", "codeCertification - onResponse")
+                Log.d("통신 - 코드 인증 하기", "codeCertification - response.body() : ${response.body()}")
+                Log.d("통신 - 코드 인증 하기", "codeCertification - response.code() : ${response.code()}")
 
-                val jsonObject = Gson().toJson(response.body())
-                val jo = JSONObject(jsonObject)
-                val jsonObjectSuccess = jo.getBoolean("success")
+                val json = Gson().toJson(response.body())
+                Log.d("통신 - 코드 인증 하기", "codeCertification - jsonObject : $json")
+
+                val jsonObject = JSONObject(json)
+                Log.d("통신 - 코드 인증 하기", "codeCertification - jsonObject : $jsonObject")
+
+                val jsonObjectSuccess = jsonObject.getBoolean("success")
+                Log.d("통신 - 코드 인증 하기", "codeCertification - jsonObjectSuccess : $jsonObjectSuccess")
 
                 if (jsonObjectSuccess) {
-                    _uiState.update { currentState ->
-                        currentState.copy(emailValidated = true)
-                    }
-
-                    toggleEmailErrorTextColor()
-                    updateBtnState()
-
+                    updateEmailValidationState(EmailValidationState.Valid)
+                } else {
+                    updateEmailValidationState(EmailValidationState.Invalid)
                 }
             }
             override fun onFailure(call: Call<CommonResponse>, t: Throwable) {
-                Log.d("통신", "통신 실패: $t")
-                Log.d("회원 가입 통신", "요청 내용 - $codeCertificationRequestCall")
+                Log.d("통신 - 코드 인증 하기", "통신 실패: $t")
+                Log.d("통신 - 코드 인증 하기", "요청 내용 - $codeCertificationRequestCall")
             }
         })
     }
 
-    private fun makePart(uri: Uri?, fileName: String): MultipartBody.Part {
-        val path : String = Environment.getExternalStorageDirectory().absolutePath + "/AP/"
-        val dir : File = File(path)
+    fun mentoRegister(mentoInformation: MentoInformation) {
+        Log.d("통신 - 로그인 하기", "mentoRegister - 통신 시작")
+        val certifications: MutableList<MultipartBody.Part> = mutableListOf<MultipartBody.Part>()
 
-        if (!dir.exists()) {
-            dir.mkdirs()
+        if(mentoInformation.employmentCertification != null) {
+            certifications.add(makePart(mentoInformation.employmentCertification))
         }
 
-        val fullName = path + "fileName"
-        val file : File = File(fullName)
+        if(mentoInformation.graduateCertification != null) {
+            certifications.add(makePart(mentoInformation.graduateCertification))
+        }
 
+        certifications.toImmutableList()
+        Log.d("통신 - 로그인 하기", "mentoRegister - certifications: $certifications")
 
-//        val image = File.createTempFile(fileName, ".pdf", null)
-//        val destinationUri = Uri.fromFile(image)
-//
-//        val requestFile = file.asRequestBody("application/pdf".toMediaTypeOrNull())
+        /*val saveMentoRqDTO = JSONObject()
+        saveMentoRqDTO.put("company", mentoInformation.company)
+        saveMentoRqDTO.put("careerLevel", mentoInformation.careerLevel)
+        saveMentoRqDTO.put("field", mentoInformation.field)
+        saveMentoRqDTO.put("major", mentoInformation.major)
+        saveMentoRqDTO.put("nickname", mentoInformation.nickname)
+        saveMentoRqDTO.put("introduction", mentoInformation.introduction)
+        saveMentoRqDTO.put("loginId", uiState.value.memberId)
+        saveMentoRqDTO.put("password", uiState.value.password)
+        saveMentoRqDTO.put("email", uiState.value.email)*/
 
+       /* val body = "".toRequestBody(MultipartBody.FORM)
+        val emptyPart = MultipartBody.Part.createFormData("saveMentoRqDTO","",body)
+        val emptyList = arrayListOf<MultipartBody.Part>()
+        emptyList.add(emptyPart)*/
 
-//        val requestFile = Request.Builder()
-//            .post(file.asRequestBody())
-//            .build()
+//        val jsonObject = JSONObject(
+//            "{\"company\":\"${mentoInformation.company}\"," +
+//                    "\"careerLevel\":\"${mentoInformation.careerLevel}\"," +
+//                    "\"field\":\"${mentoInformation.field}\"," +
+//                    "\"major\":\"${mentoInformation.major}\"," +
+//                    "\"nickname\":\"${mentoInformation.nickname}\"," +
+//                    "\"introduction\":\"${mentoInformation.introduction}\"," +
+//                    "\"loginId\":\"${uiState.value.memberId}\"," +
+//                    "\"password\":\"${uiState.value.password}\"," +
+//                    "\"email\":\"${uiState.value.email}\"}").toString()
+        val jsonObject = JSONObject(
+            "{\"company\":\"${mentoInformation.company}\"," +
+                    "\"careerLevel\":\"${mentoInformation.careerLevel}\"," +
+                    "\"field\":\"진로\"," +
+                    "\"major\":\"가정교육과\"," +
+                    "\"nickname\":\"${mentoInformation.nickname}\"," +
+                    "\"introduction\":\"${mentoInformation.introduction}\"," +
+                    "\"loginId\":\"${uiState.value.memberId}\"," +
+                    "\"password\":\"${uiState.value.password}\"," +
+                    "\"email\":\"${uiState.value.email}\"}").toString()
 
-//        val filePath = uri?.path
-//        val imageFile = File(filePath).createNewFile()
-//        val requestFile : RequestBody = RequestBody.create(
-//            IMAGE_TYPE_JPEG.toMediaTypeOrNull(), imageFile
-//        )
-        val fileBody = uri!!.path?.let { File(it) }
-        var requestBody : RequestBody = fileBody!!.asRequestBody("*/*".toMediaType())
-        var body : MultipartBody.Part = MultipartBody.Part.createFormData("uploaded_file", fileName, requestBody)
-//        val requestFile = file.asRequestBody("*/*".toMediaType())
-//
-//        return MultipartBody.Part.createFormData("file", file.name, requestFile)
-
-        return body
-    }
-
-    fun finalRegistser(mentoInformation: MentoInformation) {
-        Log.d("통신", "finalRegister - 통신 시작")
-
-        /* val employmentCertification = makePart(mentoInformation.employmentCertification, "doc_${mentoInformation.nickname}_employment.pdf")
-         val graduateCertification = makePart(mentoInformation.graduateCertification, "doc_${mentoInformation.nickname}_graduation.pdf")
-
-         val certifications = listOf(
-             employmentCertification,
-             graduateCertification
-         )
-
-         Log.d("통신", "finalRegister - certifications: $certifications")
-
-         val company : RequestBody = FormBody.Builder()
-             .add("company", mentoInformation.company)
-             .build()
-
-         val careerLevel : RequestBody = FormBody.Builder()
-             .add("careerLevel", mentoInformation.careerLevel.toString())
-             .build()
-
-         val job : RequestBody = FormBody.Builder()
-             .add("job", mentoInformation.job)
-             .build()
-
-         val major : RequestBody = FormBody.Builder()
-             .add("major", mentoInformation.major)
-             .build()
-
-         val introduction : RequestBody = FormBody.Builder()
-             .add("introduction", mentoInformation.introduction)
-             .build()
-
-         val loginId : RequestBody = FormBody.Builder()
-             .add("loginId", uiState.value.memberId)
-             .build()
-
-         val password : RequestBody = FormBody.Builder()
-             .add("password", uiState.value.password)
-             .build()
-
-         val email : RequestBody = FormBody.Builder()
-             .add("email", uiState.value.email)
-             .build()
-
-         val map = hashMapOf<String, RequestBody>()
-         map["company"] = company
-         map["careerLevel"] = careerLevel
-         map["job"] = job
-         map["major"] = major
-         map["introduction"] = introduction
-         map["loginId"] = loginId
-         map["password"] = password
-         map["email"] = email
-
-         val mentoSignupRequestDTO = mutableMapOf<String, HashMap<String, RequestBody>>()
-         mentoSignupRequestDTO["mentoSignupRequestDTO"] = map*/
-
-//        val requestBody : RequestBody = MultipartBody.Builder()
-//                .setType(MultipartBody.FORM)
-//                .addFormDataPart("company", mentoInformation.company)
-//                .addFormDataPart("careerLevel", mentoInformation.careerLevel.toString())
-//                .addFormDataPart("job", mentoInformation.job)
-//                .addFormDataPart("major", mentoInformation.major)
-//                .addFormDataPart("introduction", mentoInformation.introduction)
-//                .addFormDataPart("loginId", uiState.value.memberId)
-//                .addFormDataPart("password", uiState.value.password)
-//                .addFormDataPart("email", uiState.value.email)
-//                .build()
-//        Log.d("통신", "finalRegister - mentoRequestDTO : $mentoSignupRequestDTO")
-
-
-        val saveMentoRqDTO: SaveMentoRqDTO = SaveMentoRqDTO(
-            company = mentoInformation.company,
-            careerLevel = mentoInformation.careerLevel,
-            job = "경영",
-            major = "경영학부",
-            nickname = mentoInformation.nickname,
-            introduction = mentoInformation.introduction,
-            loginId = uiState.value.memberId,
-            password = uiState.value.password,
-            email = uiState.value.email
-        )
+        val jsonBody = jsonObject.toRequestBody("application/json".toMediaType())
 
         val finalRegisterRequestCall: Call<CommonResponse> = DotoringRegisterAPI.retrofitService.signUpAsMento(
-            /*certifications = certifications,
-            mentoSignupRequestDTO = mentoSignupRequestDTO*/
-            mentoSingupRequest = saveMentoRqDTO
+            certifications = certifications,
+            saveMentoRqDTO = jsonBody
         )
-
-        Log.d("통신", "finalRegister - finalRegisterRequestCall: $finalRegisterRequestCall")
-
+        Log.d("통신 - 로그인 하기", "mentoRegister - finalRegisterRequestCall: $finalRegisterRequestCall")
 
         finalRegisterRequestCall.enqueue(object: Callback<CommonResponse> {
             override fun onResponse(call: Call<CommonResponse>, response: Response<CommonResponse>) {
-                Log.d("통신", "finalRegister - onResponse")
-                Log.d("통신", "finalRegister - response.body() : ${response.body()}")
-                Log.d("통신", "finalRegister - response.code() : ${response.code()}")
+                Log.d("통신 - 로그인 하기", "mentoRegister - onResponse")
+                Log.d("통신 - 로그인 하기", "mentoRegister - response.body() : ${response.body()}")
+                Log.d("통신 - 로그인 하기", "mentoRegister - response.code() : ${response.code()}")
 
-                val jsonObject = Gson().toJson(response.body())
-                val jo = JSONObject(jsonObject)
-                val jsonObjectSuccess = jo.getBoolean("success")
+                val json = Gson().toJson(response.body())
+                Log.d("통신 - 로그인 하기", "mentoRegister - json : $json")
+
+                val jsonObject = JSONObject(json)
+                Log.d("통신 - 로그인 하기", "mentoRegister - jsonObject : $jsonObject")
+
+                val jsonObjectSuccess = jsonObject.getBoolean("success")
+                Log.d("통신 - 로그인 하기", "mentoRegister - jsonObjectSuccess : $jsonObjectSuccess")
 
                 if (jsonObjectSuccess) {
 
                 }
             }
             override fun onFailure(call: Call<CommonResponse>, t: Throwable) {
-                Log.d("통신", "통신 실패: $t")
-                Log.d("회원 가입 통신", "요청 내용 - $finalRegisterRequestCall")
+                Log.d("통신 - 로그인 하기", "통신 실패: $t")
+                Log.d("통신 - 로그인 하기", "요청 내용 - $finalRegisterRequestCall")
             }
         })
     }
+
+    private fun makePart(uri: Uri): MultipartBody.Part {
+//        val filePath = uri.path
+//        val imageFile = File(getApplication<Application>().filesDir.toString() + filePath.toString())
+
+//        val imageFile = File(getApplication<Application>().filesDir.toString() + "//" + absolutelyPath(uri, getApplication()))
+        val imageFile = File(createCopyAndReturnRealPath(uri, getApplication()))
+
+        Log.d("파일 올리기", "absolutelyPath - imageFile: $imageFile")
+
+        val requestBody: RequestBody = imageFile.asRequestBody("image/*".toMediaType())
+
+        return MultipartBody.Part.createFormData(
+            "certifications",
+            imageFile.name,
+            requestBody
+        )
+    }
+
+    /**
+     * 파일을 절대 경로로 변환하는 함수
+     */
+    @SuppressLint("Range")
+    private fun absolutelyPath(path: Uri, context : Context): String {
+//        val proj: Array<String> = arrayOf(MediaStore.Images.Media.DATA)
+        val cursor: Cursor? = context.contentResolver.query(path, null, null, null, null)
+        Log.d("파일 올리기", "absolutelyPath - c: $cursor")
+//        val index = c?.getColumnIndexOrThrow(MediaStore.Images.Media.DATA)
+//        Log.d("absolutelyPath", "absolutelyPath - index: $index")
+
+        cursor?.moveToNext()
+
+        val result = cursor?.getString(cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME))
+        Log.d("파일 올리기", "absolutelyPath - result: $result")
+
+        cursor?.close()
+
+        return result!!
+    }
+
+    // 절대경로 파악할 때 사용된 메소드
+    private fun createCopyAndReturnRealPath(uri: Uri, context: Context): String? {
+        val contentResolver: ContentResolver = context.contentResolver
+
+
+        // 파일 경로를 만듬
+        val filePath: String = (context.applicationInfo.dataDir + File.separator
+                + System.currentTimeMillis())
+        Log.d("파일 경로", "createCopyAndReturnRealPath - filePath: $filePath")
+
+        val file = File(filePath)
+        Log.d("파일 경로", "createCopyAndReturnRealPath - file: $file")
+
+        val bytes = contentResolver.openInputStream(uri).use {
+            it?.readBytes()
+        }
+        Log.d("파일 경로", "createCopyAndReturnRealPath - bytes?.size: ${bytes?.size}")
+
+        FileOutputStream(file).use {
+            it.write(bytes)
+        }
+        Log.d("파일 경로", "createCopyAndReturnRealPath - file.toURI(): ${file.toURI()}")
+        println(file.toUri())
+
+        /*        try {
+            // 매개변수로 받은 uri 를 통해  이미지에 필요한 데이터를 불러 들인다.
+            val inputStream = contentResolver.openInputStream(uri)
+            Log.d("파일 경로", "createCopyAndReturnRealPath - inputStream: $inputStream")
+
+            // 이미지 데이터를 다시 내보내면서 file 객체에  만들었던 경로를 이용한다.
+            val outputStream: OutputStream = FileOutputStream(file)
+            Log.d("파일 경로", "createCopyAndReturnRealPath - outputStream: $outputStream")
+
+            val buf = ByteArray(1024)
+            var len: Int
+            if (inputStream != null) {
+                while (inputStream.read(buf).also { len = it } > 0) outputStream.write(buf, 0, len)
+            }
+            outputStream.close()
+            inputStream?.close()
+        } catch (ignore: IOException) {
+            return null
+        }*/
+        return file.absolutePath
+    }
 }
+
+
+
