@@ -387,7 +387,7 @@ fun FirstRegistserScreen(
                     val mentoInfo = MentoInformation(
                         company = registerFirstUiState.company,
                         careerLevel = registerFirstUiState.careerLevel.toInt(),
-                        job = registerFirstUiState.field,
+                        field = registerFirstUiState.field,
                         major = registerFirstUiState.major
                     )
                     navController.currentBackStackEntry?.savedStateHandle?.set(
@@ -647,7 +647,7 @@ fun ResetButton(onClick: () -> Unit, text: String) {
     }
 }
 
-@Preview(showSystemUi = true)
+@Preview(showBackground = true)
 @Composable
 private fun RegisterScreenPreview() {
     DotoringTheme {

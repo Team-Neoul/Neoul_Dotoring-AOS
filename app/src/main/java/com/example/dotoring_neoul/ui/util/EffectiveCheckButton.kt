@@ -18,7 +18,7 @@ import com.example.dotoring.R
 import com.example.dotoring_neoul.ui.theme.DotoringTheme
 
 @Composable
-fun EffectiveCheckButton(onClick: () -> Unit = {}, text: String = "Sample Text") {
+fun EffectiveCheckButton(onClick: () -> Unit = {}, text: String = "Sample Text", enabled: Boolean = false) {
 
     OutlinedButton(
         onClick = onClick,
@@ -45,7 +45,8 @@ fun EffectiveCheckButton(onClick: () -> Unit = {}, text: String = "Sample Text")
             top = 3.dp,
             end = 3.dp,
             bottom = 3.dp
-        )
+        ),
+        enabled = enabled
     ){
         Text(
             text = text,

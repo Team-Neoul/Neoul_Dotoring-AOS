@@ -55,14 +55,17 @@
     <!--회원 가입 세번째 화면 관련 string resource-->
     <string name="register3_q3"><font color="#8BD045">어떻게</font> 불러드릴까요?</string>
     <string name="register3_guide">3자 이상, 8자 이하, 숫자 1개 이상 입력하여 작성</string>
-    <string name="register3_input">닉네임</string>경
-    <string name="register3_error">이미 있는 닉네임입니다.</string>
+    <string name="register3_input">닉네임</string>
+    <string name="register3_error_condition_not_satisfied">3자 이상, 8자 이하, 숫자 1개 이상 입력하여 작성해주세요.</string>
+    <string name="register3_error_nickname_duplication">이미 있는 닉네임입니다.</string>
+    <string name="register3_nickname_certified">사용 가능한 닉네임입니다.</string>
     <string name="register3_">라고 불러 주세요.</string>
 
     <!--회원 가입 네번째 화면 관련 string resource-->
     <string name="register4_q4"><font color="#8BD045">멘토</font> 님을 더 알고 싶어요!</string>
     <string name="register4_guide">10자 이상, 100자 이하로 작성</string>
     <string name="register4_placeholder">멘토 분야에 대해 소개해 주세요.</string>
+    <string name="register4_error_condition_not_satisfied">소개글은 10자 이상, 100자 이하로 작성해주세요.</string>
 
     <!--회원 가입 다섯번째 화면 관련 string resource-->
     <string name="register5_q5">이 점은 <font color="#8BD045">유의</font>해 주세요.</string>
@@ -74,19 +77,30 @@
     <string name="register6_set_ID">A. 아이디 설정하기</string>
     <string name="register6_ID">아이디</string>
     <string name="register6_ID_guide">영문과 숫자를 포함한 8&#8211;12글자로 해주세요.</string>
-    <string name="register6_ID_error">이미 있는 아이디입니다.</string>
+    <string name="register6_ID_error_condition_not_satisfied">조건에 맞지 않습니다.</string>
+    <string name="register6_ID_error_condition_satisfied">중복확인 버튼을 눌러주세요.</string>
+    <string name="register6_ID_error_id_duplicated">이미 있는 아이디입니다.</string>
+    <string name="register6_ID_certified">사용할 수 있는 아이디입니다.</string>
+
     <string name="register6_set_pass_word">A. 비밀번호 설정하기</string>
     <string name="register6_pass_word">비밀번호</string>
-    <string name="register6_pass_word_guide">영문과 숫자, 특수문자를 포함한 7&#8211;12글자로 표기해주세요.</string>
+    <string name="register6_pass_word_guide">영문과 숫자, 특수문자(*, !, @, #, $)를 포함한 7&#8211;12글자로 표기해주세요.</string>
+    <string name="register6_pass_word_error_condition_not_satisfied">조건에 맞지 않습니다.</string>
+    <string name="register6_pass_word_certified">사용할 수 있는 비밀번호 입니다.</string>
     <string name="register6_pass_word_check">다시 한 번 써 주세요.</string>
     <string name="register6_pass_word_error">입력한 비밀번호와 달라요.</string>
+
     <string name="register6_set_email">A. 이메일 등록하기</string>
     <string name="register6_email">이메일</string>
     <string name="register6_send_verification_code">인증 코드 발송</string>
+    <string name="register6_email_error_condition_not_satisfied">이메일 형식이 올바르지 않습니다.</string>
     <string name="register6_verification_code_time">%1$s</string>
     <string name="register6_verification_code">인증 코드</string>
     <string name="register6_verify">인증하기</string>
-    <string name="register6_verify_error">인증 코드가 달라요.</string>
+    <string name="register6_verification_error">인증 코드가 달라요.</string>
+    <string name="register6_verification_successed">인증에 성공했습니다.</string>
+
+
     <string name="register6_to_login_page">로그인하러 가기</string>
 
     <!--홈 화면 관련 string resource-->

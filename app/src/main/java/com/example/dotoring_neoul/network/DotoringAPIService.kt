@@ -10,12 +10,13 @@ import com.example.dotoring_neoul.dto.register.EmailCertificationRequest
 import com.example.dotoring_neoul.dto.register.EmailCodeRequest
 import com.example.dotoring_neoul.dto.register.IdValidationRequest
 import com.example.dotoring_neoul.dto.register.NicknameValidationRequest
-import com.example.dotoring_neoul.dto.register.SaveMentoRqDTO
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import okhttp3.Interceptor
 import okhttp3.JavaNetCookieJar
+import okhttp3.MultipartBody
 import okhttp3.OkHttpClient
+import okhttp3.RequestBody
 import okhttp3.Response
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Call
@@ -23,14 +24,16 @@ import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 import retrofit2.http.Body
 import retrofit2.http.GET
+import retrofit2.http.Multipart
 import retrofit2.http.POST
+import retrofit2.http.Part
 import retrofit2.http.Path
 import retrofit2.http.Query
 import java.io.IOException
 import java.net.CookieManager
 
 private const val BASE_URL =
-    "http://192.168.0.60:8080/"
+    "http://192.168.0.32:8080/"
 
 
 //val interceptor = HttpLoggingInterceptor().apply {
@@ -106,7 +109,7 @@ interface DotoringAPIService {
     /**
      * nicknameValidation: 닉네임 중복확인을 위한 api
      * */
-    @POST("api/member/valid-nickname")
+    @POST("api/mento/valid-nickname")
     fun nicknameValidation(
         @Body nicknameValidationRequest: NicknameValidationRequest
     ): Call<CommonResponse>
@@ -122,7 +125,7 @@ interface DotoringAPIService {
     /**
      * sendAuthenticationCode: 이메일 확인 코드를 위한 api
      * */
-    @GET("api/member/code")
+    @GET("api/member/signup/code")
     fun sendAuthenticationCode(
         @Query("email", encoded = true) email: String
     ): Call<CommonResponse>
@@ -130,7 +133,7 @@ interface DotoringAPIService {
     /**
      * emailCertification: 이메일 확인을 위한 api
      * */
-    @POST("api/member/valid-code")
+    @POST("api/member/signup/valid-code")
     fun emailCertification(
         @Body emailCertificationRequest: EmailCertificationRequest
     ): Call<CommonResponse>
@@ -147,18 +150,17 @@ interface DotoringAPIService {
     @GET("api/majors")
     fun getMajorList(): Call<CommonResponse>
 
-    @POST("api/signup-mento")
+/*    @POST("api/signup-mento")
     fun signUpAsMento(
         @Body mentoSingupRequest: SaveMentoRqDTO
-    ): Call<CommonResponse>
-    /*
-        @Multipart
-        @POST("api/signup-mento")
-        fun signUpAsMento(
-            @Part certifications: List<MultipartBody.Part>,
-            @PartMap mentoSignupRequestDTO: MutableMap<String, HashMap<String, RequestBody>>
-    //        @Body finalSignUpRequest: FinalSignUpRequest
-        ):Call <CommonResponse>*/
+    ): Call<CommonResponse>*/
+
+    @Multipart
+    @POST("api/signup-mento")
+    fun signUpAsMento(
+        @Part certifications: List<MultipartBody.Part>,
+        @Part ("saveMentoRqDTO")saveMentoRqDTO: RequestBody // HashMap<String, MultipartBody.Part>
+    ):Call<CommonResponse>
 
     /**
      * searchMentee: 홈에서 menti를 받아오는 api
