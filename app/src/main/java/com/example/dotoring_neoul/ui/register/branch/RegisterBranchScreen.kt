@@ -6,15 +6,10 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.Button
-import androidx.compose.material.ButtonDefaults
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -23,98 +18,67 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.dotoring.R
 import com.example.dotoring_neoul.ui.theme.DotoringTheme
+import com.example.dotoring_neoul.ui.util.register.branch.SelectMemberTypeButton
 
 /**
  * 분기 화면 Composable
  */
 @Composable
 fun RegisterBranchScreen() {
+    val subTitle = stringResource(R.string.branch_logo_our_mentoring)
+    val subTitleSize = 20.sp
+
+
+    val title = stringResource(R.string.branch_logo_app_name)
+    val titleSize = 30.sp
+
+    val letterSpacing = (-1).sp
+    val logoSize = Modifier.size(100.dp)
+
     Column(
         modifier = Modifier.fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
+
         Column(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Text(
-                text = stringResource(id = R.string.branch_logo_our_mentoring),
-                fontSize = 20.sp,
-                letterSpacing = (-1).sp)
-
-            Spacer(modifier = Modifier.size(8.dp))
-
-            Text(
-                text = stringResource(id = R.string.branch_logo_app_name),
-                fontSize = 30.sp,
-                fontWeight = FontWeight.ExtraBold,
-                letterSpacing = (-1).sp
+                text = subTitle,
+                fontSize = subTitleSize,
+                letterSpacing = letterSpacing
             )
+            Spacer(modifier = Modifier.size(8.dp))
+            Text(
+                text = title,
+                fontSize = titleSize,
+                fontWeight = FontWeight.ExtraBold,
+                letterSpacing = letterSpacing
+            )
+            Spacer(modifier = Modifier.size(50.dp))
 
-            Spacer(modifier = Modifier.size(20.dp))
 
-            Image(painter = painterResource(id = R.drawable.ic_dotoring_colored), contentDescription = null)
+            Image(
+                painter = painterResource(id = R.drawable.ic_dotoring_colored),
+                contentDescription = null,
+                modifier = logoSize
+            )
         }
-
         Spacer(modifier = Modifier.size(50.dp))
 
+
         Column(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Button(
-                onClick = { /*TODO*/ },
-                shape = RoundedCornerShape(20.dp),
-                modifier = Modifier.size(width = 219.dp, 103.dp)
-            ) {
-                Column(
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ) {
-                    Text(
-                        text = stringResource(id = R.string.branch_helper),
-                        fontSize = 14.sp
-                    )
-
-                    Spacer(modifier = Modifier.size(10.dp))
-                    Text(
-                        text = stringResource(id = R.string.branch_mento),
-                        fontSize = 20.sp,
-                        fontWeight = FontWeight.ExtraBold
-                    )
-                }
-            }
-
+            SelectMemberTypeButton(isMentor = true)
             Spacer(modifier = Modifier.size(10.dp))
-
-            Button(
-                onClick = { /*TODO*/ },
-                shape = RoundedCornerShape(20.dp),
-                modifier = Modifier.size(width = 219.dp, 103.dp),
-                colors = ButtonDefaults.buttonColors(backgroundColor = colorResource(id = R.color.navy))
-            ) {
-                Column(
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ) {
-                    Text(
-                        text = stringResource(id = R.string.branch_wanna_grow_up),
-                        fontSize = 14.sp,
-                        color = Color.White
-                    )
-
-                    Spacer(modifier = Modifier.size(10.dp))
-
-                    Text(
-                        text = stringResource(id = R.string.branch_mentee),
-                        fontSize = 20.sp,
-                        fontWeight = FontWeight.ExtraBold,
-                        color = Color.White
-                    )
-                }
-            }
+            SelectMemberTypeButton(isMentor = false)
         }
     }
 }
 
-@Preview(showSystemUi = true)
+@Preview(showBackground = true)
 @Composable
 private fun RegisterScreenPreview() {
     DotoringTheme {
