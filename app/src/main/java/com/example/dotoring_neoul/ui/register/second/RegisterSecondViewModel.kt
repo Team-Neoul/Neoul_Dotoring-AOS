@@ -50,11 +50,23 @@ class RegisterSecondViewModel: ViewModel() {
     }
 
     fun updateGraduationCertification(imageUri: Uri) {
+        val filePath = imageUri.path
+        val imageFile = File(filePath.toString())
+
+
+        val test = MultipartBody.Part.createFormData(
+            "photo",
+            "my-photo.png",
+            imageFile.asRequestBody("image/png".toMediaType())
+        )
+
+        Log.d("멀티파트바디 테스트", "test data : ${test}")
         _uiState.update { currentState ->
             currentState.copy(
                 graduationCertification = imageUri)
         }
     }
+
     fun uploadEmploymentFile() {
         _uiState.update { currentState ->
             currentState.copy(
