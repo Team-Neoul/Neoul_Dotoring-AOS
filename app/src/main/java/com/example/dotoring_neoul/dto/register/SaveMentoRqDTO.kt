@@ -4,7 +4,7 @@ package com.example.dotoring_neoul.dto.register
 data class SaveMentoRqDTO(
     val company: String,
     val careerLevel: Int,
-    val job: String,
+    val field: String,
     val major: String,
     val nickname: String,
     val introduction: String,

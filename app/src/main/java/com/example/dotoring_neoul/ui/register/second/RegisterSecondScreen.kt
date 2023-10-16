@@ -70,8 +70,8 @@ private fun ImageUploadButton(
     val launcher = rememberLauncherForActivityResult(ActivityResultContracts.GetContent()) {
             selectedUri ->
         if (selectedUri != null) {
-            Log.d("uri", "selectedUri: file selected $selectedUri")
-            Log.d("uri", "selectedUri: file path ${selectedUri.path}")
+            Log.d("uri", "selectedUri - selectedUri: $selectedUri")
+            Log.d("uri", "selectedUri - selectedUri.path: ${selectedUri.path}")
 
             if (uploadEmploymentFile) {
                 registerSecondViewModel.uploadEmploymentFile()
@@ -161,7 +161,7 @@ fun SecondRegisterScreen(
                     val mentoInfo = MentoInformation(
                         company = mentoInformation.company,
                         careerLevel = mentoInformation.careerLevel,
-                        job = mentoInformation.job,
+                        field = mentoInformation.field,
                         major = mentoInformation.major,
                         employmentCertification = registerSecondUiState.employmentCertification,
                         graduateCertification = registerSecondUiState.graduationCertification

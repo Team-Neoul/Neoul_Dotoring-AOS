@@ -1,5 +1,6 @@
 package com.example.dotoring_neoul.ui.register.third
 
+import android.util.Log
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -13,8 +14,8 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.tooling.preview.Preview
@@ -40,6 +41,7 @@ fun ThirdRegisterScreen(
     mentoInformation: MentoInformation
 ) {
 
+    Log.d("uri","mentoInformation.employmentCertification: ${mentoInformation.employmentCertification}")
     val registerThirdUiState by registerThirdViewModel.uiState.collectAsState()
 
     val focusManager = LocalFocusManager.current
@@ -107,8 +109,12 @@ fun ThirdRegisterScreen(
                     } else { "" },
                     modifier = Modifier
                         .padding(start = 2.dp, top = 3.dp),
-                    color = if(registerThirdUiState.nicknameConditionError || registerThirdUiState.nicknameDuplicationError != DuplicationCheckState.DuplicationCheckSuccess) { Color(0xffff7B7B) }
-                            else { Color(0xff8BD045) },
+                    color = if(registerThirdUiState.nicknameConditionError
+                        || registerThirdUiState.nicknameDuplicationError != DuplicationCheckState.DuplicationCheckSuccess) {
+                        colorResource(id = R.color.error)
+                    } else {
+                           colorResource(R.color.green)
+                                 },
                     fontSize = 10.sp
                 )
 
@@ -128,7 +134,7 @@ fun ThirdRegisterScreen(
             val mentoInfo = MentoInformation(
                 company = mentoInformation.company,
                 careerLevel = mentoInformation.careerLevel,
-                job = mentoInformation.job,
+                field = mentoInformation.field,
                 major = mentoInformation.major,
                 employmentCertification = mentoInformation.employmentCertification,
                 graduateCertification = mentoInformation.graduateCertification,

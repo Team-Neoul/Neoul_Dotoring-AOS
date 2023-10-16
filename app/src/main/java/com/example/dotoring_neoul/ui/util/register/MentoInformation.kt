@@ -8,7 +8,7 @@ import kotlinx.parcelize.Parcelize
 class MentoInformation(
     val company: String = "",
     val careerLevel: Int = 1,
-    val job: String="",
+    val field: String="",
     val major: String="",
     val employmentCertification: Uri? = null,
     val graduateCertification: Uri? = null,
