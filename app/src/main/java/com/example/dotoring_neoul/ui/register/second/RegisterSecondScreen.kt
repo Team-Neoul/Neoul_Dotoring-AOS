@@ -30,7 +30,7 @@ import androidx.navigation.compose.rememberNavController
 import com.example.dotoring.R
 import com.example.dotoring_neoul.navigation.AuthScreen
 import com.example.dotoring_neoul.ui.theme.DotoringTheme
-import com.example.dotoring_neoul.ui.util.RegisterScreenTop
+import com.example.dotoring_neoul.ui.util.TopRegisterScreen
 import com.example.dotoring_neoul.ui.util.register.MentoInformation
 import com.example.dotoring_neoul.ui.util.register.RegisterScreenNextButton
 import de.charlex.compose.HtmlText
@@ -123,7 +123,7 @@ fun SecondRegisterScreen(
             .fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        RegisterScreenTop(screenNumber = 2, question = R.string.register2_q2)
+        TopRegisterScreen(screenNumber = 2, question = R.string.register2_q2)
 
         Spacer(modifier = Modifier.weight(1f))
 

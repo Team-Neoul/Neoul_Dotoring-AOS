@@ -28,7 +28,7 @@ import com.example.dotoring.R
 import com.example.dotoring_neoul.navigation.AuthScreen
 import com.example.dotoring_neoul.ui.theme.DotoringTheme
 import com.example.dotoring_neoul.ui.util.EffectiveCheckButton
-import com.example.dotoring_neoul.ui.util.RegisterScreenTop
+import com.example.dotoring_neoul.ui.util.TopRegisterScreen
 import com.example.dotoring_neoul.ui.util.register.CommonTextField
 import com.example.dotoring_neoul.ui.util.register.MentoInformation
 import com.example.dotoring_neoul.ui.util.register.RegisterScreenNextButton
@@ -53,7 +53,7 @@ fun ThirdRegisterScreen(
         modifier = Modifier.padding(top = 50.dp)
     ) {
 
-        RegisterScreenTop(
+        TopRegisterScreen(
             screenNumber = 3,
             question = R.string.register3_q3,
             stringResource(id = R.string.register3_guide)

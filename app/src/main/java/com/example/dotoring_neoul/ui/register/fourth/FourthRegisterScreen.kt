@@ -36,7 +36,7 @@ import androidx.navigation.compose.rememberNavController
 import com.example.dotoring.R
 import com.example.dotoring_neoul.navigation.AuthScreen
 import com.example.dotoring_neoul.ui.theme.DotoringTheme
-import com.example.dotoring_neoul.ui.util.RegisterScreenTop
+import com.example.dotoring_neoul.ui.util.TopRegisterScreen
 import com.example.dotoring_neoul.ui.util.register.MentoInformation
 import com.example.dotoring_neoul.ui.util.register.RegisterScreenNextButton
 
@@ -58,7 +58,7 @@ fun FourthRegisterScreen(
         modifier = Modifier.padding(top = 50.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        RegisterScreenTop(4, R.string.register4_q4, stringResource(id = R.string.register4_guide))
+        TopRegisterScreen(4, R.string.register4_q4, stringResource(id = R.string.register4_guide))
 
         Spacer(modifier = Modifier.size(30.dp))
 

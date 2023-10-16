@@ -60,9 +60,9 @@ import androidx.compose.ui.text.font.FontWeight
 import com.example.dotoring_neoul.navigation.AuthScreen
 import com.example.dotoring_neoul.ui.theme.DotoringTheme
 import com.example.dotoring_neoul.ui.theme.Green
-import com.example.dotoring_neoul.ui.util.RegisterScreenTop
-import com.example.dotoring_neoul.ui.util.bottomsheet.BottomSheetOption
-import com.example.dotoring_neoul.ui.util.bottomsheet.SelectedData
+import com.example.dotoring_neoul.ui.util.TopRegisterScreen
+import com.example.dotoring_neoul.ui.util.bottomsheet.BottomSheetOptionList
+import com.example.dotoring_neoul.ui.util.bottomsheet.BottomSheetSelectedData
 import com.example.dotoring_neoul.ui.util.register.MentoInformation
 import com.example.dotoring_neoul.ui.util.register.RegisterScreenNextButton
 
@@ -327,7 +327,7 @@ fun MyModalBottomSheetLayout(
 
             LazyColumn() {
                 items(selectedDataList) {item ->
-                    SelectedData(item, onClick = { registerFirstViewModel.remove(selectedDataList, item)})
+                    BottomSheetSelectedData(item, onClick = { registerFirstViewModel.remove(selectedDataList, item)})
                 }
             }
 
@@ -335,7 +335,7 @@ fun MyModalBottomSheetLayout(
 
             LazyColumn() {
                 items(optionDataList) {option ->
-                    BottomSheetOption(option) {
+                    BottomSheetOptionList(option) {
                         if(option !in selectedDataList) {
                             registerFirstViewModel.add(selectedDataList, option)
                             Log.d("리스트", "selectedDataList: $selectedDataList")
@@ -367,7 +367,7 @@ fun FirstRegistserScreen(
             .fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        RegisterScreenTop(1, R.string.register1_q1)
+        TopRegisterScreen(1, R.string.register1_q1)
 
         Spacer(modifier = Modifier.weight(1f))
 
@@ -413,7 +413,7 @@ fun RegisterScreenFirst(
     navController: NavHostController
 ) {
     val filterBottomSheetState = rememberModalBottomSheetState(
-        initialValue = ModalBottomSheetValue.Hidden,
+            initialValue = ModalBottomSheetValue.Hidden,
        )
     val scope = rememberCoroutineScope()
     var majorBottomSheet by remember { mutableStateOf(false) }
@@ -503,6 +503,7 @@ fun RegisterScreenFirst(
                 MyModalBottomSheetLayout(
                     text = "직무 분야 선택",
                     selectedDataList = chosenFieldList,
+
                     optionDataList = registerFirstUiState.optionFieldList,
                     updateChosenList = updateChosenFieldList,
                     registerFirstUiState = registerFirstUiState,
@@ -550,67 +551,7 @@ fun RegisterScreenFirst(
             )
         }
     }
-
-
-    /*val filterBottomSheetState = rememberModalBottomSheetState(ModalBottomSheetValue.Hidden)
-    val scope = rememberCoroutineScope()
-    var showBottomSheet by remember { mutableStateOf(false) }
-    var majorBottomSheet by remember { mutableStateOf(false) }
-
-    if ( showBottomSheet ) {
-        if ( majorBottomSheet ) {
-            ModalBottomSheetLayout(
-                sheetContent = { MyModalBottomSheetLayout("직무 분야 선택") }
-            ) {
-                FirstRegistserScreen(
-                    navController = navController,
-
-                )
-            }
-        } else {
-            ModalBottomSheetLayout(
-                sheetContent = { MyModalBottomSheetLayout("학과 선택") }
-            ) {
-                FirstRegistserScreen(
-                    navController = navController,
-                )
-            }
-        }
-    } else {
-        FirstRegistserScreen(
-            navController = navController,
-            onClick = {
-                showBottomSheet = true
-                Log.d("test", "showBottomSheet true")
-            }
-        )
-    }*/
 }
-
-/*@Composable
-fun OptionDataList(optionDataList: List<String>, selectedDataList: MutableList<String>, updateChosenList: (String) -> Unit) {
-    LazyColumn() {
-        items(optionDataList) {option ->
-            BottomSheetOption(option) {
-                selectedDataList.add(option)
-                updateChosenList(option)
-            }
-            Spacer(modifier = Modifier.size(3.dp))
-        }
-    }
-}*/
-/*
-@Composable
-fun SelectedDataList(
-    selectedDataList: MutableList<String>,
-) {
-    LazyColumn() {
-        items(selectedDataList) {item ->
-            SelectedData(item, onClick = { registerFirstViewModel.remove(selectedDataList, item)})
-        }
-    }
-
-}*/
 
 @Composable
 fun ResetButton(onClick: () -> Unit, text: String) {

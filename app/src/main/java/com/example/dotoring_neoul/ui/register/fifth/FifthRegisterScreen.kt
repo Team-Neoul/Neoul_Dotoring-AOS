@@ -27,7 +27,7 @@ import androidx.navigation.compose.rememberNavController
 import com.example.dotoring.R
 import com.example.dotoring_neoul.navigation.AuthScreen
 import com.example.dotoring_neoul.ui.theme.DotoringTheme
-import com.example.dotoring_neoul.ui.util.RegisterScreenTop
+import com.example.dotoring_neoul.ui.util.TopRegisterScreen
 import com.example.dotoring_neoul.ui.util.register.MentoInformation
 import com.example.dotoring_neoul.ui.util.register.RegisterScreenNextButton
 
@@ -50,7 +50,7 @@ fun FifthRegisterScreen(
             .fillMaxSize()
     ) {
 
-        RegisterScreenTop(
+        TopRegisterScreen(
             screenNumber = 5,
             question = R.string.register5_q5,
             stringResource(id = R.string.register5_guide)

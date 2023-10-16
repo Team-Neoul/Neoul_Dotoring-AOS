@@ -21,40 +21,52 @@ import de.charlex.compose.HtmlText
 @Composable
 private fun ProgressBar(page: Int) {
 
-    val space = 5.dp
-    val imageModifier = Modifier
-        .size(20.dp)
+    val space = 7.dp
+    val imageModifier = Modifier.size(16.dp)
+
 
     Row() {
-
         for(i in 1..page) {
-            Image(painter = painterResource(R.drawable.register_progress_done), contentDescription = "", modifier = imageModifier)
+            Image(
+                painter = painterResource(R.drawable.register_progress_done),
+                contentDescription = "",
+                modifier = imageModifier
+            )
             Spacer(modifier = Modifier.size(space))
         }
+
 
         for(i in 1..6-page) {
-            Image(painter = painterResource(R.drawable.register_progress_default), contentDescription = "", modifier = imageModifier)
+            Image(
+                painter = painterResource(R.drawable.register_progress_default),
+                contentDescription = "",
+                modifier = imageModifier
+            )
             Spacer(modifier = Modifier.size(space))
         }
-
     }
-
 }
 
 @Composable
-fun RegisterScreenTop(screenNumber: Int, question: Int, guide: String = "") {
-    Row() {
-        Spacer(modifier = Modifier.weight(1f))
+fun TopRegisterScreen(screenNumber: Int, question: Int, guide: String = "") {
+    val leftSpace = 20.dp
+    val progressBarUpperSpace = 80.dp
+    val progressBarLowerSpace = 20.dp
 
+    val screenDescriptionText =
+
+    Row() {
+        Spacer(modifier = Modifier.size(leftSpace))
         Column() {
             HtmlText(
                 textId = R.string.register_title,
                 fontSize = 15.sp)
-            Spacer(modifier = Modifier.size(80.dp))
+            Spacer(modifier = Modifier.size(progressBarUpperSpace))
+
 
             Column() {
                 ProgressBar(screenNumber)
-                Spacer(modifier = Modifier.size(10.dp))
+                Spacer(modifier = Modifier.size(progressBarLowerSpace))
                 Row() {
                     Text(
                         text = stringResource(id = R.string.register_Q),
@@ -87,6 +99,6 @@ fun RegisterScreenTop(screenNumber: Int, question: Int, guide: String = "") {
 @Preview(showBackground = true)
 private fun RegisterScreenPreview() {
     DotoringTheme {
-        RegisterScreenTop(3, R.string.register1_q1)
+        TopRegisterScreen(3, R.string.register1_q1)
     }
 }
