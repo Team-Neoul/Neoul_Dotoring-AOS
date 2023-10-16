@@ -79,7 +79,7 @@ class RegisterThirdViewModel: ViewModel() {
 
     fun verifyNickname() {
         val verifyNicknameRequest = NicknameValidationRequest(nickname = uiState.value.nickname)
-        Log.d("통신", "Request: ${verifyNicknameRequest.toString()}")
+        Log.d("닉네임 중복 확인", "Request: ${verifyNicknameRequest.toString()}")
         val verifyNicknameResponseCall: Call<CommonResponse> = DotoringRegisterAPI.retrofitService.nicknameValidation(verifyNicknameRequest)
 
         verifyNicknameResponseCall.enqueue(object: Callback<CommonResponse> {
