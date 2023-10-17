@@ -1,9 +1,11 @@
 package com.example.dotoring_neoul.ui.util
 
+import android.annotation.SuppressLint
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
@@ -47,20 +49,23 @@ private fun ProgressBar(page: Int) {
     }
 }
 
+@SuppressLint("SuspiciousIndentation")
 @Composable
 fun TopRegisterScreen(screenNumber: Int, question: Int, guide: String = "") {
-    val leftSpace = 20.dp
     val progressBarUpperSpace = 80.dp
     val progressBarLowerSpace = 20.dp
 
-    val screenDescriptionText =
+    val paddingTop = 50.dp
 
-    Row() {
-        Spacer(modifier = Modifier.size(leftSpace))
-        Column() {
+    val screenDescriptionText = R.string.register_title
+
+        Column(
+            modifier = Modifier.padding(top = paddingTop)
+        ) {
             HtmlText(
-                textId = R.string.register_title,
-                fontSize = 15.sp)
+                textId = screenDescriptionText,
+                fontSize = 15.sp
+            )
             Spacer(modifier = Modifier.size(progressBarUpperSpace))
 
 
@@ -90,9 +95,6 @@ fun TopRegisterScreen(screenNumber: Int, question: Int, guide: String = "") {
                 }
             }
         }
-
-        Spacer(modifier = Modifier.weight(3f))
-    }
 }
 
 @Composable
