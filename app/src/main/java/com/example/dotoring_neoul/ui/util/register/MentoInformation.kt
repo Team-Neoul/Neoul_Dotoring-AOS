@@ -8,8 +8,8 @@ import kotlinx.parcelize.Parcelize
 class MentoInformation(
     val company: String = "",
     val careerLevel: Int = 1,
-    val field: String="",
-    val major: String="",
+    val field: List<String> = mutableListOf(),
+    val major: List<String> = mutableListOf(),
     val employmentCertification: Uri? = null,
     val graduateCertification: Uri? = null,
     val nickname: String = "",
