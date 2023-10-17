@@ -16,7 +16,7 @@ import com.example.dotoring.R
 fun RegisterScreenNextButton(onClick: ()->Unit = {}, enabled: Boolean = false) {
     Button(
         onClick = onClick,
-        modifier = Modifier.size(width = 300.dp, height = 45.dp),
+        modifier = Modifier.size(width = 320.dp, height = 45.dp),
         colors = ButtonDefaults.buttonColors(
             contentColor = colorResource(id = R.color.white),
             backgroundColor = colorResource(id = R.color.green),
