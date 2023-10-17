@@ -3,6 +3,9 @@
 
     <!--공통 화면 관련 string resource-->
     <string name="main_dotoring">도토링</string>
+    <string name="reset">초기화</string>
+    <string name="choose_mentoring_field">멘토링 분야 선택</string>
+    <string name="choose_major">학과 선택</string>
 
     <!--네비게이션바 화면 관련 string resource-->
     <string name="navigation_home">홈</string>
