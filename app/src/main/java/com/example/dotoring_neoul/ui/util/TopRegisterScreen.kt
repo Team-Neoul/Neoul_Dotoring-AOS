@@ -1,12 +1,12 @@
 package com.example.dotoring_neoul.ui.util
 
 import android.annotation.SuppressLint
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.material.Icon
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -21,43 +21,56 @@ import com.example.dotoring_neoul.ui.theme.DotoringTheme
 import de.charlex.compose.HtmlText
 
 @Composable
-private fun ProgressBar(page: Int) {
+private fun ProgressBar(page: Int, isMentor: Boolean) {
 
-    val space = 7.dp
-    val imageModifier = Modifier.size(16.dp)
+    val spaceBetweenCircle = 7.dp
+    val iconModifier = Modifier.size(16.dp)
+
+    val doneColor = if(isMentor) {
+        colorResource(id = R.color.green)
+    } else {
+        colorResource(id = R.color.navy)
+    }
+    val defaultColor = colorResource(id = R.color.grey_200)
 
 
     Row() {
         for(i in 1..page) {
-            Image(
-                painter = painterResource(R.drawable.register_progress_done),
-                contentDescription = "",
-                modifier = imageModifier
+            Icon(
+                painter = painterResource(R.drawable.ic_progress_register),
+                contentDescription = "회원가입 진행 상황",
+                modifier = iconModifier,
+                tint = doneColor
             )
-            Spacer(modifier = Modifier.size(space))
+            Spacer(modifier = Modifier.size(spaceBetweenCircle))
         }
 
 
         for(i in 1..6-page) {
-            Image(
-                painter = painterResource(R.drawable.register_progress_default),
+            Icon(
+                painter = painterResource(R.drawable.ic_progress_register),
                 contentDescription = "",
-                modifier = imageModifier
+                modifier = iconModifier,
+                tint = defaultColor
             )
-            Spacer(modifier = Modifier.size(space))
+            Spacer(modifier = Modifier.size(spaceBetweenCircle))
         }
     }
 }
 
 @SuppressLint("SuspiciousIndentation")
 @Composable
-fun TopRegisterScreen(screenNumber: Int, question: Int, guide: String = "") {
+fun TopRegisterScreen(screenNumber: Int, question: Int, guide: String = "", isMentor: Boolean = true) {
     val progressBarUpperSpace = 80.dp
     val progressBarLowerSpace = 20.dp
 
     val paddingTop = 50.dp
 
-    val screenDescriptionText = R.string.register_title
+    val screenDescriptionText = if(isMentor) {
+        R.string.register_title_mentor
+    } else {
+        R.string.register_title_mentee
+    }
 
         Column(
             modifier = Modifier.padding(top = paddingTop)
@@ -70,7 +83,7 @@ fun TopRegisterScreen(screenNumber: Int, question: Int, guide: String = "") {
 
 
             Column() {
-                ProgressBar(screenNumber)
+                ProgressBar(screenNumber, isMentor)
                 Spacer(modifier = Modifier.size(progressBarLowerSpace))
                 Row() {
                     Text(
@@ -101,6 +114,6 @@ fun TopRegisterScreen(screenNumber: Int, question: Int, guide: String = "") {
 @Preview(showBackground = true)
 private fun RegisterScreenPreview() {
     DotoringTheme {
-        TopRegisterScreen(3, R.string.register1_q1)
+        TopRegisterScreen(3, R.string.register1_q1_mentor, isMentor = false)
     }
 }

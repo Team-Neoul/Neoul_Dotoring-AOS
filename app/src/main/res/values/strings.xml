@@ -29,27 +29,38 @@
     <string name="branch_mentee">멘티</string>
 
     <!--회원 가입 공통 화면 관련 string resource-->
-    <string name="register_title"><font color="#8BD045" >멘토</font>로 회원 가입</string>
+    <string name="register_title_mentor"><font color="#8BD045" >멘토</font>로 회원 가입</string>
+    <string name="register_title_mentee"><font color="#092D58">멘티</font>로 회원 가입</string>
     <string name="register_Q">Q. </string>
     <string name="register_A">A. </string>
     <string name="register_nickname_duplication_check">중복 확인</string>
 
     <!--회원 가입 첫번째 화면 관련 string resource-->
-    <string name="register1_q1"><font color="#8BD045">멘토</font>님은 어떤 분 인가요?</string>
+    <string name="register1_q1_mentor"><font color="#8BD045">멘토</font>님은 어떤 분 인가요?</string>
     <string name="register1_im">A. 저는</string>
     <string name="register1_company">소속</string>
-    <string name="register1_belong_to">에 소속된</string>
+    <string name="register1_belong_to_mentor">에 소속된</string>
     <string name="register1_years">연차</string>
     <string name="register1_years_of_experience">년 차</string>
     <string name="register1_work">멘토링 분야</string>
-    <string name="register1_">멘토입니다.</string>
+    <string name="register1_mentor">멘토입니다.</string>
     <string name="register1_majored">저는 대학교에서</string>
     <string name="register1_major">학과</string>
     <string name="register1_go">를 다녔어요.</string>
     <string name="register1_next">다음</string>
 
+    <string name="register1_q1_mentee"><font color="#092D58">멘티</font>님은 어떤 분 인가요?</string>
+    <string name="register1_colleague">학교</string>
+    <string name="register1_belong_to_mentee">에 다니는</string>
+    <string name="register1_grade">학년</string>
+    <string name="register1_mentee">학생입니다.</string>
+    <string name="register1_in_the_future">저는 미래에</string>
+    <string name="register1_job_field">직무 분야</string>
+    <string name="register1_want_to">를 희망합니다.</string>
+
     <!--회원 가입 두번째 화면 관련 string resource-->
-    <string name="register2_q2"><font color="#8BD045">증빙서류</font>를 업로드 해 주세요.</string>
+    <string name="register2_q2_mentor"><font color="#8BD045">증빙서류</font>를 업로드 해 주세요.</string>
+    <string name="register2_q2_mentee"><font color="#092D58">증빙서류</font>를 업로드 해 주세요.</string>
     <string name="register2_upload_certificate_of_employment"><b><u>재직증명서</u></b> 업로드하기</string>
     <string name="register2_upload_certificate_of_graduate"><b><u>졸업증명서</u></b> 업로드하기</string>
     <string name="register2_upload_choice"><font color="#979797">(선택)</font></string>

@@ -13,13 +13,19 @@ import androidx.compose.ui.unit.dp
 import com.example.dotoring.R
 
 @Composable
-fun RegisterScreenNextButton(onClick: ()->Unit = {}, enabled: Boolean = false) {
+fun RegisterScreenNextButton(onClick: ()->Unit = {}, enabled: Boolean = false, isMentor: Boolean = true) {
+    val backgroundColor = if(isMentor) {
+        colorResource(R.color.green)
+    } else {
+        colorResource(id = R.color.navy)
+    }
+
     Button(
         onClick = onClick,
         modifier = Modifier.size(width = 320.dp, height = 45.dp),
         colors = ButtonDefaults.buttonColors(
             contentColor = colorResource(id = R.color.white),
-            backgroundColor = colorResource(id = R.color.green),
+            backgroundColor = backgroundColor,
             disabledBackgroundColor = colorResource(id = R.color.grey_200),
             disabledContentColor = colorResource(id = R.color.grey_500)
         ),

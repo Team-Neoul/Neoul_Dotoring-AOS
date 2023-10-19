@@ -69,7 +69,7 @@ private fun MentorIntroduce(
                         }
                     },
                     placeholder = stringResource(id = R.string.register1_company),
-                    description = stringResource(R.string.register1_belong_to),
+                    description = stringResource(R.string.register1_belong_to_mentor),
                     keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
                     keyboardActions = KeyboardActions(onNext = { focusManager.moveFocus(FocusDirection.Next) }),
                     readOnly = false,
@@ -100,7 +100,7 @@ private fun MentorIntroduce(
                     value = registerFirstViewModel.toString(registerFirstViewModel.selectedFieldList),
                     onValueChange = { },
                     placeholder = stringResource(id = R.string.register1_work),
-                    description = stringResource(R.string.register1_),
+                    description = stringResource(R.string.register1_mentor),
                     keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
                     keyboardActions = KeyboardActions(onNext = { focusManager.moveFocus(FocusDirection.Next) }),
                     readOnly = true,
@@ -126,6 +126,100 @@ private fun MentorIntroduce(
                             focusManager.clearFocus()}),
                     readOnly = true,
                     showBottomSheet = onMajorClick
+                )
+            }
+        }
+    }
+}
+
+@Composable
+private fun MenteeIntroduce(
+    registerFirstViewModel: RegisterFirstViewModel = viewModel(),
+    onMajorClick: () -> Unit,
+    onJobClick: () -> Unit
+) {
+    val registerFirstUiState by registerFirstViewModel.uiState.collectAsState()
+    val focusManager = LocalFocusManager.current
+
+    Row {
+        Text(
+            text = stringResource(id = R.string.register1_im),
+            modifier = Modifier.padding(top = 10.dp),
+            fontSize = 18.sp)
+
+
+        Column() {
+            Column() {
+                TextFieldIntroduceContent(
+                    value = registerFirstUiState.company,
+                    onValueChange = {
+                        registerFirstViewModel.updateUserCompany(it)
+                        Log.d("onValueChange 테스트", "registerFirstViewModel.updateUserCompany 실행 - it: $it")
+
+                        if (it == "") {
+                            registerFirstViewModel.updateCompanyFieldState()
+                            registerFirstViewModel.enableNextButton()
+                            Log.d("onValueChange 테스트 뒤", "onValueChange it == null")
+                        }
+                    },
+                    placeholder = stringResource(id = R.string.register1_colleague),
+                    description = stringResource(R.string.register1_belong_to_mentee),
+                    keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
+                    keyboardActions = KeyboardActions(onNext = { focusManager.moveFocus(FocusDirection.Next) }),
+                    readOnly = false,
+                    onLooseFocus = {
+                        registerFirstViewModel.updateCompanyFieldState()
+                        registerFirstViewModel.enableNextButton()
+                    }
+                )
+                TextFieldIntroduceContent(
+                    value = registerFirstUiState.careerLevel,
+                    onValueChange = {
+                        registerFirstViewModel.updateUserCareer(it)
+                        if (registerFirstUiState.careerLevel == "") {
+                            registerFirstViewModel.updateCareerFieldState()
+                        }
+                    },
+                    placeholder = stringResource(id = R.string.register1_grade),
+                    description = stringResource(R.string.register1_grade),
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number, imeAction = ImeAction.Next),
+                    keyboardActions = KeyboardActions(onNext = { focusManager.moveFocus(FocusDirection.Next) }),
+                    readOnly = false,
+                    onLooseFocus = {
+                        registerFirstViewModel.updateCareerFieldState()
+                        registerFirstViewModel.enableNextButton()
+                    }
+                )
+                TextFieldIntroduceContent(
+                    value = registerFirstViewModel.toString(registerFirstViewModel.selectedMajorList),
+                    onValueChange = { },
+                    placeholder = stringResource(id = R.string.register1_major),
+                    description = stringResource(R.string.register1_mentee),
+                    keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
+                    keyboardActions = KeyboardActions(onNext = { focusManager.moveFocus(FocusDirection.Next) }),
+                    readOnly = true,
+                    showBottomSheet = onMajorClick
+                )
+            }
+            Log.d("리스트", "selectedFieldList: ${registerFirstViewModel.selectedFieldList.toString()}")
+
+            Column {
+                Text(
+                    text = stringResource(id = R.string.register1_in_the_future),
+                    fontSize = 18.sp,
+                    modifier = Modifier.padding(top = 10.dp, bottom = 8.dp)
+                )
+                TextFieldIntroduceContent(
+                    value = registerFirstViewModel.toString(registerFirstViewModel.selectedFieldList),
+                    onValueChange = { },
+                    placeholder = stringResource(id = R.string.register1_job_field),
+                    description = stringResource(id = R.string.register1_want_to),
+                    keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
+                    keyboardActions = KeyboardActions(
+                        onDone = { registerFirstViewModel.enableNextButton()
+                            focusManager.clearFocus()}),
+                    readOnly = true,
+                    showBottomSheet = onJobClick
                 )
             }
         }
@@ -240,6 +334,12 @@ fun FirstRegisterScreenContent(
                 onMajorClick = onMajorClick,
                 onJobClick = onMentoringFieldClick
             )
+        } else {
+            MenteeIntroduce(
+                registerFirstViewModel = registerFirstViewModel,
+                onMajorClick = onMajorClick,
+                onJobClick = onMentoringFieldClick
+            )
         }
     }
 }
@@ -248,6 +348,6 @@ fun FirstRegisterScreenContent(
 @Preview(showBackground = true)
 private fun RegisterScreenPreview() {
     DotoringTheme {
-        FirstRegisterScreenContent(onMajorClick = {}, onMentoringFieldClick = {}, isMentor = true)
+        FirstRegisterScreenContent(onMajorClick = {}, onMentoringFieldClick = {}, isMentor = false)
     }
 }
