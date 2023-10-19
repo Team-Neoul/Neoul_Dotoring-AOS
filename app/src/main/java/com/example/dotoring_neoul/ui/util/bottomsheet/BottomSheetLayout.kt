@@ -54,7 +54,7 @@ fun BottomSheetLayout(
             painter = painterResource(R.drawable.bottomsheettopbar),
             contentDescription = null,
             tint = colorResource(R.color.white),
-            modifier = Modifier.padding(10.dp)
+            modifier = Modifier.padding(top = 10.dp)
         )
 
 
