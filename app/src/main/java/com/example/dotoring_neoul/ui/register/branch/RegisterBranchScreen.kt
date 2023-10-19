@@ -19,6 +19,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.example.dotoring.R
+import com.example.dotoring_neoul.navigation.AuthScreen
 import com.example.dotoring_neoul.ui.theme.DotoringTheme
 import com.example.dotoring_neoul.ui.util.register.branch.SelectMemberTypeButton
 
@@ -77,12 +78,12 @@ fun RegisterBranchScreen(
         ) {
             SelectMemberTypeButton(
                 isMentor = true,
-                onClick = { navController.navigate("AuthScreen/Register1/route/true") }
+                onClick = { navController.navigate(AuthScreen.Register1.passScreenState(isMentor = true)) }
             )
             Spacer(modifier = Modifier.size(10.dp))
             SelectMemberTypeButton(
                 isMentor = false,
-                onClick = { navController.navigate("AuthScreen/Register1/route/false") }
+                onClick = { navController.navigate(AuthScreen.Register1.passScreenState(isMentor = false)) }
             )
         }
     }

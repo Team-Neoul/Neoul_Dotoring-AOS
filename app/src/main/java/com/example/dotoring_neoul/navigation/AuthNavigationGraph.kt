@@ -37,13 +37,18 @@ fun NavGraphBuilder.authNavGraph(navController: NavHostController) {
         }
 
         composable(
-            route = "AuthScreen/Register1/route/{isMentor}",
-            arguments = listOf(navArgument("isMentor") { type = NavType.BoolType })
+            route = AuthScreen.Register1.route,
+            arguments = listOf(
+                    navArgument("isMentor") {
+                        type = NavType.BoolType
+                        defaultValue = true
+                    }
+                )
         ) { backStackEntry ->
             FirstRegisterScreen(navController = navController, isMentor = backStackEntry.arguments?.getBoolean("isMentor")?: true)
         }
 
-        composable(route = AuthScreen.Register2.route) {
+        composable(route = "AuthScreen/Register2/route") {
             val result =
                 navController.previousBackStackEntry?.savedStateHandle?.get<MentoInformation>("mentoInfo")
 
@@ -97,7 +102,13 @@ sealed class AuthScreen(val route: String) {
     object Login : AuthScreen(route = "LOGIN")
     object Waiting : AuthScreen(route = "WAITING")
     object Branch : AuthScreen(route="BRANCH")
-    object Register1 : AuthScreen(route = "REGISTER1")
+    object Register1 : AuthScreen(route = "REGISTER1?isMentor={isMentor}") {
+        fun passScreenState(
+            isMentor: Boolean = true
+        ): String {
+            return "REGISTER1?isMentor=$isMentor"
+        }
+    }
     object Register2 : AuthScreen(route = "REGISTER2")
     object Register3 : AuthScreen(route = "REGISTER3")
     object Register4 : AuthScreen(route = "REGISTER4")
