@@ -32,6 +32,7 @@ import com.example.dotoring_neoul.navigation.AuthScreen
 import com.example.dotoring_neoul.ui.theme.DotoringTheme
 import com.example.dotoring_neoul.ui.util.TopRegisterScreen
 import com.example.dotoring_neoul.ui.util.bottomsheet.BottomSheetLayout
+import com.example.dotoring_neoul.ui.util.register.MenteeInformation
 import com.example.dotoring_neoul.ui.util.register.MentoInformation
 import com.example.dotoring_neoul.ui.util.register.RegisterScreenNextButton
 
@@ -160,23 +161,44 @@ fun FirstRegisterScreen(
                 Spacer(modifier = Modifier.weight(1.5f))
 
 
-                RegisterScreenNextButton(
-                    onClick = {
-                        val mentoInfo = MentoInformation(
-                            company = registerFirstUiState.company,
-                            careerLevel = registerFirstUiState.careerLevel.toInt(),
-                            field = registerFirstUiState.chosenFieldList,
-                            major = registerFirstUiState.chosenMajorList
-                        )
-                        navController.currentBackStackEntry?.savedStateHandle?.set(
-                            key = "mentoInfo",
-                            value = mentoInfo
-                        )
-                        navController.navigate(AuthScreen.Register2.route)
-                    },
-                    enabled = registerFirstUiState.firstBtnState,
-                    isMentor = isMentor
-                )
+                if(isMentor) {
+                    RegisterScreenNextButton(
+                        onClick = {
+                            val mentorInfo = MentoInformation(
+                                company = registerFirstUiState.company,
+                                careerLevel = registerFirstUiState.careerLevel.toInt(),
+                                field = registerFirstUiState.chosenFieldList,
+                                major = registerFirstUiState.chosenMajorList
+                            )
+                            navController.currentBackStackEntry?.savedStateHandle?.set(
+                                key = "mentoInfo",
+                                value = mentorInfo
+                            )
+                            navController.navigate(AuthScreen.Register2.route)
+                        },
+                        enabled = registerFirstUiState.firstBtnState,
+                        isMentor = isMentor
+                    )
+                } else {
+                    RegisterScreenNextButton(
+                        onClick = {
+                            val menteeInfo = MenteeInformation(
+                                school = registerFirstUiState.company,
+                                grade = registerFirstUiState.careerLevel.toInt(),
+                                field = registerFirstUiState.chosenFieldList,
+                                major = registerFirstUiState.chosenMajorList
+                            )
+                            navController.currentBackStackEntry?.savedStateHandle?.set(
+                                key = "menteeInfo",
+                                value = menteeInfo
+                            )
+                            navController.navigate(AuthScreen.Register2.route)
+                        },
+                        enabled = registerFirstUiState.firstBtnState,
+                        isMentor = isMentor
+                    )
+                }
+
                 Spacer(modifier = Modifier.weight(3f))
 
             }
