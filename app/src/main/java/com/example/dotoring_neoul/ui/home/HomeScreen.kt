@@ -64,8 +64,8 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.dotoring_neoul.navigation.BottomNavScreen
 import com.example.dotoring_neoul.ui.theme.Green
-import com.example.dotoring_neoul.ui.util.bottomsheet.BottomSheetOption
-import com.example.dotoring_neoul.ui.util.bottomsheet.SelectedData
+import com.example.dotoring_neoul.ui.util.bottomsheet.BottomSheetOptionList
+import com.example.dotoring_neoul.ui.util.bottomsheet.BottomSheetSelectedData
 import kotlinx.coroutines.launch
 
 /**
@@ -114,7 +114,7 @@ fun MyModalBottomSheetLayout(
 
             LazyColumn() {
                 items(selectedDataList) {item ->
-                    SelectedData(item, onClick = { homeViewModel.remove(selectedDataList, item)})
+                    BottomSheetSelectedData(item, onClick = { homeViewModel.remove(selectedDataList, item)})
                 }
             }
 
@@ -122,7 +122,7 @@ fun MyModalBottomSheetLayout(
 
             LazyColumn() {
                 items(optionDataList) {option ->
-                    BottomSheetOption(option) {
+                    BottomSheetOptionList(option) {
                         homeViewModel.add(selectedDataList, option)
                         Log.d("리스트", "selectedDataList: $selectedDataList")
                         homeViewModel.loadMentiListWithMajors()
