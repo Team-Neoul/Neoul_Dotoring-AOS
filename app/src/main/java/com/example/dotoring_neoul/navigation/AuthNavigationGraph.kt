@@ -2,11 +2,14 @@ package com.example.dotoring_neoul.navigation
 
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
+import androidx.navigation.NavType
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.navigation
+import androidx.navigation.navArgument
 import com.example.dotoring_neoul.ui.login.LoginScreen
+import com.example.dotoring_neoul.ui.register.branch.RegisterBranchScreen
 import com.example.dotoring_neoul.ui.register.fifth.FifthRegisterScreen
-import com.example.dotoring_neoul.ui.register.first.RegisterScreenFirst
+import com.example.dotoring_neoul.ui.register.first.FirstRegisterScreen
 import com.example.dotoring_neoul.ui.register.fourth.FourthRegisterScreen
 import com.example.dotoring_neoul.ui.register.second.SecondRegisterScreen
 import com.example.dotoring_neoul.ui.register.sixth.SixthRegisterScreen
@@ -29,8 +32,15 @@ fun NavGraphBuilder.authNavGraph(navController: NavHostController) {
             /* TODO */
         }
 
-        composable(route = AuthScreen.Register1.route) {
-            RegisterScreenFirst(navController = navController)
+        composable(route = AuthScreen.Branch.route) {
+            RegisterBranchScreen(navController = navController)
+        }
+
+        composable(
+            route = "AuthScreen/Register1/route/{isMentor}",
+            arguments = listOf(navArgument("isMentor") { type = NavType.BoolType })
+        ) { backStackEntry ->
+            FirstRegisterScreen(navController = navController, isMentor = backStackEntry.arguments?.getBoolean("isMentor")?: true)
         }
 
         composable(route = AuthScreen.Register2.route) {
@@ -86,6 +96,7 @@ fun NavGraphBuilder.authNavGraph(navController: NavHostController) {
 sealed class AuthScreen(val route: String) {
     object Login : AuthScreen(route = "LOGIN")
     object Waiting : AuthScreen(route = "WAITING")
+    object Branch : AuthScreen(route="BRANCH")
     object Register1 : AuthScreen(route = "REGISTER1")
     object Register2 : AuthScreen(route = "REGISTER2")
     object Register3 : AuthScreen(route = "REGISTER3")

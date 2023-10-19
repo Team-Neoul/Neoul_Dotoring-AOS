@@ -27,6 +27,7 @@ fun SelectMemberTypeButton(
     isMentor: Boolean,
     shape: RoundedCornerShape = RoundedCornerShape(20.dp),
     modifier: Modifier = Modifier.size(width = 300.dp, 120.dp),
+    onClick: () -> Unit = {}
 ) {
 /*    val onClick: () -> Unit = if(isMentor){
 
@@ -60,7 +61,7 @@ fun SelectMemberTypeButton(
 
 
     Button(
-        onClick = { } ,
+        onClick = onClick,
         shape = shape,
         modifier = modifier,
         colors = ButtonDefaults.buttonColors(

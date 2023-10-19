@@ -16,6 +16,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.rememberNavController
 import com.example.dotoring.R
 import com.example.dotoring_neoul.ui.theme.DotoringTheme
 import com.example.dotoring_neoul.ui.util.register.branch.SelectMemberTypeButton
@@ -24,7 +26,9 @@ import com.example.dotoring_neoul.ui.util.register.branch.SelectMemberTypeButton
  * 분기 화면 Composable
  */
 @Composable
-fun RegisterBranchScreen() {
+fun RegisterBranchScreen(
+    navController: NavHostController
+) {
     val subTitle = stringResource(R.string.branch_logo_our_mentoring)
     val subTitleSize = 20.sp
 
@@ -71,9 +75,15 @@ fun RegisterBranchScreen() {
         Column(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            SelectMemberTypeButton(isMentor = true)
+            SelectMemberTypeButton(
+                isMentor = true,
+                onClick = { navController.navigate("AuthScreen/Register1/route/true") }
+            )
             Spacer(modifier = Modifier.size(10.dp))
-            SelectMemberTypeButton(isMentor = false)
+            SelectMemberTypeButton(
+                isMentor = false,
+                onClick = { navController.navigate("AuthScreen/Register1/route/false") }
+            )
         }
     }
 }
@@ -82,6 +92,8 @@ fun RegisterBranchScreen() {
 @Composable
 private fun RegisterScreenPreview() {
     DotoringTheme {
-        RegisterBranchScreen()
+        RegisterBranchScreen(
+            navController = rememberNavController()
+        )
     }
 }
