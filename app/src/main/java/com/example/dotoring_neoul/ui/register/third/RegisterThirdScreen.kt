@@ -30,6 +30,7 @@ import com.example.dotoring_neoul.ui.theme.DotoringTheme
 import com.example.dotoring_neoul.ui.util.EffectiveCheckButton
 import com.example.dotoring_neoul.ui.util.TopRegisterScreen
 import com.example.dotoring_neoul.ui.util.register.CommonTextField
+import com.example.dotoring_neoul.ui.util.register.MenteeInformation
 import com.example.dotoring_neoul.ui.util.register.MentorInformation
 import com.example.dotoring_neoul.ui.util.register.RegisterScreenNextButton
 import java.util.regex.Pattern
@@ -38,10 +39,12 @@ import java.util.regex.Pattern
 fun ThirdRegisterScreen(
     registerThirdViewModel: RegisterThirdViewModel = viewModel(),
     navController: NavHostController,
-    mentorInformation: MentorInformation
+    mentorInformation: MentorInformation?,
+    menteeInformation: MenteeInformation?,
+    isMentor: Boolean
 ) {
 
-    Log.d("uri","mentoInformation.employmentCertification: ${mentorInformation.employmentCertification}")
+    Log.d("uri","mentoInformation.employmentCertification: ${mentorInformation?.employmentCertification}")
     val registerThirdUiState by registerThirdViewModel.uiState.collectAsState()
 
     val focusManager = LocalFocusManager.current
@@ -131,20 +134,22 @@ fun ThirdRegisterScreen(
         Spacer(modifier = Modifier.weight(1.5f))
 
         RegisterScreenNextButton(onClick = {
-            val mentoInfo = MentorInformation(
-                company = mentorInformation.company,
-                careerLevel = mentorInformation.careerLevel,
-                field = mentorInformation.field,
-                major = mentorInformation.major,
-                employmentCertification = mentorInformation.employmentCertification,
-                graduateCertification = mentorInformation.graduateCertification,
-                nickname = registerThirdUiState.nickname
-            )
-            navController.currentBackStackEntry?.savedStateHandle?.set(
-                key = "mentoInfo",
-                value = mentoInfo
-            )
-            navController.navigate(AuthScreen.Register4.route)
+            if (mentorInformation != null) {
+                val mentor = MentorInformation(
+                    company = mentorInformation.company,
+                    careerLevel = mentorInformation.careerLevel,
+                    field = mentorInformation.field,
+                    major = mentorInformation.major,
+                    employmentCertification = mentorInformation.employmentCertification,
+                    graduateCertification = mentorInformation.graduateCertification,
+                    nickname = registerThirdUiState.nickname
+                )
+                navController.currentBackStackEntry?.savedStateHandle?.set(
+                    key = "mentorInfo",
+                    value = mentor
+                )
+                navController.navigate(AuthScreen.Register4.route)
+            }
         },enabled = registerThirdUiState.nextButtonState)
 
         Spacer(modifier = Modifier.weight(8f))
@@ -155,6 +160,11 @@ fun ThirdRegisterScreen(
 @Composable
 private fun RegisterScreenPreview() {
     DotoringTheme {
-        ThirdRegisterScreen(navController = rememberNavController(), mentorInformation = MentorInformation())
+        ThirdRegisterScreen(
+            navController = rememberNavController(),
+            mentorInformation = MentorInformation(),
+            menteeInformation = MenteeInformation(),
+            isMentor = true
+        )
     }
 }

@@ -59,25 +59,36 @@ fun NavGraphBuilder.authNavGraph(navController: NavHostController) {
             )
         ) { backStackEntry ->
             val isMentor = backStackEntry.arguments?.getBoolean("isMentor")?: true
-
             val mentorInformation = if(isMentor) { navController.previousBackStackEntry?.savedStateHandle?.get<MentorInformation>("mentorInfo") } else {
                 null
             }
-
             val menteeInformation = if(!isMentor) { navController.previousBackStackEntry?.savedStateHandle?.get<MenteeInformation>("menteeInfo") } else {
                 null
             }
 
+
             SecondRegisterScreen(navController = navController, mentorInformation = mentorInformation, menteeInformation = menteeInformation, isMentor = isMentor)
         }
 
-        composable(route = AuthScreen.Register3.route) {
-            val result =
-                navController.previousBackStackEntry?.savedStateHandle?.get<MentorInformation>("mentoInfo")
-
-            if (result != null) {
-                ThirdRegisterScreen(navController = navController, mentorInformation = result)
+        composable(
+            route = AuthScreen.Register3.route,
+            arguments = listOf(
+                navArgument("isMentor") {
+                    type = NavType.BoolType
+                    defaultValue = true
+                }
+            )
+        ) { backStackEntry ->
+            val isMentor = backStackEntry.arguments?.getBoolean("isMentor")?: true
+            val mentorInformation = if(isMentor) { navController.previousBackStackEntry?.savedStateHandle?.get<MentorInformation>("mentorInfo") } else {
+                null
             }
+            val menteeInformation = if(!isMentor) { navController.previousBackStackEntry?.savedStateHandle?.get<MenteeInformation>("menteeInfo") } else {
+                null
+            }
+
+
+            ThirdRegisterScreen(navController = navController, mentorInformation = mentorInformation, menteeInformation = menteeInformation, isMentor = isMentor)
         }
 
         composable(route = AuthScreen.Register4.route) {
@@ -130,7 +141,13 @@ sealed class AuthScreen(val route: String) {
             return "REGISTER2?isMentor=$isMentor"
         }
     }
-    object Register3 : AuthScreen(route = "REGISTER3")
+    object Register3 : AuthScreen(route = "REGISTER3?isMentor={isMentor}") {
+        fun passScreenState(
+            isMentor: Boolean = true
+        ): String {
+            return "REGISTER3?isMentor=$isMentor"
+        }
+    }
     object Register4 : AuthScreen(route = "REGISTER4")
     object Register5 : AuthScreen(route = "REGISTER5")
     object Register6 : AuthScreen(route = "REGISTER6")
