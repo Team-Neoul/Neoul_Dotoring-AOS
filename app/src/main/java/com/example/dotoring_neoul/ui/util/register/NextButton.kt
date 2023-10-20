@@ -10,6 +10,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.example.dotoring.R
 
 @Composable
@@ -19,6 +20,7 @@ fun RegisterScreenNextButton(onClick: ()->Unit = {}, enabled: Boolean = false, i
     } else {
         colorResource(id = R.color.navy)
     }
+    val buttonFontSize = 15.sp
 
     Button(
         onClick = onClick,
@@ -32,6 +34,9 @@ fun RegisterScreenNextButton(onClick: ()->Unit = {}, enabled: Boolean = false, i
         shape = RoundedCornerShape(30.dp),
         enabled = enabled
     ) {
-        Text(text = stringResource(id = R.string.register1_next))
+        Text(
+            text = stringResource(id = R.string.register1_next),
+            fontSize = buttonFontSize
+        )
     }
 }

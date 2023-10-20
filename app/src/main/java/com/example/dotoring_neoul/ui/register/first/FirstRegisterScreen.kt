@@ -4,6 +4,7 @@ import android.util.Log
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.ModalBottomSheetLayout
@@ -28,6 +29,7 @@ import androidx.navigation.compose.rememberNavController
 import kotlinx.coroutines.launch
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshotFlow
+import androidx.compose.ui.Alignment
 import com.example.dotoring_neoul.navigation.AuthScreen
 import com.example.dotoring_neoul.ui.theme.DotoringTheme
 import com.example.dotoring_neoul.ui.util.TopRegisterScreen
@@ -118,47 +120,52 @@ fun FirstRegisterScreen(
     ) {
         Row {
             Spacer(modifier = Modifier.weight(1f))
-            Column {
-                TopRegisterScreen(
-                    screenNumber = 1,
-                    question = if(isMentor) {
-                        R.string.register1_q1_mentor
-                    } else {
-                           R.string.register1_q1_mentee
-                           },
-                    isMentor = isMentor)
-                Spacer(modifier = Modifier.weight(1.5f))
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Column(
+                    horizontalAlignment = Alignment.Start
+                ) {
+                    TopRegisterScreen(
+                        screenNumber = 1,
+                        question = if(isMentor) {
+                            R.string.register1_q1_mentor
+                        } else {
+                            R.string.register1_q1_mentee
+                        },
+                        isMentor = isMentor)
+                    Spacer(modifier = Modifier.size(50.dp))
 
-
-                FirstRegisterScreenContent(
-                    onMentoringFieldClick = {
-                        isMajorBottomSheet = false
-                        scope.launch {
-                            if(!filterBottomSheetState.isVisible) {
-                                filterBottomSheetState.show()
-                            } else {
-                                filterBottomSheetState.hide()
+                    FirstRegisterScreenContent(
+                        onMentoringFieldClick = {
+                            isMajorBottomSheet = false
+                            scope.launch {
+                                if(!filterBottomSheetState.isVisible) {
+                                    filterBottomSheetState.show()
+                                } else {
+                                    filterBottomSheetState.hide()
+                                }
                             }
-                        }
-                        Log.d("리스트 확인", "FirstRegisterScreen - registerFirstViewModel.selectedMajorList: ${registerFirstViewModel.selectedMajorList.toList()}")
-                        Log.d("리스트 확인", "FirstRegisterScreen - registerUiState.selectedMajorList: ${registerFirstUiState.chosenMajorList.toList()}")
-                    },
-                    onMajorClick = {
-                        isMajorBottomSheet = true
-                        scope.launch {
-                            if(!filterBottomSheetState.isVisible) {
-                                filterBottomSheetState.show()
-                            } else {
-                                filterBottomSheetState.hide()
+                            Log.d("리스트 확인", "FirstRegisterScreen - registerFirstViewModel.selectedMajorList: ${registerFirstViewModel.selectedMajorList.toList()}")
+                            Log.d("리스트 확인", "FirstRegisterScreen - registerUiState.selectedMajorList: ${registerFirstUiState.chosenMajorList.toList()}")
+                        },
+                        onMajorClick = {
+                            isMajorBottomSheet = true
+                            scope.launch {
+                                if(!filterBottomSheetState.isVisible) {
+                                    filterBottomSheetState.show()
+                                } else {
+                                    filterBottomSheetState.hide()
+                                }
                             }
-                        }
-                        Log.d("리스트 확인", "FirstRegisterScreen - registerFirstViewModel.selectedFieldList: ${registerFirstViewModel.selectedFieldList.toList()}")
-                        Log.d("리스트 확인", "FirstRegisterScreen - registerUiState.selectedFieldList: ${registerFirstUiState.chosenFieldList.toList()}")
-                    },
-                    registerFirstViewModel = registerFirstViewModel,
-                    isMentor = isMentor
-                )
-                Spacer(modifier = Modifier.weight(1.5f))
+                            Log.d("리스트 확인", "FirstRegisterScreen - registerFirstViewModel.selectedFieldList: ${registerFirstViewModel.selectedFieldList.toList()}")
+                            Log.d("리스트 확인", "FirstRegisterScreen - registerUiState.selectedFieldList: ${registerFirstUiState.chosenFieldList.toList()}")
+                        },
+                        registerFirstViewModel = registerFirstViewModel,
+                        isMentor = isMentor
+                    )
+                }
+                Spacer(modifier = Modifier.weight(1f))
 
 
                 if(isMentor) {
@@ -198,9 +205,7 @@ fun FirstRegisterScreen(
                         isMentor = isMentor
                     )
                 }
-
                 Spacer(modifier = Modifier.weight(3f))
-
             }
             Spacer(modifier = Modifier.weight(1f))
         }

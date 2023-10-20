@@ -47,11 +47,14 @@ private fun MentorIntroduce(
     val registerFirstUiState by registerFirstViewModel.uiState.collectAsState()
     val focusManager = LocalFocusManager.current
 
+    val descriptionFontSize = 20.sp
+
     Row {
         Text(
             text = stringResource(id = R.string.register1_im),
             modifier = Modifier.padding(top = 10.dp),
-            fontSize = 18.sp)
+            fontSize = descriptionFontSize
+        )
 
 
         Column() {
@@ -60,7 +63,7 @@ private fun MentorIntroduce(
                     value = registerFirstUiState.company,
                     onValueChange = {
                         registerFirstViewModel.updateUserCompany(it)
-                        Log.d("onValueChange 테스트", "registerFirstViewModel.updateUserCompany 실행 - it: ${it}")
+                        Log.d("onValueChange 테스트", "registerFirstViewModel.updateUserCompany 실행 - it: $it")
 
                         if (it == "") {
                             registerFirstViewModel.updateCompanyFieldState()
@@ -112,7 +115,7 @@ private fun MentorIntroduce(
             Column {
                 Text(
                     text = stringResource(id = R.string.register1_majored),
-                    fontSize = 18.sp,
+                    fontSize = descriptionFontSize,
                     modifier = Modifier.padding(top = 10.dp, bottom = 8.dp)
                 )
                 TextFieldIntroduceContent(
@@ -141,11 +144,12 @@ private fun MenteeIntroduce(
     val registerFirstUiState by registerFirstViewModel.uiState.collectAsState()
     val focusManager = LocalFocusManager.current
 
+    val descriptionFontSize = 20.sp
     Row {
         Text(
             text = stringResource(id = R.string.register1_im),
             modifier = Modifier.padding(top = 10.dp),
-            fontSize = 18.sp)
+            fontSize = descriptionFontSize)
 
 
         Column() {
@@ -206,7 +210,7 @@ private fun MenteeIntroduce(
             Column {
                 Text(
                     text = stringResource(id = R.string.register1_in_the_future),
-                    fontSize = 18.sp,
+                    fontSize = descriptionFontSize,
                     modifier = Modifier.padding(top = 10.dp, bottom = 8.dp)
                 )
                 TextFieldIntroduceContent(
@@ -248,9 +252,10 @@ private fun TextFieldIntroduceContent(
     val textFieldHeight = 33.dp
     val contentPadding = TextFieldDefaults.textFieldWithoutLabelPadding(bottom = 0.5.dp)
     val placeholderFontSize = 15.sp
-    val descriptionFontSize = 18.sp
+    val descriptionFontSize = 20.sp
     val textFieldSidePadding = 25.dp
     val spaceBetweenParagraph = 10.dp
+
     val colors = TextFieldDefaults.textFieldColors(
         textColor = colorResource(id = R.color.black),
         focusedIndicatorColor = colorResource(id = R.color.black_500),
