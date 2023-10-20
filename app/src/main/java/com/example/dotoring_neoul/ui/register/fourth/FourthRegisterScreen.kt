@@ -37,7 +37,7 @@ import com.example.dotoring.R
 import com.example.dotoring_neoul.navigation.AuthScreen
 import com.example.dotoring_neoul.ui.theme.DotoringTheme
 import com.example.dotoring_neoul.ui.util.TopRegisterScreen
-import com.example.dotoring_neoul.ui.util.register.MentoInformation
+import com.example.dotoring_neoul.ui.util.register.MentorInformation
 import com.example.dotoring_neoul.ui.util.register.RegisterScreenNextButton
 
 /**
@@ -47,7 +47,7 @@ import com.example.dotoring_neoul.ui.util.register.RegisterScreenNextButton
 fun FourthRegisterScreen(
     registerFourthViewModel: RegisterFourthViewModel = viewModel(),
     navController: NavHostController,
-    mentoInformation: MentoInformation
+    mentorInformation: MentorInformation
 ) {
 
     val registerFourthUiState by registerFourthViewModel.uiState.collectAsState()
@@ -110,14 +110,14 @@ fun FourthRegisterScreen(
 
         RegisterScreenNextButton(
             onClick = {
-                val mentoInfo = MentoInformation(
-                    company = mentoInformation.company,
-                    careerLevel = mentoInformation.careerLevel,
-                    field = mentoInformation.field,
-                    major = mentoInformation.major,
-                    employmentCertification = mentoInformation.employmentCertification,
-                    graduateCertification = mentoInformation.graduateCertification,
-                    nickname = mentoInformation.nickname,
+                val mentoInfo = MentorInformation(
+                    company = mentorInformation.company,
+                    careerLevel = mentorInformation.careerLevel,
+                    field = mentorInformation.field,
+                    major = mentorInformation.major,
+                    employmentCertification = mentorInformation.employmentCertification,
+                    graduateCertification = mentorInformation.graduateCertification,
+                    nickname = mentorInformation.nickname,
                     introduction = registerFourthUiState.mentorIntroduction
                 )
                 navController.currentBackStackEntry?.savedStateHandle?.set(
@@ -240,6 +240,6 @@ fun RoundedCornerTextField(
 @Composable
 private fun RegisterScreenPreview() {
     DotoringTheme {
-        FourthRegisterScreen(navController = rememberNavController(), mentoInformation = MentoInformation())
+        FourthRegisterScreen(navController = rememberNavController(), mentorInformation = MentorInformation())
     }
 }

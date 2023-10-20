@@ -40,7 +40,7 @@ import com.example.dotoring_neoul.ui.theme.DotoringTheme
 import com.example.dotoring_neoul.ui.util.EffectiveCheckButton
 import com.example.dotoring_neoul.ui.util.TopRegisterScreen
 import com.example.dotoring_neoul.ui.util.register.CommonTextField
-import com.example.dotoring_neoul.ui.util.register.MentoInformation
+import com.example.dotoring_neoul.ui.util.register.MentorInformation
 import java.util.regex.Pattern
 
 
@@ -48,7 +48,7 @@ import java.util.regex.Pattern
 fun SixthRegisterScreen(
     registerSixthViewModel: RegisterSixthViewModel = viewModel(),
     navController: NavHostController,
-    mentoInformation: MentoInformation
+    mentorInformation: MentorInformation
 ) {
     val registerSixthUiState by registerSixthViewModel.uiState.collectAsState()
     val focusManager = LocalFocusManager.current
@@ -328,7 +328,7 @@ fun SixthRegisterScreen(
 
         Register6ScreenNextButton(
             onClick = {
-                registerSixthViewModel.mentoRegister(mentoInformation)
+                registerSixthViewModel.mentoRegister(mentorInformation)
                 navController.navigate(AuthScreen.Login.route)
             },
             enabled = registerSixthUiState.isToLoginButtonEnabled
@@ -390,6 +390,6 @@ private fun TextFieldWithEffectiveCheckButton(
 @Composable
 private fun RegisterScreenPreview() {
     DotoringTheme {
-        SixthRegisterScreen(navController = rememberNavController(), mentoInformation = MentoInformation())
+        SixthRegisterScreen(navController = rememberNavController(), mentorInformation = MentorInformation())
     }
 }

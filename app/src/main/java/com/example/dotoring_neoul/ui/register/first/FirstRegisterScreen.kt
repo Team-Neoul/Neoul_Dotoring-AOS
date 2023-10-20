@@ -33,7 +33,7 @@ import com.example.dotoring_neoul.ui.theme.DotoringTheme
 import com.example.dotoring_neoul.ui.util.TopRegisterScreen
 import com.example.dotoring_neoul.ui.util.bottomsheet.BottomSheetLayout
 import com.example.dotoring_neoul.ui.util.register.MenteeInformation
-import com.example.dotoring_neoul.ui.util.register.MentoInformation
+import com.example.dotoring_neoul.ui.util.register.MentorInformation
 import com.example.dotoring_neoul.ui.util.register.RegisterScreenNextButton
 
 // 메인 화면
@@ -164,17 +164,17 @@ fun FirstRegisterScreen(
                 if(isMentor) {
                     RegisterScreenNextButton(
                         onClick = {
-                            val mentorInfo = MentoInformation(
+                            val mentorInfo = MentorInformation(
                                 company = registerFirstUiState.company,
                                 careerLevel = registerFirstUiState.careerLevel.toInt(),
                                 field = registerFirstUiState.chosenFieldList,
                                 major = registerFirstUiState.chosenMajorList
                             )
                             navController.currentBackStackEntry?.savedStateHandle?.set(
-                                key = "mentoInfo",
+                                key = "mentorInfo",
                                 value = mentorInfo
                             )
-                            navController.navigate(AuthScreen.Register2.route)
+                            navController.navigate(AuthScreen.Register2.passScreenState(isMentor = true))
                         },
                         enabled = registerFirstUiState.firstBtnState,
                         isMentor = isMentor
@@ -192,7 +192,7 @@ fun FirstRegisterScreen(
                                 key = "menteeInfo",
                                 value = menteeInfo
                             )
-                            navController.navigate(AuthScreen.Register2.route)
+                            navController.navigate(AuthScreen.Register2.passScreenState(isMentor = false))
                         },
                         enabled = registerFirstUiState.firstBtnState,
                         isMentor = isMentor

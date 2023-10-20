@@ -5,7 +5,7 @@ import android.os.Parcelable
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
-class MentoInformation(
+class MentorInformation(
     val company: String = "",
     val careerLevel: Int = 1,
     val field: List<String> = mutableListOf(),
