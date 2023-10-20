@@ -60,7 +60,12 @@ private fun ProgressBar(page: Int, isMentor: Boolean) {
 
 @SuppressLint("SuspiciousIndentation")
 @Composable
-fun TopRegisterScreen(screenNumber: Int, question: Int, guide: String = "", isMentor: Boolean = true) {
+fun TopRegisterScreen(
+    screenNumber: Int,
+    question: Int,
+    guide: String = "",
+    isMentor: Boolean = true
+) {
     val progressBarUpperSpace = 80.dp
     val progressBarLowerSpace = 20.dp
 
@@ -71,13 +76,16 @@ fun TopRegisterScreen(screenNumber: Int, question: Int, guide: String = "", isMe
     } else {
         R.string.register_title_mentee
     }
+    val guideFontSize = 12.sp
+    val questionFontSize = 24.sp
+    val screenDescriptionFontSize = 14.sp
 
         Column(
             modifier = Modifier.padding(top = paddingTop)
         ) {
             HtmlText(
                 textId = screenDescriptionText,
-                fontSize = 15.sp
+                fontSize = screenDescriptionFontSize
             )
             Spacer(modifier = Modifier.size(progressBarUpperSpace))
 
@@ -85,24 +93,25 @@ fun TopRegisterScreen(screenNumber: Int, question: Int, guide: String = "", isMe
             Column() {
                 ProgressBar(screenNumber, isMentor)
                 Spacer(modifier = Modifier.size(progressBarLowerSpace))
+
+
                 Row() {
                     Text(
                         text = stringResource(id = R.string.register_Q),
-                        fontSize= 20.sp
+                        fontSize= questionFontSize
                     )
-
                     Column() {
                         HtmlText(
                             textId = question,
-                            fontSize = 20.sp
+                            fontSize = questionFontSize
                         )
-
                         Spacer(modifier = Modifier.size(5.dp))
+
 
                         Text(
                             text = guide,
                             color = colorResource(id = R.color.grey_500),
-                            fontSize = 10.sp
+                            fontSize = guideFontSize
                         )
                     }
                 }
