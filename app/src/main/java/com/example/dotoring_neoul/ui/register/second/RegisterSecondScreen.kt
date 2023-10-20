@@ -74,7 +74,7 @@ fun SecondRegisterScreen(
                                 key = "mentoInfo",
                                 value = mentoInfo
                             )
-                            navController.navigate(AuthScreen.Register3.route)
+                            navController.navigate(AuthScreen.Register3.passScreenState(isMentor = isMentor))
                         }
                     },
                     enabled = registerSecondUiState.employmentFileUploaded,
@@ -96,7 +96,7 @@ fun SecondRegisterScreen(
                                 key = "menteeInfo",
                                 value = menteeInfo
                             )
-                            navController.navigate(AuthScreen.Register3.route)
+                            navController.navigate(AuthScreen.Register3.passScreenState(isMentor = isMentor))
                         }
                     },
                     enabled = registerSecondUiState.employmentFileUploaded,
