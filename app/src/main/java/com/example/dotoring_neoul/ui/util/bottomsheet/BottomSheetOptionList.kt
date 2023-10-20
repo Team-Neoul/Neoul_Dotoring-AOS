@@ -67,7 +67,7 @@ fun BottomSheetOptionList(optionData: String, onClick: () -> Unit = {}) {
                 )
                 .clickable(onClick = onClick),
             textStyle = LocalTextStyle.current.copy(
-                fontSize = 15.sp,
+                fontSize = 16.sp,
                 color = colorResource(id = R.color.white),
                 fontWeight = FontWeight.SemiBold
             ),

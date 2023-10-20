@@ -30,6 +30,7 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -48,12 +49,14 @@ private fun MentorIntroduce(
     val focusManager = LocalFocusManager.current
 
     val descriptionFontSize = 20.sp
+    val letterSpace = (-1).sp
 
     Row {
         Text(
             text = stringResource(id = R.string.register1_im),
             modifier = Modifier.padding(top = 10.dp),
-            fontSize = descriptionFontSize
+            fontSize = descriptionFontSize,
+            letterSpacing = (-1).sp
         )
 
 
@@ -79,7 +82,8 @@ private fun MentorIntroduce(
                     onLooseFocus = {
                         registerFirstViewModel.updateCompanyFieldState()
                         registerFirstViewModel.enableNextButton()
-                    }
+                    },
+                    letterSpacing = (-1).sp
                 )
                 TextFieldIntroduceContent(
                     value = registerFirstUiState.careerLevel,
@@ -97,7 +101,8 @@ private fun MentorIntroduce(
                     onLooseFocus = {
                         registerFirstViewModel.updateCareerFieldState()
                         registerFirstViewModel.enableNextButton()
-                    }
+                    },
+                    letterSpacing = (-1).sp
                 )
                 TextFieldIntroduceContent(
                     value = registerFirstViewModel.toString(registerFirstViewModel.selectedFieldList),
@@ -107,7 +112,8 @@ private fun MentorIntroduce(
                     keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
                     keyboardActions = KeyboardActions(onNext = { focusManager.moveFocus(FocusDirection.Next) }),
                     readOnly = true,
-                    showBottomSheet = onJobClick
+                    showBottomSheet = onJobClick,
+                    letterSpacing = (-1).sp
                 )
             }
             Log.d("리스트", "selectedFieldList: ${registerFirstViewModel.selectedFieldList.toString()}")
@@ -116,7 +122,8 @@ private fun MentorIntroduce(
                 Text(
                     text = stringResource(id = R.string.register1_majored),
                     fontSize = descriptionFontSize,
-                    modifier = Modifier.padding(top = 10.dp, bottom = 8.dp)
+                    modifier = Modifier.padding(top = 10.dp, bottom = 8.dp),
+                    letterSpacing = (-1).sp
                 )
                 TextFieldIntroduceContent(
                     value = registerFirstViewModel.toString(registerFirstViewModel.selectedMajorList),
@@ -128,7 +135,8 @@ private fun MentorIntroduce(
                         onDone = { registerFirstViewModel.enableNextButton()
                             focusManager.clearFocus()}),
                     readOnly = true,
-                    showBottomSheet = onMajorClick
+                    showBottomSheet = onMajorClick,
+                    letterSpacing = (-1).sp
                 )
             }
         }
@@ -145,6 +153,8 @@ private fun MenteeIntroduce(
     val focusManager = LocalFocusManager.current
 
     val descriptionFontSize = 20.sp
+    val letterSpace = (-1).sp
+
     Row {
         Text(
             text = stringResource(id = R.string.register1_im),
@@ -244,7 +254,8 @@ private fun TextFieldIntroduceContent(
     keyboardOptions: KeyboardOptions,
     readOnly: Boolean,
     showBottomSheet: () -> Unit = {},
-    onLooseFocus: () -> Unit = {}
+    onLooseFocus: () -> Unit = {},
+    letterSpacing: TextUnit = (-1).sp
 ) {
     val interactionSource = remember { MutableInteractionSource() }
     
@@ -318,7 +329,8 @@ private fun TextFieldIntroduceContent(
         Text(
             text = description,
             fontSize = descriptionFontSize,
-            modifier = Modifier.padding(start = textFieldSidePadding)
+            modifier = Modifier.padding(start = textFieldSidePadding),
+            letterSpacing = (-1).sp
         )
     }
 }

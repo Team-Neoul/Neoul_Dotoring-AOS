@@ -134,7 +134,8 @@ fun FirstRegisterScreen(
                             R.string.register1_q1_mentee
                         },
                         isMentor = isMentor)
-                    Spacer(modifier = Modifier.size(50.dp))
+                    Spacer(modifier = Modifier.size(30.dp))
+
 
                     FirstRegisterScreenContent(
                         onMentoringFieldClick = {
