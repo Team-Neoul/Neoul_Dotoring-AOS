@@ -168,7 +168,7 @@ sealed class AuthScreen(val route: String) {
         fun passScreenState(
             isMentor: Boolean = true
         ): String {
-            return "REGISTER3?isMentor=$isMentor"
+            return "REGISTER4?isMentor=$isMentor"
         }
     }
     object Register5 : AuthScreen(route = "REGISTER5")
