@@ -91,13 +91,29 @@ fun NavGraphBuilder.authNavGraph(navController: NavHostController) {
             ThirdRegisterScreen(navController = navController, mentorInformation = mentorInformation, menteeInformation = menteeInformation, isMentor = isMentor)
         }
 
-        composable(route = AuthScreen.Register4.route) {
-            val result =
-                navController.previousBackStackEntry?.savedStateHandle?.get<MentorInformation>("mentoInfo")
-
-            if (result != null) {
-                FourthRegisterScreen(navController = navController, mentorInformation = result)
+        composable(
+            route = AuthScreen.Register4.route,
+            arguments = listOf(
+                navArgument("isMentor") {
+                    type = NavType.BoolType
+                    defaultValue = true
+                }
+            )
+        ) { backStackEntry ->
+            val isMentor = backStackEntry.arguments?.getBoolean("isMentor")?: true
+            val mentorInformation = if(isMentor) { navController.previousBackStackEntry?.savedStateHandle?.get<MentorInformation>("mentorInfo") } else {
+                null
             }
+            val menteeInformation = if(!isMentor) { navController.previousBackStackEntry?.savedStateHandle?.get<MenteeInformation>("menteeInfo") } else {
+                null
+            }
+
+            FourthRegisterScreen(
+                navController = navController,
+                mentorInformation = mentorInformation,
+                menteeInformation = menteeInformation,
+                isMentor = isMentor
+            )
         }
 
         composable(route = AuthScreen.Register5.route) {
@@ -148,7 +164,13 @@ sealed class AuthScreen(val route: String) {
             return "REGISTER3?isMentor=$isMentor"
         }
     }
-    object Register4 : AuthScreen(route = "REGISTER4")
+    object Register4 : AuthScreen(route = "REGISTER4?isMentor={isMentor}") {
+        fun passScreenState(
+            isMentor: Boolean = true
+        ): String {
+            return "REGISTER3?isMentor=$isMentor"
+        }
+    }
     object Register5 : AuthScreen(route = "REGISTER5")
     object Register6 : AuthScreen(route = "REGISTER6")
 }

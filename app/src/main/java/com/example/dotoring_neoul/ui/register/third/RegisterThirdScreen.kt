@@ -76,7 +76,7 @@ fun ThirdRegisterScreen(
                                 key = "mentorInfo",
                                 value = mentor
                             )
-                            navController.navigate(AuthScreen.Register4.route)
+                            navController.navigate(AuthScreen.Register4.passScreenState(isMentor))
                         }
                     },
                     enabled = registerThirdUiState.nextButtonState,
@@ -98,7 +98,7 @@ fun ThirdRegisterScreen(
                                 key = "menteeInfo",
                                 value = mentee
                             )
-                            navController.navigate(AuthScreen.Register4.route)
+                            navController.navigate(AuthScreen.Register4.passScreenState(isMentor))
                         }
                     },
                     enabled = registerThirdUiState.nextButtonState,

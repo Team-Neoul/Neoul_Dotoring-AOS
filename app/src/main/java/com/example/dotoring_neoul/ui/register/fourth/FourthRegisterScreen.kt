@@ -37,6 +37,7 @@ import com.example.dotoring.R
 import com.example.dotoring_neoul.navigation.AuthScreen
 import com.example.dotoring_neoul.ui.theme.DotoringTheme
 import com.example.dotoring_neoul.ui.util.TopRegisterScreen
+import com.example.dotoring_neoul.ui.util.register.MenteeInformation
 import com.example.dotoring_neoul.ui.util.register.MentorInformation
 import com.example.dotoring_neoul.ui.util.register.RegisterScreenNextButton
 
@@ -47,7 +48,9 @@ import com.example.dotoring_neoul.ui.util.register.RegisterScreenNextButton
 fun FourthRegisterScreen(
     registerFourthViewModel: RegisterFourthViewModel = viewModel(),
     navController: NavHostController,
-    mentorInformation: MentorInformation
+    mentorInformation: MentorInformation?,
+    menteeInformation: MenteeInformation?,
+    isMentor: Boolean
 ) {
 
     val registerFourthUiState by registerFourthViewModel.uiState.collectAsState()
@@ -110,21 +113,23 @@ fun FourthRegisterScreen(
 
         RegisterScreenNextButton(
             onClick = {
-                val mentoInfo = MentorInformation(
-                    company = mentorInformation.company,
-                    careerLevel = mentorInformation.careerLevel,
-                    field = mentorInformation.field,
-                    major = mentorInformation.major,
-                    employmentCertification = mentorInformation.employmentCertification,
-                    graduateCertification = mentorInformation.graduateCertification,
-                    nickname = mentorInformation.nickname,
-                    introduction = registerFourthUiState.mentorIntroduction
-                )
-                navController.currentBackStackEntry?.savedStateHandle?.set(
-                    key = "mentoInfo",
-                    value = mentoInfo
-                )
-                navController.navigate(AuthScreen.Register5.route)
+                if(mentorInformation != null) {
+                    val mentorInfo = MentorInformation(
+                        company = mentorInformation.company,
+                        careerLevel = mentorInformation.careerLevel,
+                        field = mentorInformation.field,
+                        major = mentorInformation.major,
+                        employmentCertification = mentorInformation.employmentCertification,
+                        graduateCertification = mentorInformation.graduateCertification,
+                        nickname = mentorInformation.nickname,
+                        introduction = registerFourthUiState.mentorIntroduction
+                    )
+                    navController.currentBackStackEntry?.savedStateHandle?.set(
+                        key = "mentorInfo",
+                        value = mentorInfo
+                    )
+                    navController.navigate(AuthScreen.Register5.route)
+                }
             },
             enabled = registerFourthUiState.nextButtonState)
 
@@ -164,74 +169,6 @@ fun RoundedCornerTextField(
         }
     )
 }
-/*@OptIn(ExperimentalMaterialApi::class)
-@Composable
-fun RoundedCornerTextField(
-    value: String,
-    onValueChange: (String) -> Unit,
-    modifier: Modifier = Modifier,
-    onDone: (KeyboardActionScope.() -> Unit)?
-) {
-    val interactionSource = remember { MutableInteractionSource() }
-    // parameters below will be passed to BasicTextField for correct behavior of the text field,
-    // and to the decoration box for proper styling and sizing
-    val enabled = true
-    val singleLine = false
-
-    val colors = TextFieldDefaults.textFieldColors(
-        textColor = colorResource(id = R.color.black),
-        focusedIndicatorColor = Color(0xffffffff),
-        unfocusedIndicatorColor = Color(0xffffffff),
-        backgroundColor = colorResource(id = R.color.grey_200),
-        placeholderColor = colorResource(id = R.color.grey_500)
-    )
-    BasicTextField(
-        value = value,
-        onValueChange = onValueChange,
-        modifier = modifier
-            .background(
-                color = colorResource(id = R.color.grey_200),
-                shape = RoundedCornerShape(15.dp)
-            )
-            .indicatorLine(
-                enabled = enabled,
-                isError = false,
-                interactionSource = interactionSource,
-                colors = colors
-            )
-            .size(width = 300.dp, height = 38.dp),
-        visualTransformation = VisualTransformation.None,
-        // internal implementation of the BasicTextField will dispatch focus events
-        interactionSource = interactionSource,
-        enabled = enabled,
-        singleLine = singleLine,
-        keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
-        keyboardActions = KeyboardActions(onDone = onDone),
-        maxLines = 5
-    ) {
-        TextFieldDefaults.TextFieldDecorationBox(
-            value = value,
-            visualTransformation = VisualTransformation.None,
-            innerTextField = it,
-            singleLine = singleLine,
-            enabled = enabled,
-            // same interaction source as the one passed to BasicTextField to read focus state
-            // for text field styling
-            placeholder = {
-                Text(
-                    text = stringResource(id = R.string.register4_placeholder),
-                    fontSize = 13.sp
-                )
-            },
-            colors = colors,
-            interactionSource = interactionSource,
-            // keep vertical paddings but change the horizontal
-            contentPadding = TextFieldDefaults.textFieldWithoutLabelPadding(
-                start = 10.dp, top = 10.dp, end = 10.dp, bottom = 10.dp
-            )
-        )
-    }
-}*/
 
 /**
  * 회원 가입 네번째 화면 미리보기
@@ -240,6 +177,11 @@ fun RoundedCornerTextField(
 @Composable
 private fun RegisterScreenPreview() {
     DotoringTheme {
-        FourthRegisterScreen(navController = rememberNavController(), mentorInformation = MentorInformation())
+        FourthRegisterScreen(
+            navController = rememberNavController(),
+            mentorInformation = MentorInformation(),
+            menteeInformation = MenteeInformation(),
+            isMentor = true
+        )
     }
 }
