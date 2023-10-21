@@ -56,13 +56,23 @@ fun FourthRegisterScreen(
     val registerFourthUiState by registerFourthViewModel.uiState.collectAsState()
     val focusManager = LocalFocusManager.current
 
+    val question = if(isMentor) {
+        R.string.register4_q4_mentor
+    } else {
+        R.string.register4_q4_mentee
+    }
     Row {
         Spacer(modifier = Modifier.weight(1f))
         Column(
             modifier = Modifier
                 .requiredWidth(width = 320.dp)
         ) {
-            TopRegisterScreen(4, R.string.register4_q4_mentor, stringResource(id = R.string.register4_guide))
+            TopRegisterScreen(
+                screenNumber = 4,
+                question = question,
+                guide = stringResource(id = R.string.register4_guide),
+                isMentor = isMentor
+            )
             Spacer(modifier = Modifier.weight(1f))
 
 
@@ -70,7 +80,7 @@ fun FourthRegisterScreen(
                 Text(text = stringResource(id = R.string.register_A))
                 Spacer(modifier = Modifier.size(10.dp))
                 RoundedCornerTextField(
-                    value = registerFourthUiState.mentorIntroduction,
+                    value = registerFourthUiState.memberIntroduction,
                     onValueChange = {
                         registerFourthViewModel.updateIntroductionInput(it)
 
@@ -107,27 +117,48 @@ fun FourthRegisterScreen(
 
             RegisterScreenNextButton(
                 onClick = {
-                    if(mentorInformation != null) {
-                        val mentorInfo = MentorInformation(
-                            company = mentorInformation.company,
-                            careerLevel = mentorInformation.careerLevel,
-                            field = mentorInformation.field,
-                            major = mentorInformation.major,
-                            employmentCertification = mentorInformation.employmentCertification,
-                            graduateCertification = mentorInformation.graduateCertification,
-                            nickname = mentorInformation.nickname,
-                            introduction = registerFourthUiState.mentorIntroduction
-                        )
-                        navController.currentBackStackEntry?.savedStateHandle?.set(
-                            key = "mentorInfo",
-                            value = mentorInfo
-                        )
-                        navController.navigate(AuthScreen.Register5.route)
+                    if(isMentor) {
+                        if(mentorInformation != null) {
+                            val mentorInfo = MentorInformation(
+                                company = mentorInformation.company,
+                                careerLevel = mentorInformation.careerLevel,
+                                field = mentorInformation.field,
+                                major = mentorInformation.major,
+                                employmentCertification = mentorInformation.employmentCertification,
+                                graduateCertification = mentorInformation.graduateCertification,
+                                nickname = mentorInformation.nickname,
+                                introduction = registerFourthUiState.memberIntroduction
+                            )
+                            navController.currentBackStackEntry?.savedStateHandle?.set(
+                                key = "mentorInfo",
+                                value = mentorInfo
+                            )
+                            navController.navigate(AuthScreen.Register5.route)
+                        }
+                    } else {
+                        if(menteeInformation != null) {
+                            val menteeInfo = MenteeInformation(
+                                school = menteeInformation.school,
+                                grade = menteeInformation.grade,
+                                field = menteeInformation.field,
+                                major = menteeInformation.major,
+                                enrollmentCertification = menteeInformation.enrollmentCertification,
+                                nickname = menteeInformation.nickname,
+                                introduction = registerFourthUiState.memberIntroduction
+                            )
+                            navController.currentBackStackEntry?.savedStateHandle?.set(
+                                key = "menteeInfo",
+                                value = menteeInfo
+                            )
+                            navController.navigate(AuthScreen.Register5.route)
+                        }
                     }
+
                 },
-                enabled = registerFourthUiState.nextButtonState
+                enabled = registerFourthUiState.nextButtonState,
+                isMentor = isMentor
             )
-            Spacer(modifier = Modifier.weight(3f))
+            Spacer(modifier = Modifier.weight(5f))
         }
         Spacer(modifier = Modifier.weight(1f))
     }
