@@ -43,40 +43,34 @@ fun FifthRegisterScreen(
     menteeInformation: MenteeInformation?,
     isMentor: Boolean
 ) {
-
     val registerFifthUiState by registerFifthViewModel.uiState.collectAsState()
+    val question = if(isMentor) {
+        R.string.register5_q5_mentor
+    } else {
+        R.string.register5_q5_mentee
+    }
 
-
-    Column(
-        modifier = Modifier
-            .padding(top = 50.dp)
-            .fillMaxSize()
-    ) {
-
-        TopRegisterScreen(
-            screenNumber = 5,
-            question = R.string.register5_q5_mentor,
-            stringResource(id = R.string.register5_guide)
-        )
-
-        Spacer(modifier = Modifier.size(15.dp))
-
-        Row() {
+    Row {
+        Spacer(modifier = Modifier.weight(1f))
+        Column {
+            TopRegisterScreen(
+                screenNumber = 5,
+                question = question,
+                guide = stringResource(id = R.string.register5_guide),
+                isMentor = isMentor
+            )
             Spacer(modifier = Modifier.weight(1f))
 
-            Column() {
 
+            Column {
                 Image(
                     painter = painterResource(id = R.drawable.sample_docs),
                     contentDescription = "약관",
                     modifier = Modifier.size(width = 284.dp, height = 103.dp))
-
                 Row(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-
                     Text(text = stringResource(id = R.string.register5_accept))
-
                     Checkbox(
                         checked = registerFifthUiState.acceptance,
                         onCheckedChange = { registerFifthViewModel.accept() },
@@ -86,12 +80,13 @@ fun FifthRegisterScreen(
                             checkmarkColor = Color(0xffffffff)
                         )
                     )
-
                 }
+            }
+            Spacer(modifier = Modifier.weight(1f))
 
-                Spacer(modifier = Modifier.weight(1f))
 
-                RegisterScreenNextButton(onClick = {
+            RegisterScreenNextButton(
+                onClick = {
                     val mentoInfo = mentorInformation
 
                     navController.currentBackStackEntry?.savedStateHandle?.set(
@@ -100,16 +95,15 @@ fun FifthRegisterScreen(
                     )
 
                     navController.navigate(AuthScreen.Register6.route)
-                }, enabled = registerFifthUiState.btnState)
+                },
+                enabled = registerFifthUiState.btnState
+            )
+            Spacer(modifier = Modifier.weight(3f))
 
-                Spacer(modifier = Modifier.weight(3f))
 
-            }
-
-            Spacer(modifier = Modifier.weight(1f))
 
         }
-
+        Spacer(modifier = Modifier.weight(1f))
     }
 }
 
