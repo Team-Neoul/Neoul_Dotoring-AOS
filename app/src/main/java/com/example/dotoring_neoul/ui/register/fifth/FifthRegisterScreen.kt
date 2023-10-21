@@ -52,7 +52,7 @@ fun FifthRegisterScreen(
 
         TopRegisterScreen(
             screenNumber = 5,
-            question = R.string.register5_q5,
+            question = R.string.register5_q5_mentor,
             stringResource(id = R.string.register5_guide)
         )
 

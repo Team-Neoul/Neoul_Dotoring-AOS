@@ -86,7 +86,8 @@
     <string name="register4_error_condition_not_satisfied">소개글은 10자 이상, 80자 이하로 작성해주세요.</string>
 
     <!--회원 가입 다섯번째 화면 관련 string resource-->
-    <string name="register5_q5">이 점은 <font color="#8BD045">유의</font>해 주세요.</string>
+    <string name="register5_q5_mentor">이 점은 <font color="#8BD045">유의</font>해 주세요.</string>
+    <string name="register5_q5_mentee">이 점은 <font color="#092D58">유의</font>해 주세요.</string>
     <string name="register5_guide">동의하지 않으시면 가입이 제한됩니다.</string>
     <string name="register5_accept">A. 동의합니다.</string>
 
