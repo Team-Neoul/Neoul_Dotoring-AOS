@@ -77,10 +77,10 @@ class RegisterThirdViewModel: ViewModel() {
 
     }
 
-    fun verifyNickname() {
+    fun verifyMentorNickname() {
         val verifyNicknameRequest = NicknameValidationRequest(nickname = uiState.value.nickname)
         Log.d("닉네임 중복 확인", "Request: ${verifyNicknameRequest.toString()}")
-        val verifyNicknameResponseCall: Call<CommonResponse> = DotoringRegisterAPI.retrofitService.nicknameValidation(verifyNicknameRequest)
+        val verifyNicknameResponseCall: Call<CommonResponse> = DotoringRegisterAPI.retrofitService.mentoNicknameValidation(verifyNicknameRequest)
 
         verifyNicknameResponseCall.enqueue(object: Callback<CommonResponse> {
             override fun onResponse(call: Call<CommonResponse>, response: Response<CommonResponse>) {
@@ -90,13 +90,13 @@ class RegisterThirdViewModel: ViewModel() {
                 Log.d("닉네임 중복 확인", "닉네임 중복 확인: ${response.code()}")
 
                 val json = Gson().toJson(response.body())
-                Log.d("닉네임 중복 확인", "verifyNickname - json: $json")
+                Log.d("닉네임 중복 확인", "verifyMentorNickname - json: $json")
 
                 val jsonObject = JSONObject(json.toString())
-                Log.d("닉네임 중복 확인", "verifyNickname - jsonObject: $jsonObject")
+                Log.d("닉네임 중복 확인", "verifyMentorNickname - jsonObject: $jsonObject")
 
                 val jsonObjectSuccess = jsonObject.getBoolean("success")
-                Log.d("닉네임 중복 확인", "verifyNickname - jsonObjectSuccess: $jsonObjectSuccess")
+                Log.d("닉네임 중복 확인", "verifyMentorNickname - jsonObjectSuccess: $jsonObjectSuccess")
 
                 if (jsonObjectSuccess) {
 
@@ -113,8 +113,44 @@ class RegisterThirdViewModel: ViewModel() {
                 Log.d("닉네임 중복 확인", "요청 내용 - $verifyNicknameResponseCall")
             }
         })
+    }
 
+    fun verifyMenteeNickname() {
+        val verifyNicknameRequest = NicknameValidationRequest(nickname = uiState.value.nickname)
+        Log.d("닉네임 중복 확인", "Request: ${verifyNicknameRequest.toString()}")
+        val verifyNicknameResponseCall: Call<CommonResponse> = DotoringRegisterAPI.retrofitService.menteeNicknameValidation(verifyNicknameRequest)
 
+        verifyNicknameResponseCall.enqueue(object: Callback<CommonResponse> {
+            override fun onResponse(call: Call<CommonResponse>, response: Response<CommonResponse>) {
+
+                Log.d("닉네임 중복 확인", "onResponse")
+                Log.d("닉네임 중복 확인", "닉네임 중복 확인: ${response.body()}")
+                Log.d("닉네임 중복 확인", "닉네임 중복 확인: ${response.code()}")
+
+                val json = Gson().toJson(response.body())
+                Log.d("닉네임 중복 확인", "verifyMenteeNickname - json: $json")
+
+                val jsonObject = JSONObject(json.toString())
+                Log.d("닉네임 중복 확인", "verifyMenteeNickname - jsonObject: $jsonObject")
+
+                val jsonObjectSuccess = jsonObject.getBoolean("success")
+                Log.d("닉네임 중복 확인", "verifyMenteeNickname - jsonObjectSuccess: $jsonObjectSuccess")
+
+                if (jsonObjectSuccess) {
+
+                    updateNicknameDuplicationErrorState(DuplicationCheckState.DuplicationCheckSuccess)
+
+                } else {
+                    updateNicknameDuplicationErrorState(DuplicationCheckState.DuplicationCheckFail)
+                }
+            }
+
+            override fun onFailure(call: Call<CommonResponse>, t: Throwable) {
+                val string = t.message.toString()
+                Log.d("닉네임 중복 확인", "통신 실패: $string")
+                Log.d("닉네임 중복 확인", "요청 내용 - $verifyNicknameResponseCall")
+            }
+        })
     }
 
 }
