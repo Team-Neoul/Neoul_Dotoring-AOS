@@ -1,21 +1,20 @@
 package com.example.dotoring_neoul.ui.register.fifth
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.material.Checkbox
-import androidx.compose.material.CheckboxDefaults
+import androidx.compose.foundation.layout.width
+import androidx.compose.material.Icon
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -49,6 +48,11 @@ fun FifthRegisterScreen(
     } else {
         R.string.register5_q5_mentee
     }
+    val iconTint = if(isMentor) {
+        colorResource(id = R.color.green)
+    } else {
+        colorResource(R.color.navy)
+    }
 
     Row {
         Spacer(modifier = Modifier.weight(1f))
@@ -66,19 +70,28 @@ fun FifthRegisterScreen(
                 Image(
                     painter = painterResource(id = R.drawable.sample_docs),
                     contentDescription = "약관",
-                    modifier = Modifier.size(width = 284.dp, height = 103.dp))
+                    modifier = Modifier.size(width = 284.dp, height = 103.dp)
+                )
+                Spacer(modifier = Modifier.size(10.dp))
                 Row(
+                    modifier = Modifier.width(320.dp),
+                    horizontalArrangement = Arrangement.SpaceBetween,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Text(text = stringResource(id = R.string.register5_accept))
-                    Checkbox(
-                        checked = registerFifthUiState.acceptance,
-                        onCheckedChange = { registerFifthViewModel.accept() },
-                        colors = CheckboxDefaults.colors(
-                            checkedColor = colorResource(id = R.color.green),
-                            uncheckedColor = colorResource(id = R.color.grey_500),
-                            checkmarkColor = Color(0xffffffff)
-                        )
+                    Icon(
+                        painter = painterResource(id = R.drawable.ic_check),
+                        contentDescription = "약관 동의 여부를 표시해주세요.",
+                        tint = if(registerFifthUiState.acceptance) {
+                            iconTint
+                        } else {
+                            colorResource(id = R.color.grey_500)
+                               }
+                        ,
+                        modifier = Modifier
+                            .clickable {
+                                registerFifthViewModel.accept()
+                            }
                     )
                 }
             }
@@ -87,16 +100,25 @@ fun FifthRegisterScreen(
 
             RegisterScreenNextButton(
                 onClick = {
-                    val mentoInfo = mentorInformation
+                    if(isMentor) {
+                        val mentorInfo = mentorInformation
 
-                    navController.currentBackStackEntry?.savedStateHandle?.set(
-                        key = "mentoInfo",
-                        value = mentoInfo
-                    )
+                        navController.currentBackStackEntry?.savedStateHandle?.set(
+                            key = "mentorInfo",
+                            value = mentorInfo
+                        )
+                    } else {
+                        val menteeInfo = menteeInformation
 
+                        navController.currentBackStackEntry?.savedStateHandle?.set(
+                            key = "menteeInfo",
+                            value = menteeInfo
+                        )
+                    }
                     navController.navigate(AuthScreen.Register6.route)
                 },
-                enabled = registerFifthUiState.btnState
+                enabled = registerFifthUiState.btnState,
+                isMentor = isMentor
             )
             Spacer(modifier = Modifier.weight(3f))
 
@@ -118,7 +140,7 @@ private fun RegisterScreenPreview() {
             navController = rememberNavController(),
             mentorInformation = MentorInformation(),
             menteeInformation = MenteeInformation(),
-            isMentor = true
+            isMentor = false
         )
     }
 }
