@@ -133,7 +133,6 @@ fun FourthRegisterScreen(
                                 key = "mentorInfo",
                                 value = mentorInfo
                             )
-                            navController.navigate(AuthScreen.Register5.route)
                         }
                     } else {
                         if(menteeInformation != null) {
@@ -150,10 +149,9 @@ fun FourthRegisterScreen(
                                 key = "menteeInfo",
                                 value = menteeInfo
                             )
-                            navController.navigate(AuthScreen.Register5.route)
                         }
                     }
-
+                    navController.navigate(AuthScreen.Register5.passScreenState(isMentor))
                 },
                 enabled = registerFourthUiState.nextButtonState,
                 isMentor = isMentor

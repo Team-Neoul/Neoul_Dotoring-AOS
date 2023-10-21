@@ -28,6 +28,7 @@ import com.example.dotoring.R
 import com.example.dotoring_neoul.navigation.AuthScreen
 import com.example.dotoring_neoul.ui.theme.DotoringTheme
 import com.example.dotoring_neoul.ui.util.TopRegisterScreen
+import com.example.dotoring_neoul.ui.util.register.MenteeInformation
 import com.example.dotoring_neoul.ui.util.register.MentorInformation
 import com.example.dotoring_neoul.ui.util.register.RegisterScreenNextButton
 
@@ -38,7 +39,9 @@ import com.example.dotoring_neoul.ui.util.register.RegisterScreenNextButton
 fun FifthRegisterScreen(
     registerFifthViewModel: RegisterFifthViewModel = viewModel(),
     navController: NavHostController,
-    mentorInformation: MentorInformation
+    mentorInformation: MentorInformation?,
+    menteeInformation: MenteeInformation?,
+    isMentor: Boolean
 ) {
 
     val registerFifthUiState by registerFifthViewModel.uiState.collectAsState()
@@ -117,6 +120,11 @@ fun FifthRegisterScreen(
 @Composable
 private fun RegisterScreenPreview() {
     DotoringTheme {
-        FifthRegisterScreen(navController = rememberNavController(), mentorInformation = MentorInformation())
+        FifthRegisterScreen(
+            navController = rememberNavController(),
+            mentorInformation = MentorInformation(),
+            menteeInformation = MenteeInformation(),
+            isMentor = true
+        )
     }
 }
