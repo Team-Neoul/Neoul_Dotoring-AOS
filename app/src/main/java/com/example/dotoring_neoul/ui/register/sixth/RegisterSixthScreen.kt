@@ -199,7 +199,7 @@ fun SixthRegisterScreen(
                             } },
                         visualTransformation = PasswordVisualTransformation()
                     )
-                    Icon(painter = painterResource(R.drawable.ic_register6_password_satisfied),
+                    Icon(painter = painterResource(R.drawable.ic_check),
                         contentDescription = if (registerSixthUiState.isPasswordCertified) {
                             "비밀번호와 다릅니다."
                         } else {
@@ -390,6 +390,9 @@ private fun TextFieldWithEffectiveCheckButton(
 @Composable
 private fun RegisterScreenPreview() {
     DotoringTheme {
-        SixthRegisterScreen(navController = rememberNavController(), mentorInformation = MentorInformation())
+        SixthRegisterScreen(
+            navController = rememberNavController(),
+            mentorInformation = MentorInformation()
+        )
     }
 }
