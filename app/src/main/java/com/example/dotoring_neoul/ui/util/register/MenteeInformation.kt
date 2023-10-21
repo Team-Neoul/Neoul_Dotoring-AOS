@@ -5,13 +5,12 @@ import android.os.Parcelable
 import kotlinx.parcelize.Parcelize
 
 @Parcelize
-class MentoInformation(
-    val company: String = "",
-    val careerLevel: Int = 1,
-    val field: String="",
-    val major: String="",
-    val employmentCertification: Uri? = null,
-    val graduateCertification: Uri? = null,
+class MenteeInformation(
+    val school: String = "",
+    val grade: Int = 1,
+    val field: List<String> = mutableListOf(),
+    val major: List<String> = mutableListOf(),
+    val enrollmentCertification: Uri? = null,
     val nickname: String = "",
     val introduction: String = "",
     val loginId: String = "",

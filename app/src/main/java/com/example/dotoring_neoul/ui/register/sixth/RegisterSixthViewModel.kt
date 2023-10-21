@@ -10,9 +10,8 @@ import com.example.dotoring_neoul.dto.CommonResponse
 import com.example.dotoring_neoul.dto.register.EmailCertificationRequest
 import com.example.dotoring_neoul.dto.register.IdValidationRequest
 import com.example.dotoring_neoul.network.DotoringRegisterAPI
-import com.example.dotoring_neoul.ui.util.register.MentoInformation
+import com.example.dotoring_neoul.ui.util.register.MentorInformation
 import android.os.CountDownTimer
-import android.provider.MediaStore
 import android.provider.OpenableColumns
 import android.util.Log
 import androidx.core.net.toUri
@@ -22,23 +21,18 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
-import okhttp3.MediaType
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import okhttp3.RequestBody.Companion.asRequestBody
 import okhttp3.RequestBody.Companion.toRequestBody
 import okhttp3.internal.toImmutableList
-import okio.BufferedSink
-import okio.source
 import org.json.JSONObject
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import java.io.File
 import java.io.FileOutputStream
-import java.io.IOException
-import java.io.OutputStream
 
 class RegisterSixthViewModel(application: Application): AndroidViewModel(application) {
 
@@ -314,16 +308,16 @@ class RegisterSixthViewModel(application: Application): AndroidViewModel(applica
         })
     }
 
-    fun mentoRegister(mentoInformation: MentoInformation) {
+    fun mentoRegister(mentorInformation: MentorInformation) {
         Log.d("통신 - 로그인 하기", "mentoRegister - 통신 시작")
         val certifications: MutableList<MultipartBody.Part> = mutableListOf<MultipartBody.Part>()
 
-        if(mentoInformation.employmentCertification != null) {
-            certifications.add(makePart(mentoInformation.employmentCertification))
+        if(mentorInformation.employmentCertification != null) {
+            certifications.add(makePart(mentorInformation.employmentCertification))
         }
 
-        if(mentoInformation.graduateCertification != null) {
-            certifications.add(makePart(mentoInformation.graduateCertification))
+        if(mentorInformation.graduateCertification != null) {
+            certifications.add(makePart(mentorInformation.graduateCertification))
         }
 
         certifications.toImmutableList()
@@ -356,12 +350,12 @@ class RegisterSixthViewModel(application: Application): AndroidViewModel(applica
 //                    "\"password\":\"${uiState.value.password}\"," +
 //                    "\"email\":\"${uiState.value.email}\"}").toString()
         val jsonObject = JSONObject(
-            "{\"company\":\"${mentoInformation.company}\"," +
-                    "\"careerLevel\":\"${mentoInformation.careerLevel}\"," +
+            "{\"company\":\"${mentorInformation.company}\"," +
+                    "\"careerLevel\":\"${mentorInformation.careerLevel}\"," +
                     "\"field\":\"진로\"," +
                     "\"major\":\"가정교육과\"," +
-                    "\"nickname\":\"${mentoInformation.nickname}\"," +
-                    "\"introduction\":\"${mentoInformation.introduction}\"," +
+                    "\"nickname\":\"${mentorInformation.nickname}\"," +
+                    "\"introduction\":\"${mentorInformation.introduction}\"," +
                     "\"loginId\":\"${uiState.value.memberId}\"," +
                     "\"password\":\"${uiState.value.password}\"," +
                     "\"email\":\"${uiState.value.email}\"}").toString()

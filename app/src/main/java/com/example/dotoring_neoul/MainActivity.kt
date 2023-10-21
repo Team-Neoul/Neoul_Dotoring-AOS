@@ -6,16 +6,19 @@ import androidx.activity.compose.setContent
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.example.dotoring_neoul.navigation.RootNavigationGraph
 import com.example.dotoring_neoul.ui.theme.DotoringTheme
 
 class MainActivity : ComponentActivity() {
+    private lateinit var navController: NavHostController
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
             DotoringTheme {
-                RootNavigationGraph(navController = rememberNavController())
+                navController = rememberNavController()
+                RootNavigationGraph(navController)
             }
         }
     }

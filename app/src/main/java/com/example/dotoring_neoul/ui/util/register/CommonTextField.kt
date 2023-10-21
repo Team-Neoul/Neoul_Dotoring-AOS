@@ -24,6 +24,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.Dp
+import androidx.compose.ui.unit.TextUnit
 import com.example.dotoring.R
 import com.example.dotoring_neoul.ui.theme.DotoringTheme
 
@@ -39,7 +40,8 @@ fun CommonTextField(
     imeAction: ImeAction,
     onDone: (KeyboardActionScope.() -> Unit)? = null,
     onNext: (KeyboardActionScope.() -> Unit)? = null,
-    visualTransformation: VisualTransformation = VisualTransformation.None
+    visualTransformation: VisualTransformation = VisualTransformation.None,
+    placeholderFontSize: TextUnit = 15.sp
 ) {
     val interactionSource = remember { MutableInteractionSource() }
     val enabled = true
@@ -89,7 +91,7 @@ fun CommonTextField(
             // for text field styling
             placeholder = {Text(
                 text = placeholder,
-                fontSize = 13.sp) },
+                fontSize = placeholderFontSize) },
             colors = colors,
             interactionSource = interactionSource,
             // keep vertical paddings but change the horizontal

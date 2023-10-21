@@ -38,9 +38,9 @@ import com.example.dotoring.R
 import com.example.dotoring_neoul.navigation.AuthScreen
 import com.example.dotoring_neoul.ui.theme.DotoringTheme
 import com.example.dotoring_neoul.ui.util.EffectiveCheckButton
-import com.example.dotoring_neoul.ui.util.RegisterScreenTop
+import com.example.dotoring_neoul.ui.util.TopRegisterScreen
 import com.example.dotoring_neoul.ui.util.register.CommonTextField
-import com.example.dotoring_neoul.ui.util.register.MentoInformation
+import com.example.dotoring_neoul.ui.util.register.MentorInformation
 import java.util.regex.Pattern
 
 
@@ -48,7 +48,7 @@ import java.util.regex.Pattern
 fun SixthRegisterScreen(
     registerSixthViewModel: RegisterSixthViewModel = viewModel(),
     navController: NavHostController,
-    mentoInformation: MentoInformation
+    mentorInformation: MentorInformation
 ) {
     val registerSixthUiState by registerSixthViewModel.uiState.collectAsState()
     val focusManager = LocalFocusManager.current
@@ -66,7 +66,7 @@ fun SixthRegisterScreen(
         horizontalAlignment = Alignment.CenterHorizontally,
         modifier = Modifier.padding(top = 50.dp)
     ) {
-        RegisterScreenTop(screenNumber = 6, question = R.string.register6_q6)
+        TopRegisterScreen(screenNumber = 6, question = R.string.register6_q6)
         Spacer(modifier = Modifier.weight(1f))
 
 
@@ -199,7 +199,7 @@ fun SixthRegisterScreen(
                             } },
                         visualTransformation = PasswordVisualTransformation()
                     )
-                    Icon(painter = painterResource(R.drawable.ic_register6_password_satisfied),
+                    Icon(painter = painterResource(R.drawable.ic_check),
                         contentDescription = if (registerSixthUiState.isPasswordCertified) {
                             "비밀번호와 다릅니다."
                         } else {
@@ -328,7 +328,7 @@ fun SixthRegisterScreen(
 
         Register6ScreenNextButton(
             onClick = {
-                registerSixthViewModel.mentoRegister(mentoInformation)
+                registerSixthViewModel.mentoRegister(mentorInformation)
                 navController.navigate(AuthScreen.Login.route)
             },
             enabled = registerSixthUiState.isToLoginButtonEnabled
@@ -390,6 +390,9 @@ private fun TextFieldWithEffectiveCheckButton(
 @Composable
 private fun RegisterScreenPreview() {
     DotoringTheme {
-        SixthRegisterScreen(navController = rememberNavController(), mentoInformation = MentoInformation())
+        SixthRegisterScreen(
+            navController = rememberNavController(),
+            mentorInformation = MentorInformation()
+        )
     }
 }

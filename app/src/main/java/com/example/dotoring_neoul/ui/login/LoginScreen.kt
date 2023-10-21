@@ -144,7 +144,7 @@ fun LoginScreen(loginViewModel: LoginViewModel= viewModel(), navController: NavH
                 Text(text = "  |  ", fontSize = 12.sp)
                 Text("회원가입", fontSize = 12.sp, color= colorResource(id = R.color.grey_500), modifier = Modifier
                     .clickable {
-                        navController.navigate(AuthScreen.Register1.route)
+                        navController.navigate(AuthScreen.Branch.route)
                     }
                 )
 

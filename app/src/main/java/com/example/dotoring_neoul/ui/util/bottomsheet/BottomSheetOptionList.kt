@@ -1,6 +1,5 @@
 package com.example.dotoring_neoul.ui.util.bottomsheet
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Box
@@ -16,51 +15,59 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.VisualTransformation
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.dotoring.R
+import com.example.dotoring_neoul.ui.theme.DotoringTheme
 
 @OptIn(ExperimentalMaterialApi::class)
 @Composable
-fun BottomSheetOption(data: String, onClick: () -> Unit = {}) {
+fun BottomSheetOptionList(optionData: String, onClick: () -> Unit = {}) {
     val interactionSource = remember { MutableInteractionSource() }
 
-    val colors = TextFieldDefaults.textFieldColors(
-        textColor = colorResource(id = R.color.white),
-        focusedIndicatorColor = colorResource(id = R.color.white),
-        unfocusedIndicatorColor = colorResource(id = R.color.white),
-        backgroundColor = Color(0x00ffffff),
-        placeholderColor = colorResource(id = R.color.white)
+    val contentColor = colorResource(id = R.color.white)
+    val backgroundColor = colorResource(id = R.color.transparent)
+
+    val fieldWidth = 380.dp
+    val fieldHeight = 36.dp
+    val indicatorLineThickness = 1.5.dp
+    val contentPadding = TextFieldDefaults.textFieldWithoutLabelPadding(
+        start = 20.dp, top = 1.dp, end = 1.dp, bottom = 3.dp
     )
+
+    val iconSize = 20.dp
+    val iconColor = colorResource(R.color.white)
 
     Box(
         contentAlignment = Alignment.CenterEnd
     ) {
-
         BasicTextField(
-            value = data,
+            value = optionData,
             onValueChange = { } ,
             modifier = Modifier
-                .background(
-                    color = Color(0x00ffffff)
-                )
-                .size(width = 380.dp, height = 36.dp)
+                .size(width = fieldWidth, height = fieldHeight)
                 .indicatorLine(
                     enabled = false,
                     isError = false,
                     interactionSource = interactionSource,
-                    colors = colors,
-                    focusedIndicatorLineThickness = 1.dp,
-                    unfocusedIndicatorLineThickness = 1.dp
+                    colors = TextFieldDefaults.textFieldColors(
+                        textColor = contentColor,
+                        focusedIndicatorColor = contentColor,
+                        unfocusedIndicatorColor = contentColor,
+                        backgroundColor = backgroundColor,
+                        placeholderColor = contentColor
+                    ),
+                    focusedIndicatorLineThickness = indicatorLineThickness,
+                    unfocusedIndicatorLineThickness = indicatorLineThickness
                 )
-                .clickable (onClick = onClick),
+                .clickable(onClick = onClick),
             textStyle = LocalTextStyle.current.copy(
-                fontSize = 15.sp,
+                fontSize = 16.sp,
                 color = colorResource(id = R.color.white),
                 fontWeight = FontWeight.SemiBold
             ),
@@ -68,27 +75,34 @@ fun BottomSheetOption(data: String, onClick: () -> Unit = {}) {
             readOnly = true,
         ) {
             TextFieldDefaults.TextFieldDecorationBox(
-                value = data,
+                value = optionData,
                 innerTextField = it,
                 enabled = false,
                 singleLine = true,
                 visualTransformation = VisualTransformation.None,
                 interactionSource =  interactionSource,
-                contentPadding = TextFieldDefaults.textFieldWithoutLabelPadding(
-                    start = 10.dp, top = 1.dp, end = 1.dp, bottom = 3.dp
-                )
+                contentPadding = contentPadding
             )
         }
-
         IconButton(
-            onClick = onClick // SelectedDataList에 Data 추가
+            onClick = onClick
         ) {
             Icon(
                 painter = painterResource(id = R.drawable.ic_filter_choose),
                 contentDescription = "선택 버튼",
-                modifier = Modifier.size(20.dp),
-                tint = Color(0xffffffff)
+                modifier = Modifier.size(iconSize),
+                tint = iconColor
             )
         }
+    }
+}
+
+@Preview(
+    showBackground = true,
+    backgroundColor = 0x8BD045)
+@Composable
+private fun RegisterScreenPreview() {
+    DotoringTheme {
+        BottomSheetOptionList(optionData = "테스트")
     }
 }

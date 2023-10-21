@@ -26,7 +26,7 @@ class RegisterFourthViewModel: ViewModel() {
         introductionInput = introduction
 
         _uiState.update { currentState ->
-            currentState.copy(mentorIntroduction = introductionInput)
+            currentState.copy(memberIntroduction = introductionInput)
         }
     }
 

@@ -12,13 +12,19 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.dotoring.R
 import com.example.dotoring_neoul.ui.theme.DotoringTheme
 
 @Composable
-fun EffectiveCheckButton(onClick: () -> Unit = {}, text: String = "Sample Text", enabled: Boolean = false) {
+fun EffectiveCheckButton(
+    onClick: () -> Unit = {},
+    text: String = "Sample Text",
+    enabled: Boolean = false,
+    fontSize: TextUnit = 10.sp
+) {
 
     OutlinedButton(
         onClick = onClick,
@@ -50,7 +56,7 @@ fun EffectiveCheckButton(onClick: () -> Unit = {}, text: String = "Sample Text",
     ){
         Text(
             text = text,
-            fontSize = 8.sp,
+            fontSize = fontSize,
             letterSpacing = (-1).sp)
     }
 }
