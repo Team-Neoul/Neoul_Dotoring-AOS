@@ -3,10 +3,12 @@ package com.example.dotoring_neoul.ui.register.fourth
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.requiredWidth
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
@@ -19,7 +21,6 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
@@ -52,88 +53,83 @@ fun FourthRegisterScreen(
     menteeInformation: MenteeInformation?,
     isMentor: Boolean
 ) {
-
     val registerFourthUiState by registerFourthViewModel.uiState.collectAsState()
-
     val focusManager = LocalFocusManager.current
 
-    Column(
-        modifier = Modifier.padding(top = 50.dp),
-        horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        TopRegisterScreen(4, R.string.register4_q4_mentor, stringResource(id = R.string.register4_guide))
-
-        Spacer(modifier = Modifier.size(30.dp))
-
+    Row {
+        Spacer(modifier = Modifier.weight(1f))
         Column(
-            modifier = Modifier.padding(start = 30.dp, end = 30.dp)
+            modifier = Modifier
+                .requiredWidth(width = 320.dp)
         ) {
-            Text(text = stringResource(id = R.string.register_A))
+            TopRegisterScreen(4, R.string.register4_q4_mentor, stringResource(id = R.string.register4_guide))
+            Spacer(modifier = Modifier.weight(1f))
 
-            Spacer(modifier = Modifier.size(10.dp))
 
-            RoundedCornerTextField(
-                value = registerFourthUiState.mentorIntroduction,
-                onValueChange = {
-                    registerFourthViewModel.updateIntroductionInput(it)
+            Column {
+                Text(text = stringResource(id = R.string.register_A))
+                Spacer(modifier = Modifier.size(10.dp))
+                RoundedCornerTextField(
+                    value = registerFourthUiState.mentorIntroduction,
+                    onValueChange = {
+                        registerFourthViewModel.updateIntroductionInput(it)
 
-                    if(it.length in 10..100) {
-                        registerFourthViewModel.updateNextButtonState(true)
+                        if(it.length in 10..100) {
+                            registerFourthViewModel.updateNextButtonState(true)
+                        } else {
+                            registerFourthViewModel.updateNextButtonState(false)
+                        }
+                    },
+                    onDone = {
+                        focusManager.clearFocus()
+                    },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .clip(RoundedCornerShape(15.dp))
+                        .background(colorResource(R.color.grey_200))
+                        .padding(16.dp)
+                )
+                Spacer(modifier = Modifier.height(2.dp))
+                Text(
+                    text = if(!registerFourthUiState.nextButtonState) {
+                        stringResource(id = R.string.register4_error_condition_not_satisfied)
                     } else {
-                        registerFourthViewModel.updateNextButtonState(false)
+                        ""
+                    },
+                    modifier = Modifier
+                        .padding(start = 2.dp, top = 3.dp),
+                    color = Color(0xffff7B7B),
+                    fontSize = 10.sp
+                )
+            }
+            Spacer(modifier = Modifier.weight(1f))
+
+
+            RegisterScreenNextButton(
+                onClick = {
+                    if(mentorInformation != null) {
+                        val mentorInfo = MentorInformation(
+                            company = mentorInformation.company,
+                            careerLevel = mentorInformation.careerLevel,
+                            field = mentorInformation.field,
+                            major = mentorInformation.major,
+                            employmentCertification = mentorInformation.employmentCertification,
+                            graduateCertification = mentorInformation.graduateCertification,
+                            nickname = mentorInformation.nickname,
+                            introduction = registerFourthUiState.mentorIntroduction
+                        )
+                        navController.currentBackStackEntry?.savedStateHandle?.set(
+                            key = "mentorInfo",
+                            value = mentorInfo
+                        )
+                        navController.navigate(AuthScreen.Register5.route)
                     }
                 },
-                onDone = {
-                    focusManager.clearFocus()
-                },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .clip(RoundedCornerShape(15.dp))
-                    .background(colorResource(R.color.grey_200))
-                    .padding(16.dp)
+                enabled = registerFourthUiState.nextButtonState
             )
-
-            Spacer(modifier = Modifier.height(1.dp))
-
-            Text(
-                text = if(!registerFourthUiState.nextButtonState) {
-                    stringResource(id = R.string.register4_error_condition_not_satisfied)
-
-                } else {
-                    ""
-                },
-                modifier = Modifier
-                    .padding(start = 2.dp, top = 3.dp),
-                color = Color(0xffff7B7B),
-                fontSize = 10.sp
-            )
+            Spacer(modifier = Modifier.weight(3f))
         }
-
-        Spacer(modifier = Modifier.weight(5f))
-
-        RegisterScreenNextButton(
-            onClick = {
-                if(mentorInformation != null) {
-                    val mentorInfo = MentorInformation(
-                        company = mentorInformation.company,
-                        careerLevel = mentorInformation.careerLevel,
-                        field = mentorInformation.field,
-                        major = mentorInformation.major,
-                        employmentCertification = mentorInformation.employmentCertification,
-                        graduateCertification = mentorInformation.graduateCertification,
-                        nickname = mentorInformation.nickname,
-                        introduction = registerFourthUiState.mentorIntroduction
-                    )
-                    navController.currentBackStackEntry?.savedStateHandle?.set(
-                        key = "mentorInfo",
-                        value = mentorInfo
-                    )
-                    navController.navigate(AuthScreen.Register5.route)
-                }
-            },
-            enabled = registerFourthUiState.nextButtonState)
-
-        Spacer(modifier = Modifier.weight(4f))
+        Spacer(modifier = Modifier.weight(1f))
     }
 }
 
