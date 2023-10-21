@@ -84,7 +84,7 @@ fun FourthRegisterScreen(
                     onValueChange = {
                         registerFourthViewModel.updateIntroductionInput(it)
 
-                        if(it.length in 10..100) {
+                        if(it.length in 10..80) {
                             registerFourthViewModel.updateNextButtonState(true)
                         } else {
                             registerFourthViewModel.updateNextButtonState(false)
