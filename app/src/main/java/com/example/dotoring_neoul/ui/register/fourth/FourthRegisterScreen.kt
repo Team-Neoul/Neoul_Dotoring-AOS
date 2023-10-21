@@ -58,7 +58,7 @@ fun FourthRegisterScreen(
         modifier = Modifier.padding(top = 50.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        TopRegisterScreen(4, R.string.register4_q4, stringResource(id = R.string.register4_guide))
+        TopRegisterScreen(4, R.string.register4_q4_mentor, stringResource(id = R.string.register4_guide))
 
         Spacer(modifier = Modifier.size(30.dp))
 
