@@ -115,7 +115,7 @@ fun FifthRegisterScreen(
                             value = menteeInfo
                         )
                     }
-                    navController.navigate(AuthScreen.Register6.route)
+                    navController.navigate(AuthScreen.Register6.passScreenState(isMentor))
                 },
                 enabled = registerFifthUiState.btnState,
                 isMentor = isMentor

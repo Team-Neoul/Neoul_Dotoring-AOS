@@ -9,12 +9,19 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.dotoring.R
 
 @Composable
-fun RegisterScreenNextButton(onClick: ()->Unit = {}, enabled: Boolean = false, isMentor: Boolean = true) {
+fun RegisterScreenNextButton(
+    onClick: ()->Unit = {},
+    enabled: Boolean = false,
+    isMentor: Boolean = true,
+    innerText: String = stringResource(id = R.string.register1_next),
+    width: Dp = 320.dp
+) {
     val backgroundColor = if(isMentor) {
         colorResource(R.color.green)
     } else {
@@ -24,7 +31,7 @@ fun RegisterScreenNextButton(onClick: ()->Unit = {}, enabled: Boolean = false, i
 
     Button(
         onClick = onClick,
-        modifier = Modifier.size(width = 320.dp, height = 45.dp),
+        modifier = Modifier.size(width = width, height = 45.dp),
         colors = ButtonDefaults.buttonColors(
             contentColor = colorResource(id = R.color.white),
             backgroundColor = backgroundColor,
@@ -35,7 +42,7 @@ fun RegisterScreenNextButton(onClick: ()->Unit = {}, enabled: Boolean = false, i
         enabled = enabled
     ) {
         Text(
-            text = stringResource(id = R.string.register1_next),
+            text = innerText,
             fontSize = buttonFontSize
         )
     }

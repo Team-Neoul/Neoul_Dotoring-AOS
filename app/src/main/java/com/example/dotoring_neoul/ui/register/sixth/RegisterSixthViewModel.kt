@@ -16,6 +16,7 @@ import android.provider.OpenableColumns
 import android.util.Log
 import androidx.core.net.toUri
 import androidx.lifecycle.AndroidViewModel
+import com.example.dotoring_neoul.ui.util.register.MenteeInformation
 import com.google.gson.Gson
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -382,6 +383,62 @@ class RegisterSixthViewModel(application: Application): AndroidViewModel(applica
 
                 val jsonObjectSuccess = jsonObject.getBoolean("success")
                 Log.d("통신 - 로그인 하기", "mentoRegister - jsonObjectSuccess : $jsonObjectSuccess")
+
+                if (jsonObjectSuccess) {
+
+                }
+            }
+            override fun onFailure(call: Call<CommonResponse>, t: Throwable) {
+                Log.d("통신 - 로그인 하기", "통신 실패: $t")
+                Log.d("통신 - 로그인 하기", "요청 내용 - $finalRegisterRequestCall")
+            }
+        })
+    }
+
+    fun menteeRegister(menteeInformation: MenteeInformation) {
+        Log.d("통신 - 로그인 하기", "menteeRegister - 통신 시작")
+        val certifications: MutableList<MultipartBody.Part> = mutableListOf<MultipartBody.Part>()
+
+        if(menteeInformation.enrollmentCertification != null) {
+            certifications.add(makePart(menteeInformation.enrollmentCertification))
+        }
+
+        certifications.toImmutableList()
+        Log.d("통신 - 로그인 하기", "menteeRegister - certifications: $certifications")
+
+        val jsonObject = JSONObject(
+            "{\"school\":\"${menteeInformation.school}\"," +
+                    "\"grade\":\"${menteeInformation.school}\"," +
+                    "\"field\":\"진로\"," +
+                    "\"major\":\"가정교육과\"," +
+                    "\"nickname\":\"${menteeInformation.nickname}\"," +
+                    "\"introduction\":\"${menteeInformation.introduction}\"," +
+                    "\"loginId\":\"${uiState.value.memberId}\"," +
+                    "\"password\":\"${uiState.value.password}\"," +
+                    "\"email\":\"${uiState.value.email}\"}").toString()
+
+        val jsonBody = jsonObject.toRequestBody("application/json".toMediaType())
+
+        val finalRegisterRequestCall: Call<CommonResponse> = DotoringRegisterAPI.retrofitService.signUpAsMentee(
+            certifications = certifications,
+            saveMentiRqDTO = jsonBody
+        )
+        Log.d("통신 - 로그인 하기", "menteeRegister - finalRegisterRequestCall: $finalRegisterRequestCall")
+
+        finalRegisterRequestCall.enqueue(object: Callback<CommonResponse> {
+            override fun onResponse(call: Call<CommonResponse>, response: Response<CommonResponse>) {
+                Log.d("통신 - 로그인 하기", "menteeRegister - onResponse")
+                Log.d("통신 - 로그인 하기", "menteeRegister - response.body() : ${response.body()}")
+                Log.d("통신 - 로그인 하기", "menteeRegister - response.code() : ${response.code()}")
+
+                val json = Gson().toJson(response.body())
+                Log.d("통신 - 로그인 하기", "menteeRegister - json : $json")
+
+                val jsonObject = JSONObject(json)
+                Log.d("통신 - 로그인 하기", "menteeRegister - jsonObject : $jsonObject")
+
+                val jsonObjectSuccess = jsonObject.getBoolean("success")
+                Log.d("통신 - 로그인 하기", "menteeRegister - jsonObjectSuccess : $jsonObjectSuccess")
 
                 if (jsonObjectSuccess) {
 
