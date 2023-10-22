@@ -110,7 +110,12 @@ interface DotoringAPIService {
      * nicknameValidation: 닉네임 중복확인을 위한 api
      * */
     @POST("api/mento/valid-nickname")
-    fun nicknameValidation(
+    fun mentoNicknameValidation(
+        @Body nicknameValidationRequest: NicknameValidationRequest
+    ): Call<CommonResponse>
+
+    @POST("api/menti/valid-nickname")
+    fun menteeNicknameValidation(
         @Body nicknameValidationRequest: NicknameValidationRequest
     ): Call<CommonResponse>
 
@@ -160,6 +165,13 @@ interface DotoringAPIService {
     fun signUpAsMento(
         @Part certifications: List<MultipartBody.Part>,
         @Part ("saveMentoRqDTO")saveMentoRqDTO: RequestBody // HashMap<String, MultipartBody.Part>
+    ):Call<CommonResponse>
+
+    @Multipart
+    @POST("api/signup-menti")
+    fun signUpAsMentee(
+        @Part certifications: List<MultipartBody.Part>,
+        @Part ("saveMentiRqDTO")saveMentiRqDTO: RequestBody // HashMap<String, MultipartBody.Part>
     ):Call<CommonResponse>
 
     /**

@@ -55,7 +55,7 @@ fun SixthRegisterScreen(
                         }
                     } else {
                         if(menteeInformation != null) {
-                            registerSixthViewModel.mentoRegister(mentorInformation)
+                            registerSixthViewModel.menteeRegister(menteeInformation)
                         }
                     }
                     navController.navigate(AuthScreen.Login.route)
