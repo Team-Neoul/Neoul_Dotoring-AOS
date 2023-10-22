@@ -92,7 +92,8 @@
     <string name="register5_accept">A. 동의합니다.</string>
 
     <!--회원 가입 여섯번째 화면 관련 string resource-->
-    <string name="register6_q6"> <font color="#8BD045">계정</font> 설정만 하면 끝이에요!</string>
+    <string name="register6_q6_mentor"> <font color="#8BD045">계정</font> 설정만 하면 끝이에요!</string>
+    <string name="register6_q6_mentee"> <font color="#092D58">계정</font> 설정만 하면 끝이에요!</string>
     <string name="register6_set_ID">A. 아이디 설정하기</string>
     <string name="register6_ID">아이디</string>
     <string name="register6_ID_guide">영문과 숫자를 포함한 8&#8211;12글자로 해주세요.</string>
