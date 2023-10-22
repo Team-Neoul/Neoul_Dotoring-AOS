@@ -142,13 +142,28 @@ fun NavGraphBuilder.authNavGraph(navController: NavHostController) {
 
         }
 
-        composable(route = AuthScreen.Register6.route) {
-            val result =
-                navController.previousBackStackEntry?.savedStateHandle?.get<MentorInformation>("mentoInfo")
-
-            if (result != null) {
-                SixthRegisterScreen(navController = navController, mentorInformation = result)
+        composable(
+            route = AuthScreen.Register6.route,
+            arguments = listOf(
+                navArgument("isMentor") {
+                    type = NavType.BoolType
+                    defaultValue = true
+                }
+            )) { backStackEntry ->
+            val isMentor = backStackEntry.arguments?.getBoolean("isMentor")?: true
+            val mentorInformation = if(isMentor) { navController.previousBackStackEntry?.savedStateHandle?.get<MentorInformation>("mentorInfo") } else {
+                null
             }
+            val menteeInformation = if(!isMentor) { navController.previousBackStackEntry?.savedStateHandle?.get<MenteeInformation>("menteeInfo") } else {
+                null
+            }
+
+            SixthRegisterScreen(
+                navController = navController,
+                mentorInformation = mentorInformation,
+                menteeInformation = menteeInformation,
+                isMentor = isMentor
+            )
         }
     }
 }
@@ -195,5 +210,11 @@ sealed class AuthScreen(val route: String) {
             return "REGISTER5?isMentor=$isMentor"
         }
     }
-    object Register6 : AuthScreen(route = "REGISTER6")
+    object Register6 : AuthScreen(route = "REGISTER6?isMentor={isMentor}") {
+        fun passScreenState(
+            isMentor: Boolean = true
+        ): String {
+            return "REGISTER6?isMentor=$isMentor"
+        }
+    }
 }
