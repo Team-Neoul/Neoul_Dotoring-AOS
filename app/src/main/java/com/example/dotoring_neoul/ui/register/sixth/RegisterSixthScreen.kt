@@ -31,11 +31,19 @@ fun SixthRegisterScreen(
     isMentor: Boolean
 ) {
     val registerSixthUiState by registerSixthViewModel.uiState.collectAsState()
-
+    val question = if(isMentor) {
+        R.string.register6_q6_mentor
+    } else {
+        R.string.register6_q6_mentee
+    }
     Row {
         Spacer(modifier = Modifier.weight(1f))
         Column {
-            TopRegisterScreen(screenNumber = 6, question = R.string.register6_q6_mentor)
+            TopRegisterScreen(
+                screenNumber = 6,
+                question = question,
+                isMentor = isMentor
+            )
             Spacer(modifier = Modifier.weight(1f))
 
 
