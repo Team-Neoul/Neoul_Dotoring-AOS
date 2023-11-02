@@ -324,32 +324,6 @@ class RegisterSixthViewModel(application: Application): AndroidViewModel(applica
         certifications.toImmutableList()
         Log.d("통신 - 로그인 하기", "mentoRegister - certifications: $certifications")
 
-        /*val saveMentoRqDTO = JSONObject()
-        saveMentoRqDTO.put("company", mentoInformation.company)
-        saveMentoRqDTO.put("careerLevel", mentoInformation.careerLevel)
-        saveMentoRqDTO.put("field", mentoInformation.field)
-        saveMentoRqDTO.put("major", mentoInformation.major)
-        saveMentoRqDTO.put("nickname", mentoInformation.nickname)
-        saveMentoRqDTO.put("introduction", mentoInformation.introduction)
-        saveMentoRqDTO.put("loginId", uiState.value.memberId)
-        saveMentoRqDTO.put("password", uiState.value.password)
-        saveMentoRqDTO.put("email", uiState.value.email)*/
-
-       /* val body = "".toRequestBody(MultipartBody.FORM)
-        val emptyPart = MultipartBody.Part.createFormData("saveMentoRqDTO","",body)
-        val emptyList = arrayListOf<MultipartBody.Part>()
-        emptyList.add(emptyPart)*/
-
-//        val jsonObject = JSONObject(
-//            "{\"company\":\"${mentoInformation.company}\"," +
-//                    "\"careerLevel\":\"${mentoInformation.careerLevel}\"," +
-//                    "\"field\":\"${mentoInformation.field}\"," +
-//                    "\"major\":\"${mentoInformation.major}\"," +
-//                    "\"nickname\":\"${mentoInformation.nickname}\"," +
-//                    "\"introduction\":\"${mentoInformation.introduction}\"," +
-//                    "\"loginId\":\"${uiState.value.memberId}\"," +
-//                    "\"password\":\"${uiState.value.password}\"," +
-//                    "\"email\":\"${uiState.value.email}\"}").toString()
         val jsonObject = JSONObject(
             "{\"company\":\"${mentorInformation.company}\"," +
                     "\"careerLevel\":\"${mentorInformation.careerLevel}\"," +
@@ -405,24 +379,34 @@ class RegisterSixthViewModel(application: Application): AndroidViewModel(applica
 
         certifications.toImmutableList()
         Log.d("통신 - 로그인 하기", "menteeRegister - certifications: $certifications")
+        Log.d("통신 - 로그인 하기", "menteeRegister - menteeInformation: ${menteeInformation.toString()}")
 
-        val jsonObject = JSONObject(
-            "{\"school\":\"${menteeInformation.school}\"," +
-                    "\"grade\":\"${menteeInformation.school}\"," +
-                    "\"field\":\"진로\"," +
-                    "\"major\":\"가정교육과\"," +
-                    "\"nickname\":\"${menteeInformation.nickname}\"," +
-                    "\"introduction\":\"${menteeInformation.introduction}\"," +
-                    "\"loginId\":\"${uiState.value.memberId}\"," +
-                    "\"password\":\"${uiState.value.password}\"," +
-                    "\"email\":\"${uiState.value.email}\"}").toString()
+        Log.d("통신 - 로그인 하기", "menteeRegister - menteeInformation.fields: ${menteeInformation.field}")
+        Log.d("통신 - 로그인 하기", "menteeRegister - menteeInformation.major: ${menteeInformation.major}")
 
-        val jsonBody = jsonObject.toRequestBody("application/json".toMediaType())
+        val school: RequestBody = menteeInformation.school.toRequestBody()
+        val grade: RequestBody = menteeInformation.grade.toString().toRequestBody()
+        val fields: RequestBody = menteeInformation.field[0].toRequestBody()
+        val majors: RequestBody = menteeInformation.major[0].toRequestBody()
+        val nickname: RequestBody = menteeInformation.nickname.toRequestBody()
+        val introduction: RequestBody = menteeInformation.introduction.toRequestBody()
+        val loginId: RequestBody = uiState.value.memberId.toRequestBody()
+        val password: RequestBody = uiState.value.password.toRequestBody()
+        val email: RequestBody = uiState.value.email.toRequestBody()
 
         val finalRegisterRequestCall: Call<CommonResponse> = DotoringRegisterAPI.retrofitService.signUpAsMentee(
-            certifications = certifications,
-            saveMentiRqDTO = jsonBody
+            school = school,
+            grade = menteeInformation.grade,
+            fields = fields,
+            majors = majors,
+            nickname = nickname,
+            introduction = introduction,
+            loginId = loginId,
+            password = password,
+            email = email,
+            certifications = certifications
         )
+
         Log.d("통신 - 로그인 하기", "menteeRegister - finalRegisterRequestCall: $finalRegisterRequestCall")
 
         finalRegisterRequestCall.enqueue(object: Callback<CommonResponse> {
@@ -454,7 +438,6 @@ class RegisterSixthViewModel(application: Application): AndroidViewModel(applica
     private fun makePart(uri: Uri): MultipartBody.Part {
 //        val filePath = uri.path
 //        val imageFile = File(getApplication<Application>().filesDir.toString() + filePath.toString())
-
 //        val imageFile = File(getApplication<Application>().filesDir.toString() + "//" + absolutelyPath(uri, getApplication()))
         val imageFile = File(createCopyAndReturnRealPath(uri, getApplication()))
 
@@ -494,14 +477,18 @@ class RegisterSixthViewModel(application: Application): AndroidViewModel(applica
     private fun createCopyAndReturnRealPath(uri: Uri, context: Context): String? {
         val contentResolver: ContentResolver = context.contentResolver
 
+        val mimeType: String? = contentResolver.getType(uri)
+
 
         // 파일 경로를 만듬
         val filePath: String = (context.applicationInfo.dataDir + File.separator
-                + System.currentTimeMillis())
+                + System.currentTimeMillis() + ".png")
         Log.d("파일 경로", "createCopyAndReturnRealPath - filePath: $filePath")
 
         val file = File(filePath)
         Log.d("파일 경로", "createCopyAndReturnRealPath - file: $file")
+        Log.d("파일 경로", "createCopyAndReturnRealPath - contentResolver.getType(file.toUri()): ${contentResolver.getType(file.toUri())}")
+
 
         val bytes = contentResolver.openInputStream(uri).use {
             it?.readBytes()
@@ -514,25 +501,6 @@ class RegisterSixthViewModel(application: Application): AndroidViewModel(applica
         Log.d("파일 경로", "createCopyAndReturnRealPath - file.toURI(): ${file.toURI()}")
         println(file.toUri())
 
-        /*        try {
-            // 매개변수로 받은 uri 를 통해  이미지에 필요한 데이터를 불러 들인다.
-            val inputStream = contentResolver.openInputStream(uri)
-            Log.d("파일 경로", "createCopyAndReturnRealPath - inputStream: $inputStream")
-
-            // 이미지 데이터를 다시 내보내면서 file 객체에  만들었던 경로를 이용한다.
-            val outputStream: OutputStream = FileOutputStream(file)
-            Log.d("파일 경로", "createCopyAndReturnRealPath - outputStream: $outputStream")
-
-            val buf = ByteArray(1024)
-            var len: Int
-            if (inputStream != null) {
-                while (inputStream.read(buf).also { len = it } > 0) outputStream.write(buf, 0, len)
-            }
-            outputStream.close()
-            inputStream?.close()
-        } catch (ignore: IOException) {
-            return null
-        }*/
         return file.absolutePath
     }
 }
