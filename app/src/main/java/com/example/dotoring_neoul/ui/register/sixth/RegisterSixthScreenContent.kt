@@ -56,7 +56,8 @@ fun RegisterSixthScreenContent(
         textFieldWidth = textFieldWidth,
         focusManager = focusManager,
         answerTextSize = answerTextSize,
-        guideTextSize = guideTextSize
+        guideTextSize = guideTextSize,
+        isMentor = isMentor
     )
     Spacer(modifier = Modifier.size(spaceBetweenSurface))
 
@@ -81,7 +82,8 @@ fun RegisterSixthScreenContent(
         textFieldWidth = textFieldWidth,
         focusManager = focusManager,
         answerTextSize = answerTextSize,
-        guideTextSize = guideTextSize
+        guideTextSize = guideTextSize,
+        isMentor = isMentor
     )
 }
 
@@ -93,9 +95,16 @@ private fun SetId(
     textFieldWidth: Dp,
     focusManager: FocusManager,
     answerTextSize: TextUnit,
-    guideTextSize: TextUnit
+    guideTextSize: TextUnit,
+    isMentor: Boolean
 ) {
     val idPattern = "^(?=.*?[0-9])(?=.*?[a-zA-z])[a-zA-Z0-9]{8,12}\$"
+    val primaryColor = if(isMentor) {
+        colorResource(R.color.green)
+    } else {
+        colorResource(R.color.navy)
+    }
+
 
     Column {
         Text(
@@ -145,10 +154,11 @@ private fun SetId(
                 },
                 modifier = Modifier
                     .padding(start = 2.dp, top = 3.dp),
-                color =
-                if(registerSixthUiState.isIdAvailable == IdDuplicationCheckState.DuplicationCheckSuccess) {
-                    colorResource(id = R.color.green) } else {
-                    colorResource(id = R.color.error) }
+                color = if(registerSixthUiState.isIdAvailable == IdDuplicationCheckState.DuplicationCheckSuccess) {
+                    primaryColor
+                } else {
+                    colorResource(id = R.color.error)
+                       }
                 ,
                 fontSize = guideTextSize
             )
@@ -168,7 +178,11 @@ private fun SetPassword(
     isMentor: Boolean
 ) {
     val passwordPattern = "^(?=.*?[a-zA-Z])(?=.*?[0-9])(?=.*?[*!@#$])[a-zA-Z0-9*!@#$]{7,12}\$"
-
+    val primaryColor = if(isMentor) {
+        colorResource(R.color.green)
+    } else {
+        colorResource(R.color.navy)
+    }
 
     Column() {
         Text(
@@ -208,7 +222,7 @@ private fun SetPassword(
             modifier = Modifier
                 .padding(start = 2.dp, top = 3.dp),
             color = if(registerSixthUiState.isPasswordConditionSatisfied) {
-                colorResource(id = R.color.green)
+                primaryColor
             } else {
                 colorResource(id = R.color.error)
             },
@@ -247,11 +261,7 @@ private fun SetPassword(
                         "비밀번호와 같습니다."
                     },
                     tint = if (registerSixthUiState.isPasswordCertified) {
-                        if(isMentor) {
-                            colorResource(R.color.green)
-                        } else {
-                            colorResource(R.color.navy)
-                        }
+                        primaryColor
                     } else {
                         colorResource(R.color.grey_300)
                     }
@@ -278,9 +288,15 @@ private fun SetEmail(
     textFieldWidth: Dp,
     focusManager: FocusManager,
     answerTextSize: TextUnit,
-    guideTextSize: TextUnit
+    guideTextSize: TextUnit,
+    isMentor: Boolean
 ) {
     val emailPattern = "^(([^<>()\\[\\]\\\\.,;:\\s@\"]+(\\.[^<>()\\[\\]\\\\.,;:\\s@\"]+)*)|(\".+\"))@((\\[[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}])|(([a-zA-Z\\-0-9]+\\.)+[a-zA-Z]{2,}))\$"
+    val primaryColor = if(isMentor) {
+        colorResource(R.color.green)
+    } else {
+        colorResource(R.color.navy)
+    }
 
     Column {
         Text(
@@ -373,7 +389,7 @@ private fun SetEmail(
                     color = if(registerSixthUiState.emailValidationState == EmailValidationState.Invalid) {
                         colorResource(id = R.color.error)
                     } else {
-                        colorResource(id = R.color.green)
+                        primaryColor
                     },
                     fontSize = guideTextSize
                 )

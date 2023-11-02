@@ -33,12 +33,8 @@ import java.io.IOException
 import java.net.CookieManager
 
 private const val BASE_URL =
-    "http://192.168.0.32:8080/"
+    "http://10.10.126.100:8080/"
 
-
-//val interceptor = HttpLoggingInterceptor().apply {
-//    level = HttpLoggingInterceptor.Level.BODY
-//}
 
 /**
  * Interceptor에 AppInterceptor를 적용하여 토큰 적용
@@ -105,7 +101,6 @@ class AppInterceptor : Interceptor {
 
 interface DotoringAPIService {
 
-
     /**
      * nicknameValidation: 닉네임 중복확인을 위한 api
      * */
@@ -155,11 +150,6 @@ interface DotoringAPIService {
     @GET("api/majors")
     fun getMajorList(): Call<CommonResponse>
 
-/*    @POST("api/signup-mento")
-    fun signUpAsMento(
-        @Body mentoSingupRequest: SaveMentoRqDTO
-    ): Call<CommonResponse>*/
-
     @Multipart
     @POST("api/signup-mento")
     fun signUpAsMento(
@@ -170,8 +160,16 @@ interface DotoringAPIService {
     @Multipart
     @POST("api/signup-menti")
     fun signUpAsMentee(
+        @Part("password") password: RequestBody,
+        @Part("majors") majors: RequestBody,
+        @Part("loginId") loginId: RequestBody,
+        @Part("school") school: RequestBody,
+        @Part("grade") grade: Int,
+        @Part("nickname") nickname: RequestBody,
         @Part certifications: List<MultipartBody.Part>,
-        @Part ("saveMentiRqDTO")saveMentiRqDTO: RequestBody // HashMap<String, MultipartBody.Part>
+        @Part("fields") fields: RequestBody,
+        @Part("email") email: RequestBody,
+        @Part("introduction") introduction: RequestBody,
     ):Call<CommonResponse>
 
     /**

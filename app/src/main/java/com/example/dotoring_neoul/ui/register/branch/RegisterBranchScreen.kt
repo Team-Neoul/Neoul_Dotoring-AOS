@@ -24,7 +24,16 @@ import com.example.dotoring_neoul.ui.theme.DotoringTheme
 import com.example.dotoring_neoul.ui.util.register.branch.SelectMemberTypeButton
 
 /**
- * 분기 화면 Composable
+ * 분기 화면을 그리기 위한 Composable 함수가 담긴 파일입니다.
+ *
+ * @auther hyeonji
+ * @version 1.0
+ */
+
+/**
+ * 분기 화면을 그리기 위한 Composable 함수
+ *
+ * @param NavHostController navController - 네비게이션 호스트 컨트롤러
  */
 @Composable
 fun RegisterBranchScreen(
@@ -32,7 +41,6 @@ fun RegisterBranchScreen(
 ) {
     val subTitle = stringResource(R.string.branch_logo_our_mentoring)
     val subTitleSize = 20.sp
-
 
     val title = stringResource(R.string.branch_logo_app_name)
     val titleSize = 30.sp
