@@ -6,10 +6,6 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
-import org.json.JSONObject
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
 
 class MentiDetailedViewModel: ViewModel() {
     private val _uiState = MutableStateFlow(MentiDetailedUiState())
@@ -21,14 +17,15 @@ class MentiDetailedViewModel: ViewModel() {
     fun loadMentiInfo(menteeDetail: MenteeDetail) {
         Log.d("업데이트", "loadMentiInfo 실행")
         _uiState.update { currentState ->
-            currentState.copy(profileImage = menteeDetail.profileImage,
+            currentState.copy(
+                profileImage = menteeDetail.profileImage,
                 nickname = menteeDetail.nickname,
-                job = menteeDetail.job,
+                mentoringField = menteeDetail.mentoringField,
                 major = menteeDetail.major,
                 introduction = menteeDetail.introduction,
-                mentoring = menteeDetail.mentoring)
+                mentoring = menteeDetail.mentoringField
+            )
         }
-
     }
     /* fun loadMenteeInfo() {
          val loadMenteeInfoRequestCall: Call<CommonResponse> = DotoringAPI.retrofitService.loadMentiDetailedInfo(id = uiState.value.id)

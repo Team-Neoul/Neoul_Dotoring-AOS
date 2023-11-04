@@ -11,7 +11,6 @@ class MenteeDetail (
     val major: String,
     val nickname: String,
     val profileImage: String,
-    val job: String,
+    val mentoringField: String,
     val introduction: String,
-    val mentoring: String
 ): Parcelable

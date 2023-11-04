@@ -16,6 +16,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.colorResource
@@ -32,29 +33,48 @@ import com.example.dotoring_neoul.navigation.Graph
 import com.example.dotoring_neoul.ui.detail.MenteeDetail
 import com.example.dotoring_neoul.ui.detail.MentiDetailedViewModel
 
-/**
- * 멘티 카드 composable
- */
 @Composable
-fun MenteeCard(mentee: Mentee, navController: NavHostController, menteeDetailedViewModel: MentiDetailedViewModel = viewModel()) {
-
+fun MemberCard(
+    member: Member,
+    navController: NavHostController,
+    menteeDetailedViewModel: MentiDetailedViewModel = viewModel(),
+    isMentor: Boolean
+) {
     val menteeDetailedUiState by menteeDetailedViewModel.uiState.collectAsState()
 
-    val space: Dp = 5.dp
+    val spaceBetweenText: Dp = 5.dp
     val spaceBetweenPhotoAndDescription: Dp = 10.dp
 
-    val nickname = mentee.nickname
-    val profileImage = "http://192.168.0.32:8080/files/${mentee.profileImage}"
+    val nicknameColor = if(isMentor) {
+        colorResource(id = R.color.navy)
+    } else {
+        colorResource(R.color.green)
+    }
+
+    val nickname = member.nickname
+    val profileImage = "http://192.168.0.32:8080/files/${member.profileImage}"
     Log.d("profileImage", "$profileImage")
-    val major = mentee.major
-    val job = mentee.job
-    val introduction = mentee.introduction
+    val major = member.major
+    val mentoringField = member.mentoringField
+    val introduction = member.introduction
 
     Card(
         modifier = Modifier
-            .size(width = 284.dp, height = 127.dp)
+            .size(width = 320.dp, height = 164.dp)
+            .shadow(
+                elevation = 50.dp,
+                ambientColor = Color.DarkGray,
+                spotColor = Color.LightGray,
+                shape = RoundedCornerShape(20.dp)
+            )
             .clickable {
-                val menteeDetail = MenteeDetail(profileImage = profileImage, nickname = nickname, major = major, job = job, introduction = introduction, mentoring = "비대면 멘토링 희망합니다.")
+                val menteeDetail = MenteeDetail(
+                    profileImage = profileImage,
+                    nickname = nickname,
+                    major = major,
+                    mentoringField = mentoringField,
+                    introduction = introduction
+                )
                 navController.currentBackStackEntry?.savedStateHandle?.set(
                     key = "menteeDetail",
                     value = menteeDetail
@@ -64,77 +84,55 @@ fun MenteeCard(mentee: Mentee, navController: NavHostController, menteeDetailedV
         shape = RoundedCornerShape(20.dp),
         border = BorderStroke(width = 0.2.dp, color = Color.LightGray),
         elevation = 4.dp
-
     ) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
         ) {
-            val img = R.drawable.home_profile_sample
-
             Spacer(modifier = Modifier.size(25.dp))
 
             AsyncImage(
                 model = profileImage,
-                contentDescription = "멘티 사진",
+                contentDescription = "유저 사진",
                 contentScale = ContentScale.Crop,
                 modifier = Modifier
                     .size(70.dp)
                     .clip(RoundedCornerShape(20.dp)),
-                placeholder = painterResource(id = R.drawable.home_profile_sample)
+                placeholder = if(isMentor) {
+                    painterResource(id = R.drawable.home_profile_sample_mentor)
+                } else {
+                    painterResource(id = R.drawable.home_profile_sample_mentee)
+                }
             )
-
-            /*            Image(
-                            painter = painterResource(id=R.drawable.menti2),
-                            contentDescription = "멘티 사진",
-                            modifier = Modifier
-                                .size(width = 83.dp, height = 91.dp)
-                                .clip(RoundedCornerShape(20.dp)),
-                            contentScale = ContentScale.Crop
-                        )*/
-
             Spacer(modifier = Modifier.size(spaceBetweenPhotoAndDescription))
 
             Column() {
                 Text(
                     text = nickname,
-                    fontSize = 15.sp,
-                    fontWeight = FontWeight.Bold,
-                    color = colorResource(id = R.color.navy)
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.ExtraBold,
+                    color = nicknameColor
                 )
-
-                Spacer(modifier = Modifier.size(space))
-
+                Spacer(modifier = Modifier.size(spaceBetweenText))
                 Text(
                     text = major,
-                    fontSize = 10.sp
+                    fontSize = 14.sp,
+                    fontWeight = FontWeight.Bold
                 )
-
-                Spacer(modifier = Modifier.size(space))
-
+                Spacer(modifier = Modifier.size(spaceBetweenText))
                 Text(
-                    text = job,
-                    fontSize = 10.sp
+                    text = mentoringField,
+                    fontSize = 12.sp,
+                    fontWeight = FontWeight.Medium,
+                    color = colorResource(R.color.grey_700)
                 )
-
-                Spacer(modifier = Modifier.size(space))
-
+                Spacer(modifier = Modifier.size(spaceBetweenText))
                 Text(
                     text = introduction,
-                    fontSize = 10.sp
+                    fontSize = 10.sp,
+                    fontWeight = FontWeight.Light,
+                    color = colorResource(R.color.grey_700)
                 )
             }
-
-
         }
     }
 }
-
-
-/*
-@Preview
-@Composable
-private fun HomePreview() {
-    DotoringTheme {
-        MenteeCard((Mentee(nickname = "현지", profileImage = R.drawable.sample, major = "소프트웨어공학과", job = "개발자", introduction = "하이")), navController = rememberNavController())
-    }
-}*/
