@@ -110,7 +110,14 @@ fun FirstRegisterScreen(
                 title = titleText,
                 selectedDataList = selectedDataList,
                 optionDataList = optionDataList,
-                registerFirstViewModel = registerFirstViewModel,
+                onResetButtonClick = { registerFirstViewModel.removeAll(selectedDataList) },
+                onSelectedDataClick = { item ->
+                    registerFirstViewModel.remove(selectedDataList, item)
+                                      },
+                onOptionDataClick = { option ->
+                    registerFirstViewModel.add(selectedDataList, option)
+                    Log.d("리스트", "selectedDataList: $selectedDataList")
+                                    },
                 isMentor = isMentor
             ) },
         sheetState = filterBottomSheetState,

@@ -4,7 +4,7 @@ import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import com.example.dotoring_neoul.ui.home.HomeScreen
+import com.example.dotoring_neoul.navigation.bottom_navigation_bar.DotoringScreenNavigationBar
 
 /**
  * 전체 네비게이션 그래프 정의
@@ -18,7 +18,7 @@ fun RootNavigationGraph(navController: NavHostController) {
     ) {
         authNavGraph(navController = navController)
         composable(route = Graph.HOME) {
-            HomeScreen()
+            DotoringScreenNavigationBar()
         }
     }
 }

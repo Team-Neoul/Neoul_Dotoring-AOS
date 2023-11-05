@@ -111,7 +111,7 @@ private fun SetId(
             text = stringResource(id = R.string.register6_set_ID),
             fontSize = answerTextSize
         )
-        Spacer(modifier = androidx.compose.ui.Modifier.size(spaceBetweenTitleAndContent))
+        Spacer(modifier = Modifier.size(spaceBetweenTitleAndContent))
 
 
         Column() {

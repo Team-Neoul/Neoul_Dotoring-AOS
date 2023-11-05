@@ -4,14 +4,14 @@ import android.os.Parcelable
 import kotlinx.parcelize.Parcelize
 
 /**
- * 멘티 세부 정보
+ * 멤버 세부 정보
  */
 @Parcelize
-class MenteeDetail (
-    val major: String,
-    val nickname: String,
+class MemberDetailInformation (
     val profileImage: String,
-    val job: String,
-    val introduction: String,
-    val mentoring: String
+    val major: String,
+//    val grade: String,
+    val nickname: String,
+    val mentoringField: String,
+    val introduction: String
 ): Parcelable

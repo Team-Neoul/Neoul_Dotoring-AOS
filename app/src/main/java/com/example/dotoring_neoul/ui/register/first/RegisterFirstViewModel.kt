@@ -31,9 +31,13 @@ class RegisterFirstViewModel(): ViewModel() {
     val uiState: StateFlow<RegisterFirstUiState> = _uiState.asStateFlow()
 
 
-
+    /**
+     * 화면에 선택한 학과와 멘토링 분야 리스트를 보여주기 위해 String으로 변환하는 함수
+     *
+     * @param List<String> list - 선택한 학과 혹은 멘토링 분야의 리스트
+    */
     fun toString(list: List<String>): String {
-        var rString: String = ""
+        var rString = ""
         list.forEach {
             rString += "$it, "
         }
@@ -43,6 +47,7 @@ class RegisterFirstViewModel(): ViewModel() {
             return ""
         }
     }
+
     fun removeAll(list: List<String>) {
         if(list == selectedMajorList) {
             _selectedMajorList.clear()
@@ -147,7 +152,6 @@ class RegisterFirstViewModel(): ViewModel() {
             }
         }
         Log.d("다음 버튼 활성화 함수", "uiState.value.fillMajorField: ${uiState.value.fillMajorField}")
-
     }
 
     fun enableNextButton() {

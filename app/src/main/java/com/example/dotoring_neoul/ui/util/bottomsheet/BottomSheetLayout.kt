@@ -1,6 +1,5 @@
 package com.example.dotoring_neoul.ui.util.bottomsheet
 
-import android.util.Log
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -26,9 +25,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.dotoring.R
-import com.example.dotoring_neoul.ui.register.first.RegisterFirstViewModel
 import com.example.dotoring_neoul.ui.theme.DotoringTheme
 
 @Composable
@@ -36,8 +33,11 @@ fun BottomSheetLayout(
     title: String,
     selectedDataList: List<String>,
     optionDataList: List<String>,
-    registerFirstViewModel: RegisterFirstViewModel,
-    isMentor: Boolean
+    isMentor: Boolean,
+    onResetButtonClick: () -> Unit,
+    onSelectedDataClick: (String) -> Unit,
+    onOptionDataClick: (String) -> Unit
+
 ) {
     val sideSpace = 20.dp
     val contentColor = colorResource(R.color.white)
@@ -71,7 +71,7 @@ fun BottomSheetLayout(
                 )
                 Spacer(modifier = Modifier.weight(1f))
                 ResetButton(
-                    onClick = { registerFirstViewModel.removeAll(selectedDataList) },
+                    onClick = onResetButtonClick,
                     isMentor = isMentor
                 )
             }
@@ -82,7 +82,7 @@ fun BottomSheetLayout(
                 items(selectedDataList) {item ->
                     BottomSheetSelectedData(
                         selectedData = item,
-                        onClick = { registerFirstViewModel.remove(selectedDataList, item) }
+                        onClick = { onSelectedDataClick(item) }
                     )
                 }
             }
@@ -93,8 +93,7 @@ fun BottomSheetLayout(
                 items(optionDataList) {option ->
                     BottomSheetOptionList(option) {
                         if(option !in selectedDataList) {
-                            registerFirstViewModel.add(selectedDataList, option)
-                            Log.d("리스트", "selectedDataList: $selectedDataList")
+                            onOptionDataClick(option)
                         }
                     }
                     Spacer(modifier = Modifier.size(3.dp))
@@ -155,11 +154,13 @@ private fun ResetButton(onClick: () -> Unit, isMentor: Boolean) {
 private fun RegisterScreenPreview() {
     DotoringTheme {
         BottomSheetLayout(
-            "뀨뀨",
-            listOf("test1", "test2"),
-            listOf("test1", "test2"),
-            viewModel(),
-            true
+            title = "뀨뀨",
+            selectedDataList = listOf("test1", "test2"),
+            optionDataList = listOf("test1", "test2"),
+            onResetButtonClick = {},
+            onSelectedDataClick = {},
+            onOptionDataClick = {},
+            isMentor = false
         )
     }
 }
