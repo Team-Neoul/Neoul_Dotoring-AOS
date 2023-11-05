@@ -28,7 +28,7 @@ fun HomeNavGraph(navController: NavHostController, modifier: Modifier = Modifier
             MainScreen(navController = navController)
         }
 
-        composable(route = BottomNavScreen.Calendar.route) {
+        composable(route = BottomNavScreen.Matching.route) {
 
         }
         composable(route = BottomNavScreen.Message.route) {
