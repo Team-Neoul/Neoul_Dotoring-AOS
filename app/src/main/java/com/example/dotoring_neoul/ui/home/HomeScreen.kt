@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Button
@@ -22,6 +23,7 @@ import androidx.compose.material.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
@@ -51,9 +53,12 @@ fun HomeScreen_(
     navController: NavHostController,
     onMajorClick: () -> Unit,
     onFieldClick: () -> Unit,
-    homeUiState: HomeUiState
+    homeUiState: HomeUiState,
+    homeViewModel: HomeViewModel
 ) {
     val spaceBetweenTitleAndTab = 24.dp
+    val spaceBetweenTabAndList = 17.dp
+    val titlePadding = 43.dp
 
     Box(
         modifier = Modifier.fillMaxSize()
@@ -68,6 +73,7 @@ fun HomeScreen_(
     Row {
         Spacer(modifier = Modifier.weight(1f))
         Column {
+            Spacer(modifier = Modifier.height(titlePadding))
             HomeTitle(isMentor)
             Spacer(modifier = Modifier.height(spaceBetweenTitleAndTab))
 
@@ -78,12 +84,14 @@ fun HomeScreen_(
                 hasChosenMajor = homeUiState.hasChosenMajor,
                 hasChosenField = homeUiState.hasChosenField
             )
+            Spacer(modifier = Modifier.height(spaceBetweenTabAndList))
 
-            MemberList()
-            MenteeList(
-                menteeList = homeUiState.mentiList,
+            MemberList_()
+            MemberList(
+                memberList = homeUiState.memberList,
                 navController = navController,
                 isMentor = isMentor
+                //onListBottomReached = homeViewModel.fetchMoreItems()
             )
         }
         Spacer(modifier = Modifier.weight(1f))
@@ -155,7 +163,7 @@ private fun Tab(
 }
 
 @Composable
-private fun MemberList() {
+private fun MemberList_() {
 
 }
 
@@ -204,14 +212,17 @@ fun MainScreen(
     }
 
     val contentColor = colorResource(R.color.white)
+
     LaunchedEffect(Unit) {
         Log.d("홈 통신", "loadMentiList - 홈통신 실행")
 
-        homeViewModel.loadMentiList()
+        if(isMentor) {
+            homeViewModel.loadMenteeList()
+        } else {
+            homeViewModel.loadMentorList()
+        }
         homeViewModel.loadMajorList()
         homeViewModel.loadFieldList()
-        Log.d("홈","loadMentiList - 성공 확인")
-
 
         // State Change Callback
         snapshotFlow { filterBottomSheetState.isVisible }.collect { isVisible ->
@@ -276,7 +287,8 @@ fun MainScreen(
                 }
                 Log.d("리스트 확인", "HomeScreen - homeViewModel.selectedMajorList: ${homeViewModel.selectedMajorList.toList()}")
                 Log.d("리스트 확인", "HomeScreen - homeUiState.selectedMajorList: ${homeUiState.chosenMajorList.toList()}")
-            }
+            },
+            homeViewModel = homeViewModel
         )
     }
 }
@@ -330,27 +342,66 @@ private fun FilteringButton(
  * 멘티 카드 리스트로 보여주는 Composable
  */
 @Composable
-private fun MenteeList(
-    menteeList: List<Member>,
+private fun MemberList(
+    memberList: List<Member>,
     navController: NavHostController,
-    isMentor: Boolean
+    isMentor: Boolean,
+//    onListBottomReached: () -> Unit
 ) {
+    //val listState = rememberLazyListState()
     LazyColumn() {
-        items(menteeList) { mentee ->
+        items(memberList) { member ->
             MemberCard(
-                member = mentee,
+                member = member,
                 navController = navController,
                 isMentor = isMentor
             )
             Spacer(modifier = Modifier.size(8.dp))
         }
     }
+
+    /*listState.OnBottomReached(buffer = 2) {
+        onListBottomReached()
+    }*/
 }
 
+@Composable
+fun LazyListState.OnBottomReached(
+    buffer: Int = 0,
+    loadMore: () -> Unit
+) {
+    // Buffer must be positive.
+    // Or our list will never reach the bottom.
+    require(buffer >= 0) { "buffer cannot be negative, but was $buffer" }
+
+    val shouldLoadMore = remember {
+        derivedStateOf {
+
+            // get last visible item
+            val lastVisibleItem = layoutInfo.visibleItemsInfo.lastOrNull()
+                ?:
+                // list is empty
+                // return false here if loadMore should not be invoked if the list is empty
+                return@derivedStateOf true
+
+            // Check if last visible item is the last item in the list
+            lastVisibleItem.index >=  layoutInfo.totalItemsCount - 1 - buffer
+        }
+    }
+
+    // Convert the state into a cold flow and collect
+    LaunchedEffect(shouldLoadMore){
+        snapshotFlow { shouldLoadMore.value }
+            .collect {
+                // if should load more, then invoke loadMore
+                if (it) loadMore()
+            }
+    }
+}
 
 @Preview(showBackground = true)
 @Composable
-fun HomeScreenPreview() {
+private fun HomeScreenPreview() {
     DotoringTheme() {
         MainScreen(navController = rememberNavController())
     }
@@ -364,7 +415,8 @@ fun HomeScreenPreview_() {
             homeUiState = HomeUiState(),
             navController = rememberNavController(),
             onMajorClick = {},
-            onFieldClick = {}
+            onFieldClick = {},
+            homeViewModel = HomeViewModel()
         )
     }
 }
