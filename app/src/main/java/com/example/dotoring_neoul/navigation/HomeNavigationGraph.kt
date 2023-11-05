@@ -11,8 +11,8 @@ import androidx.navigation.compose.composable
 import com.example.dotoring_neoul.ui.home.MainScreen
 import com.example.dotoring_neoul.ui.message.messageBox.MessageBoxScreen
 import com.example.dotoring_neoul.ui.message.messageDetail.MessageDetailScreen
-import com.example.dotoring_neoul.ui.detail.MenteeDetail
-import com.example.dotoring_neoul.ui.detail.MenteeDetailed
+import com.example.dotoring_neoul.ui.detail.MemberDetailInformation
+import com.example.dotoring_neoul.ui.detail.MemberDetailedScreen
 
 /**
  * 로그인 이후 화면 네비게이션 그래프
@@ -55,10 +55,10 @@ fun NavGraphBuilder.mentiDetailNavGraph(navController: NavHostController) {
     ) {
         composable(route = MentiDetailScreen.MentiDetailed.route) {
             val result =
-                navController.previousBackStackEntry?.savedStateHandle?.get<MenteeDetail>("menteeDetail")
+                navController.previousBackStackEntry?.savedStateHandle?.get<MemberDetailInformation>("menteeDetail")
 
             if(result != null) {
-                MenteeDetailed(navController = navController, menteeDetail = result)
+                MemberDetailedScreen(memberDetailInformation = result)
             }
         }
     }
