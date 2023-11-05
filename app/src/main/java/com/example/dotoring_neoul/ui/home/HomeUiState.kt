@@ -5,7 +5,7 @@ package com.example.dotoring_neoul.ui.home
  * 홈화면 UiState
  */
 data class HomeUiState(
-    val mentiList: List<Member> = listOf<Member> (),
+    val memberList: List<Member> = listOf<Member> (),
     val majors: List<String> = listOf(),
     val fields: List<String> = listOf(),
 
