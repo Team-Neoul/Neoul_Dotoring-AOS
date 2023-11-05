@@ -205,7 +205,7 @@ fun MainScreen(
     val optionDataList = if(isMajorBottomSheet) {
         homeUiState.optionMajorList
     } else {
-        homeUiState.optionMajorList
+        homeUiState.optionFieldList
     }
 
     val sheetRadius = RoundedCornerShape(topStart = 40.dp, topEnd = 40.dp)
