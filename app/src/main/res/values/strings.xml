@@ -119,20 +119,21 @@
     <string name="register6_verify">인증하기</string>
     <string name="register6_verification_error">인증 코드가 달라요.</string>
     <string name="register6_verification_successed">인증에 성공했습니다.</string>
-
-
     <string name="register6_to_login_page">로그인하러 가기</string>
 
     <!--홈 화면 관련 string resource-->
     <string name="home_for_u_mentor"><font color="#8BD045">현지</font> 님을 위한</string>
     <string name="home_for_u_mentee"><font color="#092D58">현지</font> 님을 위한</string>
     <string name="home_recommended_mentee">추천멘티</string>
+    <string name="home_recommended_mentor">추천멘토</string>
     <string name="home_major">학과</string>
     <string name="home_mentoring_objectives">희망 멘토링</string>
     <string name="home_modal_major_filter">학과 필터</string>
     <string name="home_modal_field_filter">멘토링 필터</string>
 
-
+    <!--멘토 멘티 디테일 화면 관련 string resource-->
+    <string name="member_detail_mentoring_field">희망 멘토링 분야</string>
+    <string name="member_detail_introduce">한 줄 소개</string>
 
     <!--아이디 찾기 화면 관련 string resource-->
     <string name="find_id">아이디 찾기</string>
