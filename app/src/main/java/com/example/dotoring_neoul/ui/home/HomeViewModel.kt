@@ -139,63 +139,123 @@ class HomeViewModel: ViewModel() {
     /**
      * 멘티 리스트 로딩
      */
-    fun loadMentiList() {
-        Log.d("홈통신", "loadMentiList함수 실행")
+    fun loadMenteeList() {
+        Log.d("멘티 리스트 로드", "loadMenteeList함수 실행")
 
-        DotoringAPI.retrofitService.searchMentee()
+        DotoringAPI.retrofitService.getMentee()
             .enqueue(object : Callback<CommonResponse> {
                 override fun onResponse(call: Call<CommonResponse>, response: Response<CommonResponse>) {
-                    Log.d("홈통신", "loadMentiList - onResponse")
-                    Log.d("홈통신", "loadMentiList - response.code(): ${response.code()}")
-                    Log.d("홈통신", "loadMentiList - response.body(): ${response.body()}")
+                    Log.d("멘티 리스트 로드", "loadMenteeList - onResponse")
+                    Log.d("멘티 리스트 로드", "loadMenteeList - response.code(): ${response.code()}")
+                    Log.d("멘티 리스트 로드", "loadMenteeList - response.body(): ${response.body()}")
 
-                    val jsonObject = Gson().toJson(response.body())
-                    Log.d("홈통신", "loadMentiList - jsonObject: $jsonObject")
+                    val json = Gson().toJson(response.body())
+                    Log.d("멘티 리스트 로드", "loadMenteeList - json: $json")
 
-                    val jo = JSONObject(jsonObject.toString())
-                    Log.d("홈통신", "loadMentiList - jo: $jo")
+                    val jsonObject = JSONObject(json.toString())
+                    Log.d("멘티 리스트 로드", "loadMenteeList - jsonObject: $jsonObject")
 
-                    val jsonObjectSuccess = jo.getBoolean("success")
+                    val jsonObjectSuccess = jsonObject.getBoolean("success")
 
                     if (jsonObjectSuccess) {
-                        Log.d("홈통신", "loadMentiList - success")
+                        Log.d("멘티 리스트 로드", "loadMenteeList - success")
 
-                        val responseJsonObject = jo.getJSONObject("response")
-                        Log.d("홈통신", "responseJsonObject: $responseJsonObject")
+                        val responseJsonObject = jsonObject.getJSONObject("response")
+                        Log.d("멘티 리스트 로드", "responseJsonObject: $responseJsonObject")
 
-                        val mentiList = responseJsonObject.optJSONArray("content")
-                        Log.d("홈통신", "mentiList: $mentiList")
+                        val menteeList = responseJsonObject.optJSONArray("content")
+                        Log.d("멘티 리스트 로드", "menteeList: $menteeList")
 
-                        if (mentiList != null && mentiList.length() > 0) {
-                            val uiMentiList: MutableList<Member> = mutableListOf()
+                        if (menteeList != null && menteeList.length() > 0) {
+                            val uiMentorList: MutableList<Member> = mutableListOf()
 
-                            for (i in 0 until mentiList.length()) {
-                                val mentiObject = mentiList.optJSONObject(i)
+                            for (i in 0 until menteeList.length()) {
+                                val menteeObject = menteeList.optJSONObject(i)
 
                                 val mentee = Member(
-//                                    id = mentiObject.getLong("id"),
-                                    nickname = mentiObject.getString("nickname"),
-                                    profileImage = mentiObject.getString("profileImage"),
-                                    major = mentiObject.getString("major"),
-                                    mentoringField = mentiObject.getString("job"),
-                                    introduction = mentiObject.getString("introduction")
+                                    nickname = menteeObject.getString("nickname"),
+                                    profileImage = menteeObject.getString("profileImage"),
+                                    majors = menteeObject.getString("majors"),
+                                    fields = menteeObject.getString("fields"),
+                                    introduction = menteeObject.getString("introduction")
                                 )
 
-                                uiMentiList.add(mentee)
+                                uiMentorList.add(mentee)
                             }
 
                             _uiState.update { currentState ->
-                                currentState.copy(mentiList = uiMentiList)
+                                currentState.copy(memberList = uiMentorList)
                             }
                         }
                     } else {
-                        Log.d("홈통신", "응답이 실패하거나 데이터가 없습니다.")
-
+                        Log.d("멘티 리스트 로드", "응답이 실패하거나 데이터가 없습니다.")
                     }
                 }
 
                 override fun onFailure(call: Call<CommonResponse>, t: Throwable) {
-                    Log.d("홈통신", "통신 실패: $t")
+                    Log.d("멘티 리스트 로드", "통신 실패: $t")
+                }
+            })
+    }
+
+    /**
+     * 멘토 리스트 로딩
+     */
+    fun loadMentorList() {
+        Log.d("멘토 리스트 로드", "loadMentorList함수 실행")
+
+        DotoringAPI.retrofitService.getMentor()
+            .enqueue(object : Callback<CommonResponse> {
+                override fun onResponse(call: Call<CommonResponse>, response: Response<CommonResponse>) {
+                    Log.d("멘토 리스트 로드", "loadMentorList - onResponse")
+                    Log.d("멘토 리스트 로드", "loadMentorList - response.code(): ${response.code()}")
+                    Log.d("멘토 리스트 로드", "loadMentorList - response.body(): ${response.body()}")
+
+                    val json = Gson().toJson(response.body())
+                    Log.d("멘토 리스트 로드", "loadMentorList - json: $json")
+
+                    val jsonObject = JSONObject(json.toString())
+                    Log.d("멘토 리스트 로드", "loadMentorList - jsonObject: $jsonObject")
+
+                    val jsonObjectSuccess = jsonObject.getBoolean("success")
+
+                    if (jsonObjectSuccess) {
+                        Log.d("멘토 리스트 로드", "loadMentorList - success")
+
+                        val responseJsonObject = jsonObject.getJSONObject("response")
+                        Log.d("멘토 리스트 로드", "responseJsonObject: $responseJsonObject")
+
+                        val mentorList = responseJsonObject.optJSONArray("content")
+                        Log.d("멘토 리스트 로드", "mentorList: $mentorList")
+
+                        if (mentorList != null && mentorList.length() > 0) {
+                            val uiMentorList: MutableList<Member> = mutableListOf()
+
+                            for (i in 0 until mentorList.length()) {
+                                val mentorObject = mentorList.optJSONObject(i)
+
+                                val mentor = Member(
+                                    nickname = mentorObject.getString("nickname"),
+                                    profileImage = mentorObject.getString("profileImage"),
+                                    majors = mentorObject.getString("major"),
+                                    fields = mentorObject.getString("job"),
+                                    introduction = mentorObject.getString("introduction")
+                                )
+
+                                uiMentorList.add(mentor)
+                            }
+
+                            _uiState.update { currentState ->
+                                currentState.copy(memberList = uiMentorList)
+                            }
+                        }
+                    } else {
+                        Log.d("멘토 리스트 로드", "응답이 실패하거나 데이터가 없습니다.")
+                    }
+                }
+
+                override fun onFailure(call: Call<CommonResponse>, t: Throwable) {
+                    Log.d("멘토 리스트 로드", "통신 실패: $t")
                 }
             })
     }
@@ -240,8 +300,8 @@ class HomeViewModel: ViewModel() {
 //                                    id = mentiObject.getLong("id"),
                                     nickname = mentiObject.getString("nickname"),
                                     profileImage = mentiObject.getString("profileImage"),
-                                    major = mentiObject.getString("major"),
-                                    mentoringField = mentiObject.getString("job"),
+                                    majors = mentiObject.getString("major"),
+                                    fields = mentiObject.getString("job"),
                                     introduction = mentiObject.getString("introduction")
                                 )
 
@@ -249,7 +309,7 @@ class HomeViewModel: ViewModel() {
                             }
 
                             _uiState.update { currentState ->
-                                currentState.copy(mentiList = uiMentiList)
+                                currentState.copy(memberList = uiMentiList)
                             }
                         }
                     } else {
