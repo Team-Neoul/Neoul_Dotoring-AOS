@@ -49,7 +49,7 @@ import kotlinx.coroutines.launch
 
 @Composable
 fun HomeScreen_(
-    isMentor: Boolean = true,
+    isMentor: Boolean,
     navController: NavHostController,
     onMajorClick: () -> Unit,
     onFieldClick: () -> Unit,
@@ -106,7 +106,7 @@ fun HomeScreen_(
  */
 @Composable
 private fun HomeTitle(
-    isMentor: Boolean = true
+    isMentor: Boolean
 ) {
     val mediumTextSize = 24.sp
     val boldTextSize = 34.sp
@@ -124,7 +124,11 @@ private fun HomeTitle(
         Spacer(modifier = Modifier.size(5.dp))
 
         Text(
-            text = stringResource(id = R.string.home_recommended_mentee),
+            text = if(isMentor) {
+                stringResource(id = R.string.home_recommended_mentee)
+            } else {
+                stringResource(id = R.string.home_recommended_mentor)
+            },
             fontSize = boldTextSize,
             fontWeight = FontWeight.ExtraBold
         )
@@ -416,7 +420,8 @@ fun HomeScreenPreview_() {
             navController = rememberNavController(),
             onMajorClick = {},
             onFieldClick = {},
-            homeViewModel = HomeViewModel()
+            homeViewModel = HomeViewModel(),
+            isMentor = false
         )
     }
 }
