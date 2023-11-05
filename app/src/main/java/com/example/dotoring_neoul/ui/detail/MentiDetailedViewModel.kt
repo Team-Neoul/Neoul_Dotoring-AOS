@@ -23,7 +23,6 @@ class MentiDetailedViewModel: ViewModel() {
                 mentoringField = menteeDetail.mentoringField,
                 major = menteeDetail.major,
                 introduction = menteeDetail.introduction,
-                mentoring = menteeDetail.mentoringField
             )
         }
     }

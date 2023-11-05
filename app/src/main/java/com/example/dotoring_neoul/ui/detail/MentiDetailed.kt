@@ -138,7 +138,7 @@ fun MenteeDetailed(menteeDetailedViewModel: MentiDetailedViewModel = viewModel()
                             Spacer(modifier = Modifier.size(8.dp))
 
                             Text(
-                                text = menteeDetailedUiState.job,
+                                text = menteeDetailedUiState.mentoringField,
                                 fontSize = 13.sp,
                                 fontWeight = FontWeight.Normal,
                                 color = colorResource(id = R.color.black)
@@ -172,7 +172,7 @@ fun MenteeDetailed(menteeDetailedViewModel: MentiDetailedViewModel = viewModel()
                                 )
                                 Spacer(modifier = Modifier.size(8.dp))
                                 Text(
-                                    text = menteeDetailedUiState.mentoring,
+                                    text = menteeDetailedUiState.mentoringField,
                                     fontSize = 13.sp,
                                     fontWeight = FontWeight.Normal
                                 )
