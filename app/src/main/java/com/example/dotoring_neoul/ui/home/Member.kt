@@ -8,5 +8,6 @@ data class Member(
     val profileImage: String,
     val majors: String,
     val fields: String,
-    val introduction: String
+    val introduction: String,
+//    val grade: String
 )

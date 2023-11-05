@@ -1,6 +1,5 @@
 package com.example.dotoring_neoul.ui.home
 
-import android.util.Log
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -34,15 +33,15 @@ import androidx.navigation.NavHostController
 import coil.compose.AsyncImage
 import com.example.dotoring.R
 import com.example.dotoring_neoul.navigation.Graph
-import com.example.dotoring_neoul.ui.detail.MenteeDetail
-import com.example.dotoring_neoul.ui.detail.MentiDetailedViewModel
+import com.example.dotoring_neoul.ui.detail.MemberDetailInformation
+import com.example.dotoring_neoul.ui.detail.MemberDetailedViewModel
 import com.example.dotoring_neoul.ui.theme.DotoringTheme
 
 @Composable
 fun MemberCard(
     member: Member,
     navController: NavHostController,
-    menteeDetailedViewModel: MentiDetailedViewModel = viewModel(),
+    menteeDetailedViewModel: MemberDetailedViewModel = viewModel(),
     isMentor: Boolean
 ) {
     val menteeDetailedUiState by menteeDetailedViewModel.uiState.collectAsState()
@@ -58,19 +57,17 @@ fun MemberCard(
     }
 
     val nickname = member.nickname
-    val profileImage = "http://172.30.112.59:8080/profile/${member.profileImage}"
-    Log.d("profileImage", "$profileImage")
+    val profileImage = "http://192.168.0.60:8080/profile/${member.profileImage}"
     val majors = member.majors
         .replace("[", "")
         .replace("]", "")
         .replace("\"", "")
-    Log.d("majors", "$majors")
     val fields = member.fields
         .replace("[", "")
         .replace("]", "")
         .replace("\"", "")
-    Log.d("fields", "$fields")
     val introduction = member.introduction
+ //   val grade = member.grade.toString() + "학년"
 
     Column() {
         Card(
@@ -83,16 +80,17 @@ fun MemberCard(
                     shape = RoundedCornerShape(20.dp)
                 )
                 .clickable {
-                    val menteeDetail = MenteeDetail(
+                    val memberDetail = MemberDetailInformation(
                         profileImage = profileImage,
                         nickname = nickname,
                         major = majors,
                         mentoringField = fields,
-                        introduction = introduction
+                        introduction = introduction,
+     //                   grade = grade
                     )
                     navController.currentBackStackEntry?.savedStateHandle?.set(
                         key = "menteeDetail",
-                        value = menteeDetail
+                        value = memberDetail
                     )
                     navController.navigate(Graph.MENTI_DETAILS)
                 }
