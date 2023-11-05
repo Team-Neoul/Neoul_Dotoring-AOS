@@ -6,7 +6,7 @@ package com.example.dotoring_neoul.ui.home
 data class Member(
     val nickname: String,
     val profileImage: String,
-    val major: String,
-    val mentoringField: String,
+    val majors: String,
+    val fields: String,
     val introduction: String
 )
