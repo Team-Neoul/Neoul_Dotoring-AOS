@@ -1,5 +1,6 @@
 package com.example.dotoring_neoul.navigation
 
+import android.util.Log
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
@@ -79,13 +80,22 @@ fun NavGraphBuilder.authNavGraph(navController: NavHostController) {
                 }
             )
         ) { backStackEntry ->
-            val isMentor = backStackEntry.arguments?.getBoolean("isMentor")?: true
-            val mentorInformation = if(isMentor) { navController.previousBackStackEntry?.savedStateHandle?.get<MentorInformation>("mentorInfo") } else {
+            val isMentor = backStackEntry.arguments?.getBoolean("isMentor") ?: true
+            Log.d("네비게이션", "네비게이션 테스트 - AuthNavigationGraph isMentor:$isMentor")
+
+            val mentorInformation = if(isMentor) {
+                navController.previousBackStackEntry?.savedStateHandle?.get<MentorInformation>("mentorInfo")
+            } else {
                 null
             }
-            val menteeInformation = if(!isMentor) { navController.previousBackStackEntry?.savedStateHandle?.get<MenteeInformation>("menteeInfo") } else {
+            Log.d("네비게이션", "네비게이션 테스트 - AuthNavigationGraph mentorInformation:$mentorInformation")
+
+            val menteeInformation = if(!isMentor) {
+                navController.previousBackStackEntry?.savedStateHandle?.get<MenteeInformation>("menteeInfo")
+            } else {
                 null
             }
+            Log.d("네비게이션", "네비게이션 테스트 - AuthNavigationGraph menteeInformation:$menteeInformation")
 
 
             ThirdRegisterScreen(navController = navController, mentorInformation = mentorInformation, menteeInformation = menteeInformation, isMentor = isMentor)
