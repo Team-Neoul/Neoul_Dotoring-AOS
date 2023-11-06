@@ -59,11 +59,11 @@ fun ThirdRegisterScreen(
             Spacer(modifier = Modifier.weight(1.5f))
 
 
-            if(isMentor) {
-                RegisterScreenNextButton(
-                    onClick = {
+            RegisterScreenNextButton(
+                onClick = {
+                    if(isMentor) {
                         if (mentorInformation != null) {
-                            val mentor = MentorInformation(
+                            val mentorInfo = MentorInformation(
                                 company = mentorInformation.company,
                                 careerLevel = mentorInformation.careerLevel,
                                 field = mentorInformation.field,
@@ -74,19 +74,14 @@ fun ThirdRegisterScreen(
                             )
                             navController.currentBackStackEntry?.savedStateHandle?.set(
                                 key = "mentorInfo",
-                                value = mentor
+                                value = mentorInfo
                             )
                             navController.navigate(AuthScreen.Register4.passScreenState(isMentor))
+                            Log.d("네비게이션", "네비게이션 테스트 - onClick isMentor")
                         }
-                    },
-                    enabled = registerThirdUiState.nextButtonState,
-                    isMentor = isMentor
-                )
-            } else {
-                RegisterScreenNextButton(
-                    onClick = {
+                    } else {
                         if (menteeInformation != null) {
-                            val mentee = MenteeInformation(
+                            val menteeInfo = MenteeInformation(
                                 school = menteeInformation.school,
                                 grade = menteeInformation.grade,
                                 field = menteeInformation.field,
@@ -96,15 +91,16 @@ fun ThirdRegisterScreen(
                             )
                             navController.currentBackStackEntry?.savedStateHandle?.set(
                                 key = "menteeInfo",
-                                value = mentee
+                                value = menteeInfo
                             )
                             navController.navigate(AuthScreen.Register4.passScreenState(isMentor))
+                            Log.d("네비게이션", "네비게이션 테스트 - onClick !isMentor")
                         }
-                    },
-                    enabled = registerThirdUiState.nextButtonState,
-                    isMentor = isMentor
-                )
-            }
+                    }
+                },
+                enabled = registerThirdUiState.nextButtonState,
+                isMentor = isMentor
+            )
             Spacer(modifier = Modifier.weight(8f))
         }
         Spacer(modifier = Modifier.weight(1f))
