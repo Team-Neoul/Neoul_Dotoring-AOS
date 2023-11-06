@@ -33,7 +33,7 @@ import java.io.IOException
 import java.net.CookieManager
 
 private const val BASE_URL =
-    "http://10.10.126.100:8080/"
+    "http://192.168.0.60:8080/"
 
 
 /**
@@ -182,16 +182,16 @@ interface DotoringAPIService {
     ): Call<CommonResponse>*/
 
     /**
-     * 홈화면에서 멘티를 받아오는 API
-     */
-    @GET("api/menti")
-    fun getMentee(): Call<CommonResponse>
-
-    /**
      * 홈화면에서 멘토를 받아오는 API
      */
-    @GET("api/mento")
+    @GET("api/menti")
     fun getMentor(): Call<CommonResponse>
+
+    /**
+     * 홈화면에서 멘티를 받아오는 API
+     */
+    @GET("api/mento")
+    fun getMentee(): Call<CommonResponse>
 
     @GET("api/menti")
     fun searchMenteeWithMajors(
@@ -209,13 +209,13 @@ interface DotoringAPIService {
         @Query("jobs") jobs: String
     ): Call<CommonResponse>
 
-    @GET("api/mento/{id}")
-    fun loadMentoDetailedInfo(
-        @Path("id") userId: String
+    @GET("api/menti/{id}")
+    fun loadMenteeDetailedInfo(
+        @Path("id") id: Int
     ): Call<CommonResponse>
 
-    @GET("api/menti/{id}")
-    fun loadMentiDetailedInfo(
+    @GET("api/mento/{id}")
+    fun loadMentorDetailedInfo(
         @Path("id") id: Int
     ): Call<CommonResponse>
 

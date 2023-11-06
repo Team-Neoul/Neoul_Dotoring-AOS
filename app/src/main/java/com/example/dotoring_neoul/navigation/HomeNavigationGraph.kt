@@ -11,7 +11,6 @@ import androidx.navigation.compose.composable
 import com.example.dotoring_neoul.ui.home.MainScreen
 import com.example.dotoring_neoul.ui.message.messageBox.MessageBoxScreen
 import com.example.dotoring_neoul.ui.message.messageDetail.MessageDetailScreen
-import com.example.dotoring_neoul.ui.detail.MemberDetailInformation
 import com.example.dotoring_neoul.ui.detail.MemberDetailedScreen
 
 /**
@@ -54,11 +53,14 @@ fun NavGraphBuilder.mentiDetailNavGraph(navController: NavHostController) {
         startDestination = MentiDetailScreen.MentiDetailed.route
     ) {
         composable(route = MentiDetailScreen.MentiDetailed.route) {
-            val result =
-                navController.previousBackStackEntry?.savedStateHandle?.get<MemberDetailInformation>("menteeDetail")
+            val isMentor =
+                navController.previousBackStackEntry?.savedStateHandle?.get<Boolean>("isMentor")
 
-            if(result != null) {
-                MemberDetailedScreen(memberDetailInformation = result)
+            val memberId =
+                navController.previousBackStackEntry?.savedStateHandle?.get<Int>("memberId")
+
+            if(memberId != null) {
+                MemberDetailedScreen(isMentor = isMentor ?: true, memberId = memberId)
             }
         }
     }

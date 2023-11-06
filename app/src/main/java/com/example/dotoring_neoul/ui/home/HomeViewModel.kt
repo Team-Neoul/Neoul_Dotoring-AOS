@@ -173,12 +173,12 @@ class HomeViewModel: ViewModel() {
                                 val menteeObject = menteeList.optJSONObject(i)
 
                                 val mentee = Member(
+                                    id = menteeObject.getInt("id"),
                                     nickname = menteeObject.getString("nickname"),
                                     profileImage = menteeObject.getString("profileImage"),
                                     majors = menteeObject.getString("majors"),
                                     fields = menteeObject.getString("fields"),
                                     introduction = menteeObject.getString("introduction"),
-                                //    grade = menteeObject.getString("grade")
                                 )
 
                                 uiMentorList.add(mentee)
@@ -236,12 +236,12 @@ class HomeViewModel: ViewModel() {
                                 val mentorObject = mentorList.optJSONObject(i)
 
                                 val mentor = Member(
+                                    id = mentorObject.getInt("id"),
                                     nickname = mentorObject.getString("nickname"),
                                     profileImage = mentorObject.getString("profileImage"),
                                     majors = mentorObject.getString("majors"),
                                     fields = mentorObject.getString("fields"),
                                     introduction = mentorObject.getString("introduction"),
-                                //    grade = mentorObject.getString("grade")
                                 )
 
                                 uiMentorList.add(mentor)
@@ -299,13 +299,12 @@ class HomeViewModel: ViewModel() {
                                 val mentiObject = mentiList.optJSONObject(i)
 
                                 val mentee = Member(
-//                                    id = mentiObject.getLong("id"),
+                                    id = mentiObject.getInt("id"),
                                     nickname = mentiObject.getString("nickname"),
                                     profileImage = mentiObject.getString("profileImage"),
                                     majors = mentiObject.getString("major"),
                                     fields = mentiObject.getString("job"),
                                     introduction = mentiObject.getString("introduction"),
-                                //    grade = mentiObject.getString("grade")
                                 )
 
                                 uiMentiList.add(mentee)
