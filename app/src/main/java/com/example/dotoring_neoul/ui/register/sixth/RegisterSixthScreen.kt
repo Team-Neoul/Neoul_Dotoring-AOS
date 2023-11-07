@@ -59,7 +59,7 @@ fun SixthRegisterScreen(
                 onClick = {
                     if(isMentor) {
                         if(mentorInformation != null) {
-                            registerSixthViewModel.mentoRegister(mentorInformation)
+                            registerSixthViewModel.mentorRegister(mentorInformation)
                         }
                     } else {
                         if(menteeInformation != null) {
