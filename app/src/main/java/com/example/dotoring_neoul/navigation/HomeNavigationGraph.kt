@@ -8,6 +8,7 @@ import androidx.navigation.compose.navigation
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import com.example.dotoring_neoul.MyApplication
 import com.example.dotoring_neoul.ui.home.MainScreen
 import com.example.dotoring_neoul.ui.message.messageBox.MessageBoxScreen
 import com.example.dotoring_neoul.ui.message.messageDetail.MessageDetailScreen
@@ -24,7 +25,10 @@ fun HomeNavGraph(navController: NavHostController, modifier: Modifier = Modifier
         startDestination = BottomNavScreen.Home.route
     ) {
         composable(route = BottomNavScreen.Home.route) {
-            MainScreen(navController = navController)
+            MainScreen(
+                navController = navController,
+                isMentor = MyApplication.prefs.getBoolean("isMentor", true)
+            )
         }
 
         composable(route = BottomNavScreen.Matching.route) {
