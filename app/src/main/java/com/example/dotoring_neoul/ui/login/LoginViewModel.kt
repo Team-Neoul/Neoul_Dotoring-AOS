@@ -7,6 +7,7 @@ import com.example.dotoring_neoul.network.DotoringAPI
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.navigation.NavHostController
+import com.example.dotoring_neoul.navigation.Graph
 import com.google.gson.Gson
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -16,6 +17,7 @@ import org.json.JSONObject
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import java.util.Base64
 
 /**
  * id, pwd 상태관리
@@ -66,8 +68,6 @@ class LoginViewModel: ViewModel() {
 
         sendLoginRequestCall.enqueue(object : Callback<CommonResponse>
         {
-
-
             override fun onResponse(
                 call: Call<CommonResponse>,
                 response: Response<CommonResponse>
@@ -84,6 +84,7 @@ class LoginViewModel: ViewModel() {
                     Log.d("로그인", "ㅌ통신함수 성공:")
                     val accessToken= response.headers()["Authorization"]
                     val refreshToken= response.headers()["set-cookie"]
+
                     Log.d("로그인", "헤더 추출완료")
                     MyApplication.prefs.setString("Authorization", accessToken)
 
@@ -91,7 +92,13 @@ class LoginViewModel: ViewModel() {
                     MyApplication.prefs.setRefresh("Cookie", refreshToken)
                     //MyApplication.token_prefs.refreshToken = refreshToken
                     Log.d("로그인", "리프레쉬"+refreshToken)
-//                    홈으로 이동 Todo
+
+                    if(accessToken != null) {
+                        val isMentor = decodeToken(accessToken)
+                        MyApplication.prefs.setBoolean("isMentor", isMentor)
+                    }
+
+                    navController.navigate(Graph.HOME)
                     Log.d("로그인", "컨트롤러")
                 }
             }
@@ -99,11 +106,21 @@ class LoginViewModel: ViewModel() {
             override fun onFailure(call: Call<CommonResponse>, t: Throwable) {
                 Log.d("로그인", "통신 실패: $t")
                 Log.d("회원 가입 통신", "요청 내용 - $sendLoginRequestCall")
-
             }
         })
-
     }
 
+    private fun decodeToken(jwt: String): Boolean {
+        val parts = jwt.split(".")
+        Log.d("복호화", "decodeToken 실행중")
 
+        val charset = charset("UTF-8")
+        val payload = String(Base64.getUrlDecoder().decode(parts[1].toByteArray(charset)),charset)
+
+        val isMentor = JSONObject(payload).getString("aud")
+
+        Log.d("복호화", "isMentor: $isMentor")
+
+        return isMentor == "MENTO"
+    }
 }
