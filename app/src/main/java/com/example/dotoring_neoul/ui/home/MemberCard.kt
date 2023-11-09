@@ -104,21 +104,19 @@ fun MemberCard(
                     .logger(DebugLogger())
                     .build()
 
-                AsyncImage(
-                    model = profileImage,
-                    contentDescription = "유저 사진",
+                Image(
+                    painter = if (isMentor) {
+                        painterResource(R.drawable.home_profile_sample_mentor)
+                    } else {
+                        painterResource(R.drawable.home_profile_sample_mentee)
+                    },
+                    contentDescription = null,
                     contentScale = ContentScale.Crop,
                     modifier = Modifier
-                        .size(width = 124.dp, 136.dp)
+                        .size(width = 126.dp, height = 138.dp)
                         .clip(RoundedCornerShape(20.dp)),
-                    placeholder = if(isMentor) {
-                        painterResource(id = R.drawable.home_profile_sample_mentor)
-                    } else {
-                        painterResource(id = R.drawable.home_profile_sample_mentee)
-                    },
-                    error = painterResource(R.drawable.ic_dotoring_colored),
-                    imageLoader = imageLoader,
-                    )
+                )
+
                 Spacer(modifier = Modifier.size(spaceBetweenPhotoAndDescription))
 
                 Column() {
