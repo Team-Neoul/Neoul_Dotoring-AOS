@@ -16,6 +16,7 @@ import android.provider.OpenableColumns
 import android.util.Log
 import androidx.core.net.toUri
 import androidx.lifecycle.AndroidViewModel
+import com.example.dotoring_neoul.ui.register.third.DuplicationCheckState
 import com.example.dotoring_neoul.ui.util.register.MenteeInformation
 import com.google.gson.Gson
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -210,18 +211,9 @@ class RegisterSixthViewModel(application: Application): AndroidViewModel(applica
                 Log.d("통신 - 아이디 중복 확인", "userIdDuplicationCheck - onResponse")
                 Log.d("통신 - 아이디 중복 확인", "userIdDuplicationCheck - response.body(): ${response.body()}")
                 Log.d("통신 - 아이디 중복 확인", "userIdDuplicationCheck - response.code(): ${response.code()}")
-
-                val json = Gson().toJson(response.body())
-                Log.d("통신 - 아이디 중복 확인", "userIdDuplicationCheck - json: $json")
-
-                val jsonObject = JSONObject(json)
-                Log.d("통신 - 아이디 중복 확인", "userIdDuplicationCheck - jsonObject: $jsonObject")
-
-                val jsonObjectSuccess = jsonObject.getBoolean("success")
-
-                if (jsonObjectSuccess) {
-                    Log.d("통신 - 아이디 중복 확인", "userIdDuplicationCheck - success")
+                if( response.code() == 200 ) {
                     updateIdValidationState(IdDuplicationCheckState.DuplicationCheckSuccess)
+
                 } else {
                     updateIdValidationState(IdDuplicationCheckState.DuplicationCheckFail)
                 }
