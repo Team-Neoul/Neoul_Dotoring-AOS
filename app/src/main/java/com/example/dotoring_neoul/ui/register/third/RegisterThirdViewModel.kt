@@ -11,9 +11,7 @@ import androidx.compose.runtime.setValue
 import com.example.dotoring_neoul.dto.CommonResponse
 import com.example.dotoring_neoul.dto.register.NicknameValidationRequest
 import com.example.dotoring_neoul.network.DotoringRegisterAPI
-import com.google.gson.Gson
 import kotlinx.coroutines.flow.update
-import org.json.JSONObject
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -25,9 +23,7 @@ class RegisterThirdViewModel: ViewModel() {
 
     var nickname by mutableStateOf("")
         private set
-
-    var btnState by mutableStateOf(false)
-
+    
     fun updateNickname(nicknameInput: String) {
         nickname = nicknameInput
 
@@ -89,17 +85,7 @@ class RegisterThirdViewModel: ViewModel() {
                 Log.d("닉네임 중복 확인", "닉네임 중복 확인: ${response.body()}")
                 Log.d("닉네임 중복 확인", "닉네임 중복 확인: ${response.code()}")
 
-                val json = Gson().toJson(response.body())
-                Log.d("닉네임 중복 확인", "verifyMentorNickname - json: $json")
-
-                val jsonObject = JSONObject(json.toString())
-                Log.d("닉네임 중복 확인", "verifyMentorNickname - jsonObject: $jsonObject")
-
-                val jsonObjectSuccess = jsonObject.getBoolean("success")
-                Log.d("닉네임 중복 확인", "verifyMentorNickname - jsonObjectSuccess: $jsonObjectSuccess")
-
-                if (jsonObjectSuccess) {
-
+                if( response.code() == 200 ) {
                     updateNicknameDuplicationErrorState(DuplicationCheckState.DuplicationCheckSuccess)
 
                 } else {
@@ -127,17 +113,7 @@ class RegisterThirdViewModel: ViewModel() {
                 Log.d("닉네임 중복 확인", "닉네임 중복 확인: ${response.body()}")
                 Log.d("닉네임 중복 확인", "닉네임 중복 확인: ${response.code()}")
 
-                val json = Gson().toJson(response.body())
-                Log.d("닉네임 중복 확인", "verifyMenteeNickname - json: $json")
-
-                val jsonObject = JSONObject(json.toString())
-                Log.d("닉네임 중복 확인", "verifyMenteeNickname - jsonObject: $jsonObject")
-
-                val jsonObjectSuccess = jsonObject.getBoolean("success")
-                Log.d("닉네임 중복 확인", "verifyMenteeNickname - jsonObjectSuccess: $jsonObjectSuccess")
-
-                if (jsonObjectSuccess) {
-
+                if( response.code() == 200 ) {
                     updateNicknameDuplicationErrorState(DuplicationCheckState.DuplicationCheckSuccess)
 
                 } else {
