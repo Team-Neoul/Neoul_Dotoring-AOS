@@ -163,7 +163,7 @@ fun MessageListItem(messageBoxViewModel: MessageBoxViewModel = viewModel(), mess
 
             ) {
                 Image(
-                    painter = painterResource(R.drawable.home_profile_sample),
+                    painter = painterResource(R.drawable.home_profile_sample_mentor),
                     contentDescription = null,
                     contentScale = ContentScale.FillBounds,
                     modifier = Modifier

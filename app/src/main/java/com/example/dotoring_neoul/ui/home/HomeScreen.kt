@@ -360,7 +360,7 @@ private fun MemberList(
                 navController = navController,
                 isMentor = isMentor
             )
-            Spacer(modifier = Modifier.size(8.dp))
+            Spacer(modifier = Modifier.size(3.dp))
         }
     }
 

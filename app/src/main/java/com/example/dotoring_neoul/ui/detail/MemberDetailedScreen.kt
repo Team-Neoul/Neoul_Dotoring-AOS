@@ -5,6 +5,7 @@ import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -13,6 +14,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Card
 import androidx.compose.material.Text
@@ -28,6 +31,7 @@ import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -128,14 +132,18 @@ private fun Top(
                 modifier = Modifier.padding(15.dp)
 
             ) {
-                AsyncImage(
-                    model = profileImage ,
-                    contentDescription = "멘티 사진",
+
+                Image(
+                    painter = if (isMentor) {
+                        painterResource(R.drawable.home_profile_sample_mentor)
+                    } else {
+                        painterResource(R.drawable.home_profile_sample_mentee)
+                    },
+                    contentDescription = null,
                     contentScale = ContentScale.Crop,
                     modifier = Modifier
                         .size(width = 126.dp, height = 138.dp)
                         .clip(RoundedCornerShape(20.dp)),
-                    placeholder = painterResource
                 )
 
                 Spacer(modifier = Modifier.size(spaceBetweenImageAndText))
@@ -185,7 +193,7 @@ private fun Contents(
 
     Column(
         modifier = Modifier
-            .padding(top = 20.dp, start = 20.dp)
+            .padding(top = 20.dp, start = 20.dp, end = 20.dp)
     ) {
         Column {
             Text(
@@ -195,6 +203,7 @@ private fun Contents(
                 fontWeight = FontWeight.ExtraBold
             )
             Spacer(modifier = Modifier.size(spaceBetweenText))
+
             FieldChip(
                 isMentor = isMentor,
                 mentoringFields = mentoringFields
@@ -234,27 +243,33 @@ private fun FieldChip(
         colorResource(R.color.paragraph_green)
     }
 
-    Row {
-        fieldList.forEach {field ->
-            Log.d("fieldList", "for문 실행 횟수 확인: $field")
+    LazyVerticalGrid(
+        columns = GridCells.Adaptive(85.dp),
+        userScrollEnabled = false,
+        verticalArrangement = Arrangement.spacedBy(13.dp),
+        horizontalArrangement = Arrangement.spacedBy(13.dp)
+    ) {
+        items(fieldList.size) {field ->
+                Text(
+                    text = fieldList[field],
+                    color = fontColor,
+                    fontSize = 16.sp,
+                    fontWeight = FontWeight.Normal,
+                    modifier = Modifier
+                        .border(
+                            width = 0.5.dp,
+                            color = fontColor,
+                            shape = RoundedCornerShape(100.dp)
+                        )
+                        .padding(horizontal = 10.dp, vertical = 15.dp),
+                    textAlign = TextAlign.Center
+                )
+                Spacer(modifier = Modifier.size(10.dp))
 
-            Text(
-                text = field,
-                color = fontColor,
-                fontSize = 16.sp,
-                fontWeight = FontWeight.Normal,
-                modifier = Modifier
-                    .border(
-                        width = 0.5.dp,
-                        color = fontColor,
-                        shape = RoundedCornerShape(100.dp)
-                    )
-                    .padding(horizontal = 20.dp, vertical = 12.dp)
-            )
-            Spacer(modifier = Modifier.size(10.dp))
+            }
         }
     }
-}
+
 
 @Preview(showSystemUi = true)
 @Composable
@@ -273,7 +288,7 @@ private fun FieldChipsPreview() {
     DotoringTheme {
         FieldChip(
             isMentor = true,
-            mentoringFields = "직무, 개발_언어"
+            mentoringFields = "직무, 개발_언어, 뀨뀨, 꺄꺄, 최대5글자"
         )
     }
 }
