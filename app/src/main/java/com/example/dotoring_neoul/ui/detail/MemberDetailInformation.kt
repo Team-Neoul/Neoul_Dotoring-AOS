@@ -10,7 +10,6 @@ import kotlinx.parcelize.Parcelize
 class MemberDetailInformation (
     val profileImage: String,
     val major: String,
-//    val grade: String,
     val nickname: String,
     val mentoringField: String,
     val introduction: String

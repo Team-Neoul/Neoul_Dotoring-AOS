@@ -17,10 +17,10 @@ sealed class BottomNavScreen(
         resourceId = R.string.navigation_home,
         icon = R.drawable.ic_navigation_home
     )
-    object Calendar : BottomNavScreen(
-        route = "CALENDAR",
-        resourceId = R.string.navigation_calendar,
-        icon = R.drawable.ic_navigation_calendar
+    object Matching : BottomNavScreen(
+        route = "MATCHING",
+        resourceId = R.string.navigation_matching,
+        icon = R.drawable.ic_navigation_matching
     )
     object Message : BottomNavScreen(
         route = "MESSAGE",

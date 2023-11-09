@@ -8,10 +8,10 @@ import androidx.navigation.compose.navigation
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import com.example.dotoring_neoul.MyApplication
 import com.example.dotoring_neoul.ui.home.MainScreen
 import com.example.dotoring_neoul.ui.message.messageBox.MessageBoxScreen
 import com.example.dotoring_neoul.ui.message.messageDetail.MessageDetailScreen
-import com.example.dotoring_neoul.ui.detail.MemberDetailInformation
 import com.example.dotoring_neoul.ui.detail.MemberDetailedScreen
 
 /**
@@ -25,10 +25,13 @@ fun HomeNavGraph(navController: NavHostController, modifier: Modifier = Modifier
         startDestination = BottomNavScreen.Home.route
     ) {
         composable(route = BottomNavScreen.Home.route) {
-            MainScreen(navController = navController)
+            MainScreen(
+                navController = navController,
+                isMentor = MyApplication.prefs.getBoolean("isMentor", true)
+            )
         }
 
-        composable(route = BottomNavScreen.Calendar.route) {
+        composable(route = BottomNavScreen.Matching.route) {
 
         }
         composable(route = BottomNavScreen.Message.route) {
@@ -54,11 +57,14 @@ fun NavGraphBuilder.mentiDetailNavGraph(navController: NavHostController) {
         startDestination = MentiDetailScreen.MentiDetailed.route
     ) {
         composable(route = MentiDetailScreen.MentiDetailed.route) {
-            val result =
-                navController.previousBackStackEntry?.savedStateHandle?.get<MemberDetailInformation>("menteeDetail")
+            val isMentor =
+                navController.previousBackStackEntry?.savedStateHandle?.get<Boolean>("isMentor")
 
-            if(result != null) {
-                MemberDetailedScreen(memberDetailInformation = result)
+            val memberId =
+                navController.previousBackStackEntry?.savedStateHandle?.get<Int>("memberId")
+
+            if(memberId != null) {
+                MemberDetailedScreen(isMentor = isMentor ?: true, memberId = memberId)
             }
         }
     }

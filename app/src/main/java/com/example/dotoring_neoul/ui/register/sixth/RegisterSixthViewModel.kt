@@ -309,8 +309,8 @@ class RegisterSixthViewModel(application: Application): AndroidViewModel(applica
         })
     }
 
-    fun mentoRegister(mentorInformation: MentorInformation) {
-        Log.d("통신 - 로그인 하기", "mentoRegister - 통신 시작")
+    fun mentorRegister(mentorInformation: MentorInformation) {
+        Log.d("통신 - 로그인 하기", "mentorRegister - 통신 시작")
         val certifications: MutableList<MultipartBody.Part> = mutableListOf<MultipartBody.Part>()
 
         if(mentorInformation.employmentCertification != null) {
@@ -322,41 +322,50 @@ class RegisterSixthViewModel(application: Application): AndroidViewModel(applica
         }
 
         certifications.toImmutableList()
-        Log.d("통신 - 로그인 하기", "mentoRegister - certifications: $certifications")
+        Log.d("통신 - 로그인 하기", "mentorRegister - certifications: $certifications")
 
-        val jsonObject = JSONObject(
-            "{\"company\":\"${mentorInformation.company}\"," +
-                    "\"careerLevel\":\"${mentorInformation.careerLevel}\"," +
-                    "\"field\":\"진로\"," +
-                    "\"major\":\"가정교육과\"," +
-                    "\"nickname\":\"${mentorInformation.nickname}\"," +
-                    "\"introduction\":\"${mentorInformation.introduction}\"," +
-                    "\"loginId\":\"${uiState.value.memberId}\"," +
-                    "\"password\":\"${uiState.value.password}\"," +
-                    "\"email\":\"${uiState.value.email}\"}").toString()
+        Log.d("통신 - 로그인 하기", "menteeRegister - menteeInformation.fields: ${mentorInformation.field}")
+        Log.d("통신 - 로그인 하기", "menteeRegister - menteeInformation.major: ${mentorInformation.major}")
 
-        val jsonBody = jsonObject.toRequestBody("application/json".toMediaType())
+        val school: RequestBody = mentorInformation.company.toRequestBody()
+        val grade: Int = mentorInformation.careerLevel
+        val fields: RequestBody = mentorInformation.field[0].toRequestBody()
+        val majors: RequestBody = mentorInformation.major[0].toRequestBody()
+        val nickname: RequestBody = mentorInformation.nickname.toRequestBody()
+        val introduction: RequestBody = mentorInformation.introduction.toRequestBody()
+        val loginId: RequestBody = uiState.value.memberId.toRequestBody()
+        val password: RequestBody = uiState.value.password.toRequestBody()
+        val email: RequestBody = uiState.value.email.toRequestBody()
 
-        val finalRegisterRequestCall: Call<CommonResponse> = DotoringRegisterAPI.retrofitService.signUpAsMento(
-            certifications = certifications,
-            saveMentoRqDTO = jsonBody
+        val finalRegisterRequestCall: Call<CommonResponse> = DotoringRegisterAPI.retrofitService.signUpAsMentor(
+            school = school,
+            grade = grade,
+            fields = fields,
+            majors = majors,
+            nickname = nickname,
+            introduction = introduction,
+            loginId = loginId,
+            password = password,
+            email = email,
+            certifications = certifications
         )
-        Log.d("통신 - 로그인 하기", "mentoRegister - finalRegisterRequestCall: $finalRegisterRequestCall")
+
+        Log.d("통신 - 로그인 하기", "mentorRegister - finalRegisterRequestCall: $finalRegisterRequestCall")
 
         finalRegisterRequestCall.enqueue(object: Callback<CommonResponse> {
             override fun onResponse(call: Call<CommonResponse>, response: Response<CommonResponse>) {
-                Log.d("통신 - 로그인 하기", "mentoRegister - onResponse")
-                Log.d("통신 - 로그인 하기", "mentoRegister - response.body() : ${response.body()}")
-                Log.d("통신 - 로그인 하기", "mentoRegister - response.code() : ${response.code()}")
+                Log.d("통신 - 로그인 하기", "mentorRegister - onResponse")
+                Log.d("통신 - 로그인 하기", "mentorRegister - response.body() : ${response.body()}")
+                Log.d("통신 - 로그인 하기", "mentorRegister - response.code() : ${response.code()}")
 
                 val json = Gson().toJson(response.body())
-                Log.d("통신 - 로그인 하기", "mentoRegister - json : $json")
+                Log.d("통신 - 로그인 하기", "mentorRegister - json : $json")
 
                 val jsonObject = JSONObject(json)
-                Log.d("통신 - 로그인 하기", "mentoRegister - jsonObject : $jsonObject")
+                Log.d("통신 - 로그인 하기", "mentorRegister - jsonObject : $jsonObject")
 
                 val jsonObjectSuccess = jsonObject.getBoolean("success")
-                Log.d("통신 - 로그인 하기", "mentoRegister - jsonObjectSuccess : $jsonObjectSuccess")
+                Log.d("통신 - 로그인 하기", "mentorRegister - jsonObjectSuccess : $jsonObjectSuccess")
 
                 if (jsonObjectSuccess) {
 
@@ -385,7 +394,7 @@ class RegisterSixthViewModel(application: Application): AndroidViewModel(applica
         Log.d("통신 - 로그인 하기", "menteeRegister - menteeInformation.major: ${menteeInformation.major}")
 
         val school: RequestBody = menteeInformation.school.toRequestBody()
-        val grade: RequestBody = menteeInformation.grade.toString().toRequestBody()
+        val grade: Int = menteeInformation.grade
         val fields: RequestBody = menteeInformation.field[0].toRequestBody()
         val majors: RequestBody = menteeInformation.major[0].toRequestBody()
         val nickname: RequestBody = menteeInformation.nickname.toRequestBody()
@@ -396,7 +405,7 @@ class RegisterSixthViewModel(application: Application): AndroidViewModel(applica
 
         val finalRegisterRequestCall: Call<CommonResponse> = DotoringRegisterAPI.retrofitService.signUpAsMentee(
             school = school,
-            grade = menteeInformation.grade,
+            grade = grade,
             fields = fields,
             majors = majors,
             nickname = nickname,

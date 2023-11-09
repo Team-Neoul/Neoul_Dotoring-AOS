@@ -25,4 +25,12 @@ class PreferenceUtil(context: Context) {
     fun setRefresh(key: String, str: String?) {
         prefs.edit().putString(key, str).apply()
     }
+
+    fun getBoolean(key: String, defValue: Boolean): Boolean {
+        return prefs.getBoolean(key, defValue)
+    }
+
+    fun setBoolean(key: String, bool: Boolean) {
+        prefs.edit().putBoolean(key, bool).apply()
+    }
 }

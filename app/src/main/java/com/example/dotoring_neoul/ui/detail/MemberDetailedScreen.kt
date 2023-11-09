@@ -40,11 +40,14 @@ import com.example.dotoring_neoul.ui.theme.DotoringTheme
 fun MemberDetailedScreen(
     isMentor: Boolean = true,
     memberDetailedViewModel: MemberDetailedViewModel = viewModel(),
-    memberDetailInformation: MemberDetailInformation
+    memberId: Int
     ) {
 
     LaunchedEffect(Unit) {
-        memberDetailedViewModel.loadMemberInfo(memberDetailInformation)
+        memberDetailedViewModel.loadMemberInfo(
+            isMentor = isMentor,
+            memberId = memberId
+        )
     }
 
     val memberDetailedUiState by memberDetailedViewModel.uiState.collectAsState()
@@ -86,6 +89,15 @@ private fun Top(
     val spaceBetweenImageAndText = 10.dp
     val spaceBetweenText = 3.dp
 
+    val profileImage = memberDetailedUiState.profileImage
+    val majors = memberDetailedUiState.majors.toString()
+        .replace("[", "")
+        .replace("]", "")
+        .replace("\"", "")
+    val grade = memberDetailedUiState.grade + "학년"
+    val nickname = memberDetailedUiState.nickname
+
+
     Box {
         Card(
             modifier = Modifier
@@ -101,6 +113,7 @@ private fun Top(
                 )
                 .background(mainColorResource),
             backgroundColor = mainColorResource,
+            elevation = 5.dp
         ) {
             Image(
                 painter = painterResource(R.drawable.member_detailed_title_dotoring),
@@ -116,7 +129,7 @@ private fun Top(
 
             ) {
                 AsyncImage(
-                    model = memberDetailedUiState.profileImage ,
+                    model = profileImage ,
                     contentDescription = "멘티 사진",
                     contentScale = ContentScale.Crop,
                     modifier = Modifier
@@ -124,6 +137,7 @@ private fun Top(
                         .clip(RoundedCornerShape(20.dp)),
                     placeholder = painterResource
                 )
+
                 Spacer(modifier = Modifier.size(spaceBetweenImageAndText))
 
 
@@ -131,21 +145,21 @@ private fun Top(
                     modifier = Modifier.padding(bottom = 10.dp)
                 ) {
                     Text(
-                        text = memberDetailedUiState.major,
+                        text = majors,
                         color = subColorResource,
                         fontSize = 18.sp,
                         fontWeight = FontWeight.Normal
                     )
                     Spacer(modifier = Modifier.size(spaceBetweenText))
                     Text(
-                        text = memberDetailedUiState.grade,
+                        text = grade,
                         color = subColorResource,
                         fontSize = 18.sp,
                         fontWeight = FontWeight.Normal
                     )
                     Spacer(modifier = Modifier.size(spaceBetweenText))
                     Text(
-                        text = memberDetailedUiState.nickname,
+                        text = nickname ?: "오류 발생",
                         color = colorResource(R.color.white),
                         fontSize = 26.sp,
                         fontWeight = FontWeight.ExtraBold
@@ -164,6 +178,11 @@ private fun Contents(
     val spaceBetweenContents = 50.dp
     val spaceBetweenText = 10.dp
 
+    val mentoringFields = memberDetailedUiState.fields.toString()
+        .replace("[", "")
+        .replace("]", "")
+        .replace("\"", "")
+
     Column(
         modifier = Modifier
             .padding(top = 20.dp, start = 20.dp)
@@ -178,7 +197,7 @@ private fun Contents(
             Spacer(modifier = Modifier.size(spaceBetweenText))
             FieldChip(
                 isMentor = isMentor,
-                mentoringFields = memberDetailedUiState.mentoringField
+                mentoringFields = mentoringFields
             )
         }
         Spacer(modifier = Modifier.size(spaceBetweenContents))
@@ -193,7 +212,7 @@ private fun Contents(
             )
             Spacer(modifier = Modifier.size(spaceBetweenText))
             Text(
-                text = memberDetailedUiState.introduction,
+                text = memberDetailedUiState.introduction ?: "",
                 color = colorResource(R.color.black),
                 fontSize = 16.sp,
                 fontWeight = FontWeight.Normal
@@ -243,14 +262,7 @@ private fun MemberDetailedScreenPreview() {
     DotoringTheme {
         MemberDetailedScreen(
             isMentor = false,
-            memberDetailInformation = MemberDetailInformation(
-                profileImage = "",
-                major = "소프트웨어공학과",
- //               grade = "3학년",
-                nickname = "제 이름이에요",
-                mentoringField = "mento mento meeee",
-                introduction = "집인데 집에가고싶다"
-            )
+            memberId = 1
         )
     }
 }

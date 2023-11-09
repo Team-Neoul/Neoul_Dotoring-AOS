@@ -62,7 +62,7 @@ fun SecondRegisterScreen(
                     onClick = {
                         Log.d("파일 업로드 테스트", "employmentFileUploaded: ${registerSecondUiState.employmentFileUploaded}")
                         if (mentorInformation != null) {
-                            val mentoInfo = MentorInformation(
+                            val mentorInfo = MentorInformation(
                                 company = mentorInformation.company,
                                 careerLevel = mentorInformation.careerLevel,
                                 field = mentorInformation.field,
@@ -71,8 +71,8 @@ fun SecondRegisterScreen(
                                 graduateCertification = registerSecondUiState.graduationCertification
                             )
                             navController.currentBackStackEntry?.savedStateHandle?.set(
-                                key = "mentoInfo",
-                                value = mentoInfo
+                                key = "mentorInfo",
+                                value = mentorInfo
                             )
                             navController.navigate(AuthScreen.Register3.passScreenState(isMentor = isMentor))
                         }
