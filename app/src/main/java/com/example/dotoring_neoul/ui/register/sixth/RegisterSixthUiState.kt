@@ -54,7 +54,24 @@ enum class CodeState {
 }
 
 enum class EmailValidationState {
+
+    /**
+     * NonChecked: 인증 코드 발송 버튼 누르기 전
+     */
     NonChecked,
+
+    /**
+     * AlreadySigned: 이메일이 조건을 만족하여, 인증 코드 발송 버튼 눌렀을 때 현재 가입자 중 중복되는 이메일이 존재한다고 나온 경우.
+     */
+    AlreadySigned,
+
+    /**
+     * Valid: 이메일이 조건을 만족하여, 인증 코드 발송 버튼을 누르고, 알맞은 인증 코드를 입력하여 인증된 상태.
+     */
     Valid,
-    Invalid
+
+    /**
+     * CodeInvalid: 이메일이 조건을 만족하여, 인증 코드 발송 버튼을 누르고, 잘못된 코드를 입력하여 인증에 실패한 경우.
+     */
+    CodeInvalid
 }
