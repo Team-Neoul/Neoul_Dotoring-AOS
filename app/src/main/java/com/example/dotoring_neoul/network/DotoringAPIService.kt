@@ -18,6 +18,7 @@ import okhttp3.MultipartBody
 import okhttp3.OkHttpClient
 import okhttp3.RequestBody
 import okhttp3.Response
+import okhttp3.ResponseBody
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Call
 import retrofit2.Retrofit
@@ -302,6 +303,12 @@ interface DotoringAPIService {
 object DotoringAPI {
     val retrofitService: DotoringAPIService by lazy {
         retrofit.create(DotoringAPIService::class.java)
+    }
+    fun getErrorResponse(errorBody: ResponseBody): CommonResponse? {
+        return retrofit.responseBodyConverter<CommonResponse>(
+            CommonResponse::class.java,
+            CommonResponse::class.java.annotations
+        ).convert(errorBody)
     }
 }
 
