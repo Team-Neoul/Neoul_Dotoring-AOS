@@ -23,7 +23,7 @@ class RegisterThirdViewModel: ViewModel() {
 
     var nickname by mutableStateOf("")
         private set
-    
+
     fun updateNickname(nicknameInput: String) {
         nickname = nicknameInput
 
@@ -110,8 +110,8 @@ class RegisterThirdViewModel: ViewModel() {
             override fun onResponse(call: Call<CommonResponse>, response: Response<CommonResponse>) {
 
                 Log.d("닉네임 중복 확인", "onResponse")
-                Log.d("닉네임 중복 확인", "닉네임 중복 확인: ${response.body()}")
-                Log.d("닉네임 중복 확인", "닉네임 중복 확인: ${response.code()}")
+                Log.d("닉네임 중복 확인", "response.body(): ${response.body()}")
+                Log.d("닉네임 중복 확인", "response.code(): ${response.code()}")
 
                 if( response.code() == 200 ) {
                     updateNicknameDuplicationErrorState(DuplicationCheckState.DuplicationCheckSuccess)
