@@ -119,7 +119,6 @@
     <string name="register6_verify">인증하기</string>
     <string name="register6_verification_error">인증 코드가 달라요.</string>
     <string name="register6_verification_successed">인증에 성공했습니다.</string>
-    <string name="register6_verification_duplicated">이미 등록된 이메일 입니다. 아이디 찾기를 이용해 주세요.</string>
     <string name="register6_to_login_page">로그인하러 가기</string>
 
     <!--홈 화면 관련 string resource-->
