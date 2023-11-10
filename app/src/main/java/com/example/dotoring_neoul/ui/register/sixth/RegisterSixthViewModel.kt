@@ -16,7 +16,6 @@ import android.provider.OpenableColumns
 import android.util.Log
 import androidx.core.net.toUri
 import androidx.lifecycle.AndroidViewModel
-import com.example.dotoring_neoul.ui.register.third.DuplicationCheckState
 import com.example.dotoring_neoul.ui.util.register.MenteeInformation
 import com.google.gson.Gson
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -118,7 +117,8 @@ class RegisterSixthViewModel(application: Application): AndroidViewModel(applica
         Log.d("테스트 - 이메일 조건 검증 확인", "updateEmailConditionState - isEmailConditionSatisfied: $isEmailConditionSatisfied")
 
         _uiState.update { currentState ->
-            currentState.copy(isEmailConditionSatisfied = isEmailConditionSatisfied)
+            currentState.copy(isEmailConditionSatisfied = isEmailConditionSatisfied,
+            )
         }
     }
 
@@ -211,6 +211,7 @@ class RegisterSixthViewModel(application: Application): AndroidViewModel(applica
                 Log.d("통신 - 아이디 중복 확인", "userIdDuplicationCheck - onResponse")
                 Log.d("통신 - 아이디 중복 확인", "userIdDuplicationCheck - response.body(): ${response.body()}")
                 Log.d("통신 - 아이디 중복 확인", "userIdDuplicationCheck - response.code(): ${response.code()}")
+
                 if( response.code() == 200 ) {
                     updateIdValidationState(IdDuplicationCheckState.DuplicationCheckSuccess)
 
@@ -239,14 +240,14 @@ class RegisterSixthViewModel(application: Application): AndroidViewModel(applica
                 Log.d("통신 - 인증 코드 보내기", "sendAuthenticationCode - response.body() : ${response.body()}")
                 Log.d("통신 - 인증 코드 보내기", "sendAuthenticationCode - response.code() : ${response.code()}")
 
-                val json = Gson().toJson(response.body())
-                Log.d("통신 - 인증 코드 보내기", "sendAuthenticationCode - json : $json")
-                val jsonObject = JSONObject(json)
-                Log.d("통신 - 인증 코드 보내기", "sendAuthenticationCode - jsonObject : $jsonObject")
-                val jsonObjectSuccess = jsonObject.getBoolean("success")
-                Log.d("통신 - 인증 코드 보내기", "sendAuthenticationCode - jsonObjectSuccess : $jsonObjectSuccess")
+                if (response.code() == 200) {
+                    val json = Gson().toJson(response.body())
+                    Log.d("통신 - 인증 코드 보내기", "sendAuthenticationCode - json : $json")
+                    val jsonObject = JSONObject(json)
+                    Log.d("통신 - 인증 코드 보내기", "sendAuthenticationCode - jsonObject : $jsonObject")
+                    val jsonObjectSuccess = jsonObject.getBoolean("success")
+                    Log.d("통신 - 인증 코드 보내기", "sendAuthenticationCode - jsonObjectSuccess : $jsonObjectSuccess")
 
-                if (jsonObjectSuccess) {
                     val response = jsonObject.getJSONObject("response")
                     val emailVerificationCode = response.optJSONObject("emailVerificationCode")
                     val emailVerificationCodeToString = emailVerificationCode?.toString() ?: ""
@@ -256,6 +257,9 @@ class RegisterSixthViewModel(application: Application): AndroidViewModel(applica
                     }
 
                     Log.d("테스트 - 이메일 코드 확인", "sendAuthenticationCode - emailVerificationCodeToString: ${uiState.value.validationCode}")
+                } else {
+                    updateEmailValidationState(EmailValidationState.AlreadySigned)
+                    println("이미 등록된 이메일 입니다. 아이디 찾기를 이용해 주세요.")
                 }
             }
             override fun onFailure(call: Call<CommonResponse>, t: Throwable) {
@@ -279,19 +283,30 @@ class RegisterSixthViewModel(application: Application): AndroidViewModel(applica
                 Log.d("통신 - 코드 인증 하기", "codeCertification - response.body() : ${response.body()}")
                 Log.d("통신 - 코드 인증 하기", "codeCertification - response.code() : ${response.code()}")
 
-                val json = Gson().toJson(response.body())
-                Log.d("통신 - 코드 인증 하기", "codeCertification - jsonObject : $json")
-
-                val jsonObject = JSONObject(json)
-                Log.d("통신 - 코드 인증 하기", "codeCertification - jsonObject : $jsonObject")
-
-                val jsonObjectSuccess = jsonObject.getBoolean("success")
-                Log.d("통신 - 코드 인증 하기", "codeCertification - jsonObjectSuccess : $jsonObjectSuccess")
-
-                if (jsonObjectSuccess) {
+                if( response.code() == 200 ) {
                     updateEmailValidationState(EmailValidationState.Valid)
+
                 } else {
-                    updateEmailValidationState(EmailValidationState.Invalid)
+
+                    val json = Gson().toJson(response.errorBody())
+                    Log.d("통신 - 코드 인증 하기", "codeCertification - json : $json")
+
+                    val jsonObject = JSONObject(json)
+                    Log.d("통신 - 코드 인증 하기", "codeCertification - jsonObject : $jsonObject")
+
+                    val jsonObjectError = jsonObject.getJSONObject("error")
+                    Log.d("통신 - 코드 인증 하기", "codeCertification - jsonObjectError : $jsonObjectError")
+
+                    val errorCode = jsonObjectError.getString("code")
+                    Log.d("통신 - 코드 인증 하기", "codeCertification - errorCode : $errorCode")
+
+                    if (errorCode == "4077") {
+                        println("인증 코드가 일치하지 않습니다.")
+                        updateEmailValidationState(EmailValidationState.CodeInvalid)
+                    } else {
+                        println("등록되지 않은 이메일 입니다.")
+                        updateEmailValidationState(EmailValidationState.CodeInvalid)
+                    }
                 }
             }
             override fun onFailure(call: Call<CommonResponse>, t: Throwable) {
@@ -314,10 +329,10 @@ class RegisterSixthViewModel(application: Application): AndroidViewModel(applica
         }
 
         certifications.toImmutableList()
-        Log.d("통신 - 로그인 하기", "mentorRegister - certifications: $certifications")
+        Log.d("통신 - 회원 가입 하기", "mentorRegister - certifications: $certifications")
 
-        Log.d("통신 - 로그인 하기", "menteeRegister - menteeInformation.fields: ${mentorInformation.field}")
-        Log.d("통신 - 로그인 하기", "menteeRegister - menteeInformation.major: ${mentorInformation.major}")
+        Log.d("통신 - 회원 가입 하기", "menteeRegister - menteeInformation.fields: ${mentorInformation.field}")
+        Log.d("통신 - 회원 가입 하기", "menteeRegister - menteeInformation.major: ${mentorInformation.major}")
 
         val school: RequestBody = mentorInformation.company.toRequestBody()
         val grade: Int = mentorInformation.careerLevel
@@ -342,25 +357,18 @@ class RegisterSixthViewModel(application: Application): AndroidViewModel(applica
             certifications = certifications
         )
 
-        Log.d("통신 - 로그인 하기", "mentorRegister - finalRegisterRequestCall: $finalRegisterRequestCall")
+        Log.d("통신 - 회원 가입 하기", "mentorRegister - finalRegisterRequestCall: $finalRegisterRequestCall")
 
         finalRegisterRequestCall.enqueue(object: Callback<CommonResponse> {
             override fun onResponse(call: Call<CommonResponse>, response: Response<CommonResponse>) {
-                Log.d("통신 - 로그인 하기", "mentorRegister - onResponse")
-                Log.d("통신 - 로그인 하기", "mentorRegister - response.body() : ${response.body()}")
-                Log.d("통신 - 로그인 하기", "mentorRegister - response.code() : ${response.code()}")
+                Log.d("통신 - 회원 가입 하기", "mentorRegister - onResponse")
+                Log.d("통신 - 회원 가입 하기", "mentorRegister - response.body() : ${response.body()}")
+                Log.d("통신 - 회원 가입 하기", "mentorRegister - response.code() : ${response.code()}")
 
-                val json = Gson().toJson(response.body())
-                Log.d("통신 - 로그인 하기", "mentorRegister - json : $json")
-
-                val jsonObject = JSONObject(json)
-                Log.d("통신 - 로그인 하기", "mentorRegister - jsonObject : $jsonObject")
-
-                val jsonObjectSuccess = jsonObject.getBoolean("success")
-                Log.d("통신 - 로그인 하기", "mentorRegister - jsonObjectSuccess : $jsonObjectSuccess")
-
-                if (jsonObjectSuccess) {
-
+                if( response.code() == 200 ) {
+                    println("멘토님, 성공적으로 회원 가입이 완료되었습니다.")
+                } else {
+                    println("회원 가입에 실패했습니다.")
                 }
             }
             override fun onFailure(call: Call<CommonResponse>, t: Throwable) {
@@ -416,17 +424,10 @@ class RegisterSixthViewModel(application: Application): AndroidViewModel(applica
                 Log.d("통신 - 로그인 하기", "menteeRegister - response.body() : ${response.body()}")
                 Log.d("통신 - 로그인 하기", "menteeRegister - response.code() : ${response.code()}")
 
-                val json = Gson().toJson(response.body())
-                Log.d("통신 - 로그인 하기", "menteeRegister - json : $json")
-
-                val jsonObject = JSONObject(json)
-                Log.d("통신 - 로그인 하기", "menteeRegister - jsonObject : $jsonObject")
-
-                val jsonObjectSuccess = jsonObject.getBoolean("success")
-                Log.d("통신 - 로그인 하기", "menteeRegister - jsonObjectSuccess : $jsonObjectSuccess")
-
-                if (jsonObjectSuccess) {
-
+                if( response.code() == 200 ) {
+                    println("멘티님, 성공적으로 회원 가입이 완료되었습니다.")
+                } else {
+                    println("회원 가입에 실패했습니다.")
                 }
             }
             override fun onFailure(call: Call<CommonResponse>, t: Throwable) {
@@ -437,11 +438,7 @@ class RegisterSixthViewModel(application: Application): AndroidViewModel(applica
     }
 
     private fun makePart(uri: Uri): MultipartBody.Part {
-//        val filePath = uri.path
-//        val imageFile = File(getApplication<Application>().filesDir.toString() + filePath.toString())
-//        val imageFile = File(getApplication<Application>().filesDir.toString() + "//" + absolutelyPath(uri, getApplication()))
         val imageFile = File(createCopyAndReturnRealPath(uri, getApplication()))
-
         Log.d("파일 올리기", "absolutelyPath - imageFile: $imageFile")
 
         val requestBody: RequestBody = imageFile.asRequestBody("image/*".toMediaType())
@@ -504,6 +501,8 @@ class RegisterSixthViewModel(application: Application): AndroidViewModel(applica
 
         return file.absolutePath
     }
+
+
 }
 
 
