@@ -374,11 +374,14 @@ private fun SetEmail(
                 )
                 Text(
                     text = when (registerSixthUiState.emailValidationState) {
-                        EmailValidationState.Invalid -> {
+                        EmailValidationState.CodeInvalid -> {
                             stringResource(id = R.string.register6_verification_error)
                         }
                         EmailValidationState.Valid -> {
                             stringResource(id = R.string.register6_verification_successed)
+                        }
+                        EmailValidationState.AlreadySigned -> {
+                            stringResource(id = R.string.register6_verification_duplicated)
                         }
                         else -> {
                             ""
@@ -386,7 +389,8 @@ private fun SetEmail(
                     },
                     modifier = Modifier
                         .padding(start = 2.dp, top = 3.dp),
-                    color = if(registerSixthUiState.emailValidationState == EmailValidationState.Invalid) {
+                    color = if(registerSixthUiState.emailValidationState == EmailValidationState.CodeInvalid ||
+                        registerSixthUiState.emailValidationState == EmailValidationState.AlreadySigned) {
                         colorResource(id = R.color.error)
                     } else {
                         primaryColor
