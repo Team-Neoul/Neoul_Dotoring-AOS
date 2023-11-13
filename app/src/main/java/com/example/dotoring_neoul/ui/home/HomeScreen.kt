@@ -74,7 +74,14 @@ fun HomeScreen_(
         Spacer(modifier = Modifier.weight(1f))
         Column {
             Spacer(modifier = Modifier.height(titlePadding))
-            HomeTitle(isMentor)
+            HomeTitle(
+                isMentor = isMentor,
+                forYouText = if(isMentor) {
+                    String.format(stringResource(id = R.string.home_for_u_mentor), homeUiState.nickname)
+                } else {
+                    String.format(stringResource(id = R.string.home_for_u_mentee), homeUiState.nickname)
+                }
+            )
             Spacer(modifier = Modifier.height(spaceBetweenTitleAndTab))
 
             Tab(
@@ -86,7 +93,6 @@ fun HomeScreen_(
             )
             Spacer(modifier = Modifier.height(spaceBetweenTabAndList))
 
-            MemberList_()
             MemberList(
                 memberList = homeUiState.memberList,
                 navController = navController,
@@ -106,18 +112,15 @@ fun HomeScreen_(
  */
 @Composable
 private fun HomeTitle(
-    isMentor: Boolean
+    isMentor: Boolean,
+    forYouText: String
 ) {
     val mediumTextSize = 24.sp
     val boldTextSize = 34.sp
 
     Column {
         Text(
-            text = if(isMentor) {
-                stringResource(id = R.string.home_for_u_mentor)
-            } else {
-                stringResource(id = R.string.home_for_u_mentee)
-            },
+            text = forYouText,
             fontSize = mediumTextSize,
             fontWeight = FontWeight.Medium
         )
@@ -164,11 +167,6 @@ private fun Tab(
             hasChosenData = hasChosenField
         )
     }
-}
-
-@Composable
-private fun MemberList_() {
-
 }
 
 

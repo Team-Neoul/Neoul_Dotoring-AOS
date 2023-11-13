@@ -29,10 +29,6 @@ fun SelectMemberTypeButton(
     modifier: Modifier = Modifier.size(width = 300.dp, 120.dp),
     onClick: () -> Unit = {}
 ) {
-/*    val onClick: () -> Unit = if(isMentor){
-
-    } else {
-    }*/
 
     val backgroundColor: Color = if(isMentor) {
         colorResource(id = R.color.green)

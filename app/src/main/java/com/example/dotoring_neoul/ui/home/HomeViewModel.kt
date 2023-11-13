@@ -29,12 +29,13 @@ class HomeViewModel: ViewModel() {
     private val _uiState = MutableStateFlow(HomeUiState())
     val uiState: StateFlow<HomeUiState> = _uiState.asStateFlow()
 
-    /*    fun loadMentiList() {
-            _uiState.update {
-                it -> it.copy(mentiList = DataSource().loadMenties())
-            }
+    fun updateUserNickname(nickname: String) {
+        _uiState.update { currentState ->
+            currentState.copy(
+                nickname = nickname
+            )
         }
-    */
+    }
 
     /**
      * 선택한 멘토링 분야 리스트를 업데이트
@@ -186,6 +187,10 @@ class HomeViewModel: ViewModel() {
                                 currentState.copy(memberList = uiMentorList)
                             }
                         }
+
+                        val pageable = responseJsonObject.getJSONObject("pageable")
+                        val nickname = pageable.getString("nickname")
+                        updateUserNickname(nickname)
                     } else {
                         Log.d("멘티 리스트 로드", "응답을 받지 못했거나, 멘티 리스트가 없습니다.")
                     }
@@ -250,6 +255,9 @@ class HomeViewModel: ViewModel() {
                                     currentState.copy(memberList = uiMentorList)
                                 }
                             }
+                            val pageable = responseJsonObject.getJSONObject("pageable")
+                            val nickname = pageable.getString("nickname")
+                            updateUserNickname(nickname)
                         } else {
                             Log.d("멘토 리스트 로드", "응답이 실패했거나 데이터가 없습니다.")
                         }
