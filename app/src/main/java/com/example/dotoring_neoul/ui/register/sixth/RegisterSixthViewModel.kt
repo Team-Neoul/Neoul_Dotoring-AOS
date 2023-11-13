@@ -172,11 +172,16 @@ class RegisterSixthViewModel(application: Application): AndroidViewModel(applica
         }
     }
 
-    fun startTimer () {
+    fun startTimer(timer: CountDownTimer) {
         updateCodeState(CodeState.Valid)
         updateEmailValidationButtonState(true)
 
-        object : CountDownTimer(300000, 1000) {
+        timer.start()
+    }
+
+     fun getTimer(): CountDownTimer {
+        return object : CountDownTimer(300000, 1000) {
+
             override fun onTick(millisUntilFinished: Long) {
                 val totalSeconds = millisUntilFinished / 1000
                 val minutes = totalSeconds / 60
@@ -195,7 +200,7 @@ class RegisterSixthViewModel(application: Application): AndroidViewModel(applica
                 updateCodeState(CodeState.Expired)
                 updateEmailValidationButtonState(false)
             }
-        }.start()
+        }
     }
 
     fun userIdDuplicationCheck() {

@@ -297,6 +297,7 @@ private fun SetEmail(
     } else {
         colorResource(R.color.navy)
     }
+    val timer = registerSixthViewModel.getTimer()
 
     Column {
         Text(
@@ -323,7 +324,8 @@ private fun SetEmail(
                 width = textFieldWidth,
                 onClick = {
                     registerSixthViewModel.sendAuthenticationCode()
-                    registerSixthViewModel.startTimer()
+                    timer.cancel()
+                    registerSixthViewModel.startTimer(timer)
                 }, //countdown & 코드 발송
                 onNext = {
                     focusManager.moveFocus(FocusDirection.Next)
