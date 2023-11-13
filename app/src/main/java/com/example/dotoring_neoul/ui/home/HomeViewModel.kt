@@ -149,15 +149,13 @@ class HomeViewModel: ViewModel() {
                     Log.d("멘티 리스트 로드", "loadMenteeList - response.code(): ${response.code()}")
                     Log.d("멘티 리스트 로드", "loadMenteeList - response.body(): ${response.body()}")
 
-                    val json = Gson().toJson(response.body())
-                    Log.d("멘티 리스트 로드", "loadMenteeList - json: $json")
+                    if(response.code() == 200) {
+                        val json = Gson().toJson(response.body())
+                        Log.d("멘티 리스트 로드", "loadMenteeList - json: $json")
 
-                    val jsonObject = JSONObject(json.toString())
-                    Log.d("멘티 리스트 로드", "loadMenteeList - jsonObject: $jsonObject")
+                        val jsonObject = JSONObject(json.toString())
+                        Log.d("멘티 리스트 로드", "loadMenteeList - jsonObject: $jsonObject")
 
-                    val jsonObjectSuccess = jsonObject.getBoolean("success")
-
-                    if (jsonObjectSuccess) {
                         Log.d("멘티 리스트 로드", "loadMenteeList - success")
 
                         val responseJsonObject = jsonObject.getJSONObject("response")
@@ -189,7 +187,7 @@ class HomeViewModel: ViewModel() {
                             }
                         }
                     } else {
-                        Log.d("멘티 리스트 로드", "응답이 실패하거나 데이터가 없습니다.")
+                        Log.d("멘티 리스트 로드", "응답을 받지 못했거나, 멘티 리스트가 없습니다.")
                     }
                 }
 
@@ -212,50 +210,51 @@ class HomeViewModel: ViewModel() {
                     Log.d("멘토 리스트 로드", "loadMentorList - response.code(): ${response.code()}")
                     Log.d("멘토 리스트 로드", "loadMentorList - response.body(): ${response.body()}")
 
-                    val json = Gson().toJson(response.body())
-                    Log.d("멘토 리스트 로드", "loadMentorList - json: $json")
+                    if(response.code() == 200) {
+                        val json = Gson().toJson(response.body())
+                        Log.d("멘토 리스트 로드", "loadMentorList - json: $json")
 
-                    val jsonObject = JSONObject(json.toString())
-                    Log.d("멘토 리스트 로드", "loadMentorList - jsonObject: $jsonObject")
+                        val jsonObject = JSONObject(json.toString())
+                        Log.d("멘토 리스트 로드", "loadMentorList - jsonObject: $jsonObject")
 
-                    val jsonObjectSuccess = jsonObject.getBoolean("success")
+                        val jsonObjectSuccess = jsonObject.getBoolean("success")
 
-                    if (jsonObjectSuccess) {
-                        Log.d("멘토 리스트 로드", "loadMentorList - success")
+                        if (jsonObjectSuccess) {
+                            Log.d("멘토 리스트 로드", "loadMentorList - success")
 
-                        val responseJsonObject = jsonObject.getJSONObject("response")
-                        Log.d("멘토 리스트 로드", "responseJsonObject: $responseJsonObject")
+                            val responseJsonObject = jsonObject.getJSONObject("response")
+                            Log.d("멘토 리스트 로드", "responseJsonObject: $responseJsonObject")
 
-                        val mentorList = responseJsonObject.optJSONArray("content")
-                        Log.d("멘토 리스트 로드", "mentorList: $mentorList")
+                            val mentorList = responseJsonObject.optJSONArray("content")
+                            Log.d("멘토 리스트 로드", "mentorList: $mentorList")
 
-                        if (mentorList != null && mentorList.length() > 0) {
-                            val uiMentorList: MutableList<Member> = mutableListOf()
+                            if (mentorList != null && mentorList.length() > 0) {
+                                val uiMentorList: MutableList<Member> = mutableListOf()
 
-                            for (i in 0 until mentorList.length()) {
-                                val mentorObject = mentorList.optJSONObject(i)
+                                for (i in 0 until mentorList.length()) {
+                                    val mentorObject = mentorList.optJSONObject(i)
 
-                                val mentor = Member(
-                                    id = mentorObject.getInt("id"),
-                                    nickname = mentorObject.getString("nickname"),
-                                    profileImage = mentorObject.getString("profileImage"),
-                                    majors = mentorObject.getString("majors"),
-                                    fields = mentorObject.getString("fields"),
-                                    introduction = mentorObject.getString("introduction"),
-                                )
+                                    val mentor = Member(
+                                        id = mentorObject.getInt("id"),
+                                        nickname = mentorObject.getString("nickname"),
+                                        profileImage = mentorObject.getString("profileImage"),
+                                        majors = mentorObject.getString("majors"),
+                                        fields = mentorObject.getString("fields"),
+                                        introduction = mentorObject.getString("introduction"),
+                                    )
 
-                                uiMentorList.add(mentor)
+                                    uiMentorList.add(mentor)
+                                }
+
+                                _uiState.update { currentState ->
+                                    currentState.copy(memberList = uiMentorList)
+                                }
                             }
-
-                            _uiState.update { currentState ->
-                                currentState.copy(memberList = uiMentorList)
-                            }
+                        } else {
+                            Log.d("멘토 리스트 로드", "응답이 실패했거나 데이터가 없습니다.")
                         }
-                    } else {
-                        Log.d("멘토 리스트 로드", "응답이 실패하거나 데이터가 없습니다.")
                     }
                 }
-
                 override fun onFailure(call: Call<CommonResponse>, t: Throwable) {
                     Log.d("멘토 리스트 로드", "통신 실패: $t")
                 }
@@ -275,16 +274,12 @@ class HomeViewModel: ViewModel() {
                     Log.d("홈통신", "loadMentiList - response.code(): ${response.code()}")
                     Log.d("홈통신", "loadMentiList - response.body(): ${response.body()}")
 
-                    val jsonObject = Gson().toJson(response.body())
-                    Log.d("홈통신", "loadMentiList - jsonObject: $jsonObject")
+                    if(response.code() == 200) {
+                        val jsonObject = Gson().toJson(response.body())
+                        Log.d("홈통신", "loadMentiList - jsonObject: $jsonObject")
 
-                    val jo = JSONObject(jsonObject.toString())
-                    Log.d("홈통신", "loadMentiList - jo: $jo")
-
-                    val jsonObjectSuccess = jo.getBoolean("success")
-
-                    if (jsonObjectSuccess) {
-                        Log.d("홈통신", "loadMentiList - success")
+                        val jo = JSONObject(jsonObject.toString())
+                        Log.d("홈통신", "loadMentiList - jo: $jo")
 
                         val responseJsonObject = jo.getJSONObject("response")
                         Log.d("홈통신", "responseJsonObject: $responseJsonObject")
@@ -316,7 +311,6 @@ class HomeViewModel: ViewModel() {
                         }
                     } else {
                         Log.d("홈통신", "응답이 실패하거나 데이터가 없습니다.")
-
                     }
                 }
 
@@ -342,16 +336,13 @@ class HomeViewModel: ViewModel() {
                     Log.d("학과 리스트", "loadMajorList - response.code(): ${response.code()}")
                     Log.d("학과 리스트", "loadMajorList - response.body(): ${response.body()}")
 
-                    val json = Gson().toJson(response.body())
-                    Log.d("학과 리스트", "loadMajorList - jsonObject: $json")
-
-                    val jsonObject = JSONObject(json.toString())
-                    Log.d("학과 리스트", "loadMajorList - jsonObject: $jsonObject")
-
-                    val jsonObjectSuccess = jsonObject.getBoolean("success")
-
-                    if (jsonObjectSuccess) {
+                    if(response.code() == 200) {
                         Log.d("학과 리스트", "loadMajorList - success")
+                        val json = Gson().toJson(response.body())
+                        Log.d("학과 리스트", "loadMajorList - jsonObject: $json")
+
+                        val jsonObject = JSONObject(json.toString())
+                        Log.d("학과 리스트", "loadMajorList - jsonObject: $jsonObject")
 
                         val responseJsonObject = jsonObject.getJSONObject("response")
                         Log.d("학과 리스트", "responseJsonObject: $responseJsonObject")
@@ -363,7 +354,6 @@ class HomeViewModel: ViewModel() {
                             val uiMajorList: MutableList<String> = mutableListOf()
 
                             for (i in 0 until majors.length()) {
-
                                 val majorString = majors.optString(i)
                                 uiMajorList.add(majorString)
 
@@ -373,7 +363,6 @@ class HomeViewModel: ViewModel() {
                                 currentState.copy(optionMajorList = uiMajorList)
                             }
                         }
-
                     } else {
                         Log.d("학과 리스트", "응답이 실패하거나 데이터가 없습니다.")
                     }
@@ -404,16 +393,12 @@ class HomeViewModel: ViewModel() {
                     Log.d("멘토링 분야 리스트", "getFieldList - response.code(): ${response.code()}")
                     Log.d("멘토링 분야 리스트", "getFieldList - response.body(): ${response.body()}")
 
-                    val json = Gson().toJson(response.body())
-                    Log.d("멘토링 분야 리스트", "getFieldList - jsonObject: $json")
+                    if(response.code() == 200) {
+                        val json = Gson().toJson(response.body())
+                        Log.d("멘토링 분야 리스트", "getFieldList - jsonObject: $json")
 
-                    val jsonObject = JSONObject(json.toString())
-                    Log.d("멘토링 분야 리스트", "getFieldList - jsonObject: $jsonObject")
-
-                    val jsonObjectSuccess = jsonObject.getBoolean("success")
-
-                    if (jsonObjectSuccess) {
-                        Log.d("멘토링 분야 리스트", "getFieldList - success")
+                        val jsonObject = JSONObject(json.toString())
+                        Log.d("멘토링 분야 리스트", "getFieldList - jsonObject: $jsonObject")
 
                         val responseJsonObject = jsonObject.getJSONObject("response")
                         Log.d("멘토링 분야 리스트", "responseJsonObject: $responseJsonObject")
@@ -436,7 +421,6 @@ class HomeViewModel: ViewModel() {
                             }
                             Log.d("optionFieldList", "optionFieldList: ${uiState.value.optionFieldList}")
                         }
-
                     } else {
                         Log.d("멘토링 분야 리스트", "응답이 실패하거나 데이터가 없습니다.")
                     }
