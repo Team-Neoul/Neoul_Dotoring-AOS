@@ -128,15 +128,13 @@ class MemberDetailedViewModel: ViewModel() {
                     Log.d("멘토 디테일 로드", "loadMenteeDetailed - response.code(): ${response.code()}")
                     Log.d("멘토 디테일 로드", "loadMenteeDetailed - response.body(): ${response.body()}")
 
-                    val json = Gson().toJson(response.body())
-                    Log.d("멘토 디테일 로드", "loadMenteeDetailed - json: $json")
+                    if(response.code() == 200) {
+                        val json = Gson().toJson(response.body())
+                        Log.d("멘토 디테일 로드", "loadMenteeDetailed - json: $json")
 
-                    val jsonObject = JSONObject(json.toString())
-                    Log.d("멘토 디테일 로드", "loadMenteeDetailed - jsonObject: $jsonObject")
+                        val jsonObject = JSONObject(json.toString())
+                        Log.d("멘토 디테일 로드", "loadMenteeDetailed - jsonObject: $jsonObject")
 
-                    val jsonObjectSuccess = jsonObject.getBoolean("success")
-
-                    if (jsonObjectSuccess) {
                         Log.d("멘토 디테일 로드", "loadMenteeDetailed - success")
 
                         val responseJsonObject = jsonObject.getJSONObject("response")
@@ -191,7 +189,6 @@ class MemberDetailedViewModel: ViewModel() {
                                 grade = grade
                             )
                         }
-
                     } else {
                         Log.d("멘토 디테일 로드", "loadMenteeDetailed - 응답이 실패하거나 데이터가 없습니다.")
                     }
