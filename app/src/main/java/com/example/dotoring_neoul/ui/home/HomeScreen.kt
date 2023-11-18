@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Button
 import androidx.compose.material.ButtonDefaults
@@ -96,8 +97,15 @@ fun HomeScreen_(
             MemberList(
                 memberList = homeUiState.memberList,
                 navController = navController,
-                isMentor = isMentor
-                //onListBottomReached = homeViewModel.fetchMoreItems()
+                isMentor = isMentor,
+                onListBottomReached = {
+                    if(isMentor) {
+                        homeViewModel.loadMenteeList()
+                    } else {
+                        homeViewModel.loadMentorList()
+                    }
+                },
+                homeViewModel = homeViewModel
             )
         }
         Spacer(modifier = Modifier.weight(1f))
@@ -218,11 +226,11 @@ fun MainScreen(
     LaunchedEffect(Unit) {
         Log.d("홈 통신", "loadMentiList - 홈통신 실행")
 
-        if(isMentor) {
+        /*if(isMentor) {
             homeViewModel.loadMenteeList()
         } else {
             homeViewModel.loadMentorList()
-        }
+        }*/
         homeViewModel.loadMajorList()
         homeViewModel.loadFieldList()
 
@@ -348,10 +356,13 @@ private fun MemberList(
     memberList: List<Member>,
     navController: NavHostController,
     isMentor: Boolean,
-//    onListBottomReached: () -> Unit
+    onListBottomReached: () -> Unit,
+    homeViewModel: HomeViewModel
 ) {
-    //val listState = rememberLazyListState()
-    LazyColumn() {
+    val listState = rememberLazyListState()
+    LazyColumn(
+        state = listState
+    ) {
         items(memberList) { member ->
             MemberCard(
                 member = member,
@@ -362,9 +373,12 @@ private fun MemberList(
         }
     }
 
-    /*listState.OnBottomReached(buffer = 2) {
-        onListBottomReached()
-    }*/
+    listState.OnBottomReached(buffer = 0) {
+        if (!homeViewModel.lastMember) {
+            onListBottomReached()
+            Log.d("멤버 리스트 로드", "onListBottomReached 실행")
+        }
+    }
 }
 
 @Composable

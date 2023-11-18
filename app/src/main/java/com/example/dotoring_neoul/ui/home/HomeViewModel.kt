@@ -16,7 +16,7 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
-class HomeViewModel: ViewModel() {
+class HomeViewModel : ViewModel() {
     private val _selectedMajorList = mutableListOf<String>().toMutableStateList()
     val selectedMajorList: List<String>
         get() = _selectedMajorList
@@ -28,6 +28,12 @@ class HomeViewModel: ViewModel() {
 
     private val _uiState = MutableStateFlow(HomeUiState())
     val uiState: StateFlow<HomeUiState> = _uiState.asStateFlow()
+
+    private var _lastMember = false
+    val lastMember: Boolean
+        get() = _lastMember
+
+    private var lastMemberId: Int? = null
 
     fun updateUserNickname(nickname: String) {
         _uiState.update { currentState ->
@@ -69,7 +75,7 @@ class HomeViewModel: ViewModel() {
      * @param List<String> list - 선택한 학과나 멘토링 분야의 리스트
      */
     fun removeAll(list: List<String>) {
-        if(list == selectedMajorList) {
+        if (list == selectedMajorList) {
             _selectedMajorList.clear()
         } else {
             _selectedFieldList.clear()
@@ -83,7 +89,7 @@ class HomeViewModel: ViewModel() {
      * @param String item - 리스트에서 삭제하고자 하는 하나의 데이터
      */
     fun remove(list: List<String>, item: String) {
-        if(list == selectedMajorList) {
+        if (list == selectedMajorList) {
             _selectedMajorList.remove(item)
         } else {
             _selectedFieldList.remove(item)
@@ -97,7 +103,7 @@ class HomeViewModel: ViewModel() {
      * @param String item - 선택 리스트에 추가할 하나의 데이터
      */
     fun add(list: List<String>, item: String) {
-        if(list == selectedMajorList) {
+        if (list == selectedMajorList) {
             _selectedMajorList.add(item)
         } else {
             _selectedFieldList.add(item)
@@ -143,14 +149,20 @@ class HomeViewModel: ViewModel() {
     fun loadMenteeList() {
         Log.d("멘티 리스트 로드", "loadMenteeList함수 실행")
 
-        DotoringAPI.retrofitService.getMentee()
+        DotoringAPI.retrofitService.getMentee(
+            size = 4,
+            lastMentiId = lastMemberId
+        )
             .enqueue(object : Callback<CommonResponse> {
-                override fun onResponse(call: Call<CommonResponse>, response: Response<CommonResponse>) {
+                override fun onResponse(
+                    call: Call<CommonResponse>,
+                    response: Response<CommonResponse>
+                ) {
                     Log.d("멘티 리스트 로드", "loadMenteeList - onResponse")
                     Log.d("멘티 리스트 로드", "loadMenteeList - response.code(): ${response.code()}")
                     Log.d("멘티 리스트 로드", "loadMenteeList - response.body(): ${response.body()}")
 
-                    if(response.code() == 200) {
+                    if (response.code() == 200) {
                         val json = Gson().toJson(response.body())
                         Log.d("멘티 리스트 로드", "loadMenteeList - json: $json")
 
@@ -166,7 +178,7 @@ class HomeViewModel: ViewModel() {
                         Log.d("멘티 리스트 로드", "menteeList: $menteeList")
 
                         if (menteeList != null && menteeList.length() > 0) {
-                            val uiMentorList: MutableList<Member> = mutableListOf()
+                            val uiMentorList: MutableList<Member> = uiState.value.memberList.toMutableList()
 
                             for (i in 0 until menteeList.length()) {
                                 val menteeObject = menteeList.optJSONObject(i)
@@ -191,6 +203,11 @@ class HomeViewModel: ViewModel() {
                         val pageable = responseJsonObject.getJSONObject("pageable")
                         val nickname = pageable.getString("nickname")
                         updateUserNickname(nickname)
+
+                        _lastMember = responseJsonObject.getBoolean("last")
+                        Log.d("멤버 리스트 로드", "_lastMember: $lastMember")
+                        lastMemberId = menteeList.optJSONObject(menteeList.length() - 1).getInt("id")
+                        Log.d("멤버 리스트 로드", "_lastMemberId: $lastMemberId")
                     } else {
                         Log.d("멘티 리스트 로드", "응답을 받지 못했거나, 멘티 리스트가 없습니다.")
                     }
@@ -208,14 +225,20 @@ class HomeViewModel: ViewModel() {
     fun loadMentorList() {
         Log.d("멘토 리스트 로드", "loadMentorList함수 실행")
 
-        DotoringAPI.retrofitService.getMentor()
+        DotoringAPI.retrofitService.getMentor(
+            size = 4,
+            lastMentoId = lastMemberId
+        )
             .enqueue(object : Callback<CommonResponse> {
-                override fun onResponse(call: Call<CommonResponse>, response: Response<CommonResponse>) {
+                override fun onResponse(
+                    call: Call<CommonResponse>,
+                    response: Response<CommonResponse>
+                ) {
                     Log.d("멘토 리스트 로드", "loadMentorList - onResponse")
                     Log.d("멘토 리스트 로드", "loadMentorList - response.code(): ${response.code()}")
                     Log.d("멘토 리스트 로드", "loadMentorList - response.body(): ${response.body()}")
 
-                    if(response.code() == 200) {
+                    if (response.code() == 200) {
                         val json = Gson().toJson(response.body())
                         Log.d("멘토 리스트 로드", "loadMentorList - json: $json")
 
@@ -234,7 +257,7 @@ class HomeViewModel: ViewModel() {
                             Log.d("멘토 리스트 로드", "mentorList: $mentorList")
 
                             if (mentorList != null && mentorList.length() > 0) {
-                                val uiMentorList: MutableList<Member> = mutableListOf()
+                                val uiMentorList: MutableList<Member> = uiState.value.memberList.toMutableList()
 
                                 for (i in 0 until mentorList.length()) {
                                     val mentorObject = mentorList.optJSONObject(i)
@@ -258,11 +281,17 @@ class HomeViewModel: ViewModel() {
                             val pageable = responseJsonObject.getJSONObject("pageable")
                             val nickname = pageable.getString("nickname")
                             updateUserNickname(nickname)
+
+                            _lastMember = responseJsonObject.getBoolean("last")
+                            Log.d("멤버 리스트 로드", "_lastMember: $lastMember")
+                            lastMemberId = mentorList.optJSONObject(mentorList.length() - 1).getInt("id")
+                            Log.d("멤버 리스트 로드", "_lastMemberId: $lastMemberId")
                         } else {
                             Log.d("멘토 리스트 로드", "응답이 실패했거나 데이터가 없습니다.")
                         }
                     }
                 }
+
                 override fun onFailure(call: Call<CommonResponse>, t: Throwable) {
                     Log.d("멘토 리스트 로드", "통신 실패: $t")
                 }
@@ -277,12 +306,15 @@ class HomeViewModel: ViewModel() {
 
         DotoringAPI.retrofitService.searchMenteeWithMajors(majors = selectedMajorList[0])
             .enqueue(object : Callback<CommonResponse> {
-                override fun onResponse(call: Call<CommonResponse>, response: Response<CommonResponse>) {
+                override fun onResponse(
+                    call: Call<CommonResponse>,
+                    response: Response<CommonResponse>
+                ) {
                     Log.d("홈통신", "loadMentiList - onResponse")
                     Log.d("홈통신", "loadMentiList - response.code(): ${response.code()}")
                     Log.d("홈통신", "loadMentiList - response.body(): ${response.body()}")
 
-                    if(response.code() == 200) {
+                    if (response.code() == 200) {
                         val jsonObject = Gson().toJson(response.body())
                         Log.d("홈통신", "loadMentiList - jsonObject: $jsonObject")
 
@@ -296,7 +328,7 @@ class HomeViewModel: ViewModel() {
                         Log.d("홈통신", "mentiList: $mentiList")
 
                         if (mentiList != null && mentiList.length() > 0) {
-                            val uiMentiList: MutableList<Member> = mutableListOf()
+                            val uiMentiList: MutableList<Member> = uiState.value.memberList.toMutableList()
 
                             for (i in 0 until mentiList.length()) {
                                 val mentiObject = mentiList.optJSONObject(i)
@@ -329,8 +361,8 @@ class HomeViewModel: ViewModel() {
     }
 
     /**
-    * 백엔드에서 학과 목록을 가져오기 위한 함수
-    */
+     * 백엔드에서 학과 목록을 가져오기 위한 함수
+     */
     fun loadMajorList() {
         Log.d("직업 학과 목록", "loadMajorList 실행")
 
@@ -339,12 +371,15 @@ class HomeViewModel: ViewModel() {
                 /**
                  * 통신 요청이 성공한 경우, 서버의 응답을 처리하기 위한 함수
                  */
-                override fun onResponse(call: Call<CommonResponse>, response: Response<CommonResponse>) {
+                override fun onResponse(
+                    call: Call<CommonResponse>,
+                    response: Response<CommonResponse>
+                ) {
                     Log.d("학과 리스트", "loadMajorList - onResponse")
                     Log.d("학과 리스트", "loadMajorList - response.code(): ${response.code()}")
                     Log.d("학과 리스트", "loadMajorList - response.body(): ${response.body()}")
 
-                    if(response.code() == 200) {
+                    if (response.code() == 200) {
                         Log.d("학과 리스트", "loadMajorList - success")
                         val json = Gson().toJson(response.body())
                         Log.d("학과 리스트", "loadMajorList - jsonObject: $json")
@@ -396,12 +431,15 @@ class HomeViewModel: ViewModel() {
                 /**
                  * 통신 요청이 성공한 경우, 서버의 응답을 처리하기 위한 함수
                  */
-                override fun onResponse(call: Call<CommonResponse>, response: Response<CommonResponse>) {
+                override fun onResponse(
+                    call: Call<CommonResponse>,
+                    response: Response<CommonResponse>
+                ) {
                     Log.d("멘토링 분야 리스트", "getFieldList - onResponse")
                     Log.d("멘토링 분야 리스트", "getFieldList - response.code(): ${response.code()}")
                     Log.d("멘토링 분야 리스트", "getFieldList - response.body(): ${response.body()}")
 
-                    if(response.code() == 200) {
+                    if (response.code() == 200) {
                         val json = Gson().toJson(response.body())
                         Log.d("멘토링 분야 리스트", "getFieldList - jsonObject: $json")
 
@@ -427,7 +465,10 @@ class HomeViewModel: ViewModel() {
                             _uiState.update { currentState ->
                                 currentState.copy(optionFieldList = uiFieldList)
                             }
-                            Log.d("optionFieldList", "optionFieldList: ${uiState.value.optionFieldList}")
+                            Log.d(
+                                "optionFieldList",
+                                "optionFieldList: ${uiState.value.optionFieldList}"
+                            )
                         }
                     } else {
                         Log.d("멘토링 분야 리스트", "응답이 실패하거나 데이터가 없습니다.")

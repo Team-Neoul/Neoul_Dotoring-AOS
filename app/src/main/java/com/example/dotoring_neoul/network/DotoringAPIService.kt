@@ -180,27 +180,24 @@ interface DotoringAPIService {
         @Part("email") email: RequestBody,
         @Part("introduction") introduction: RequestBody,
     ):Call<CommonResponse>
-/*
-    *//**
-     * searchMentee: 홈에서 menti를 받아오는 api
-     * *//*
-    @GET("api/menti/expenses")
-    fun searchMentee(
-        @Query("page") page: Int,
-        @Query("size") size: Int
-    ): Call<CommonResponse>*/
 
     /**
      * 홈화면에서 멘토를 받아오는 API
      */
     @GET("api/mento")
-    fun getMentor(): Call<CommonResponse>
+    fun getMentor(
+        @Query("size") size: Int,
+        @Query("lastMentoId") lastMentoId: Int? = null
+    ): Call<CommonResponse>
 
     /**
      * 홈화면에서 멘티를 받아오는 API
      */
     @GET("api/menti")
-    fun getMentee(): Call<CommonResponse>
+    fun getMentee(
+        @Query("size") size: Int,
+        @Query("lastMentiId") lastMentiId: Int? = null
+    ): Call<CommonResponse>
 
     @GET("api/menti")
     fun searchMenteeWithMajors(
