@@ -31,11 +31,13 @@ import okhttp3.internal.toImmutableList
 import org.json.JSONObject
 import retrofit2.Call
 import retrofit2.Callback
+import retrofit2.HttpException
 import retrofit2.Response
 import java.io.File
 import java.io.FileOutputStream
+import java.io.IOException
 
-class RegisterSixthViewModel(application: Application): AndroidViewModel(application) {
+class RegisterSixthViewModel(application: Application) : AndroidViewModel(application) {
 
     private val _uiState = MutableStateFlow(RegisterSixthUiState())
     val uiState: StateFlow<RegisterSixthUiState> = _uiState.asStateFlow()
@@ -114,10 +116,14 @@ class RegisterSixthViewModel(application: Application): AndroidViewModel(applica
     }
 
     fun updateEmailConditionState(isEmailConditionSatisfied: Boolean) {
-        Log.d("테스트 - 이메일 조건 검증 확인", "updateEmailConditionState - isEmailConditionSatisfied: $isEmailConditionSatisfied")
+        Log.d(
+            "테스트 - 이메일 조건 검증 확인",
+            "updateEmailConditionState - isEmailConditionSatisfied: $isEmailConditionSatisfied"
+        )
 
         _uiState.update { currentState ->
-            currentState.copy(isEmailConditionSatisfied = isEmailConditionSatisfied,
+            currentState.copy(
+                isEmailConditionSatisfied = isEmailConditionSatisfied,
             )
         }
     }
@@ -125,29 +131,45 @@ class RegisterSixthViewModel(application: Application): AndroidViewModel(applica
     /**
      *  Email 인증 코드와 관련된 함수
      */
-    fun updateValidationCode (codeInput: String) {
+    fun updateValidationCode(codeInput: String) {
         _uiState.update { currentState ->
             currentState.copy(validationCode = codeInput)
         }
     }
 
-    fun updateCodeState (codeState: CodeState) {
+    fun updateCodeState(codeState: CodeState) {
         _uiState.update { currentState ->
             currentState.copy(codeState = codeState)
         }
     }
 
-    private fun updateToLoginButtonState () {
-        Log.d("로그인 하러 가기 버튼 상태", "updateToLoginButtonState - uiState.value.isToLoginButtonEnabled: ${uiState.value.isToLoginButtonEnabled}")
-        Log.d("로그인 하러 가기 버튼 상태", "updateToLoginButtonState - uiState.value.isIdAvailable: ${uiState.value.isIdAvailable}")
-        Log.d("로그인 하러 가기 버튼 상태", "updateToLoginButtonState - uiState.value.isPasswordConditionSatisfied: ${uiState.value.isPasswordConditionSatisfied}")
-        Log.d("로그인 하러 가기 버튼 상태", "updateToLoginButtonState - uiState.value.isPasswordCertified: ${uiState.value.isPasswordCertified}")
-        Log.d("로그인 하러 가기 버튼 상태", "updateToLoginButtonState - uiState.value.emailValidationState: ${uiState.value.emailValidationState}")
+    private fun updateToLoginButtonState() {
+        Log.d(
+            "로그인 하러 가기 버튼 상태",
+            "updateToLoginButtonState - uiState.value.isToLoginButtonEnabled: ${uiState.value.isToLoginButtonEnabled}"
+        )
+        Log.d(
+            "로그인 하러 가기 버튼 상태",
+            "updateToLoginButtonState - uiState.value.isIdAvailable: ${uiState.value.isIdAvailable}"
+        )
+        Log.d(
+            "로그인 하러 가기 버튼 상태",
+            "updateToLoginButtonState - uiState.value.isPasswordConditionSatisfied: ${uiState.value.isPasswordConditionSatisfied}"
+        )
+        Log.d(
+            "로그인 하러 가기 버튼 상태",
+            "updateToLoginButtonState - uiState.value.isPasswordCertified: ${uiState.value.isPasswordCertified}"
+        )
+        Log.d(
+            "로그인 하러 가기 버튼 상태",
+            "updateToLoginButtonState - uiState.value.emailValidationState: ${uiState.value.emailValidationState}"
+        )
 
-        if(uiState.value.emailValidationState == EmailValidationState.Valid
+        if (uiState.value.emailValidationState == EmailValidationState.Valid
             && uiState.value.isPasswordCertified
             && uiState.value.isPasswordConditionSatisfied
-            && uiState.value.isIdAvailable == IdDuplicationCheckState.DuplicationCheckSuccess) {
+            && uiState.value.isIdAvailable == IdDuplicationCheckState.DuplicationCheckSuccess
+        ) {
             _uiState.update { currentState ->
                 currentState.copy(isToLoginButtonEnabled = true)
             }
@@ -158,7 +180,7 @@ class RegisterSixthViewModel(application: Application): AndroidViewModel(applica
         }
     }
 
-    fun updateEmailValidationState (emailValidationState: EmailValidationState) {
+    fun updateEmailValidationState(emailValidationState: EmailValidationState) {
         _uiState.update { currentState ->
             currentState.copy(emailValidationState = emailValidationState)
         }
@@ -166,7 +188,7 @@ class RegisterSixthViewModel(application: Application): AndroidViewModel(applica
         updateToLoginButtonState()
     }
 
-    fun updateEmailValidationButtonState (isValidationButtonEnabled: Boolean) {
+    fun updateEmailValidationButtonState(isValidationButtonEnabled: Boolean) {
         _uiState.update { currentState ->
             currentState.copy(isValidationButtonEnabled = isValidationButtonEnabled)
         }
@@ -179,7 +201,7 @@ class RegisterSixthViewModel(application: Application): AndroidViewModel(applica
         timer.start()
     }
 
-     fun getTimer(): CountDownTimer {
+    fun getTimer(): CountDownTimer {
         return object : CountDownTimer(300000, 1000) {
 
             override fun onTick(millisUntilFinished: Long) {
@@ -204,20 +226,16 @@ class RegisterSixthViewModel(application: Application): AndroidViewModel(applica
     }
 
     fun userIdDuplicationCheck() {
-        Log.d("통신 - 아이디 중복 확인", "userIdDuplicationCheck() - 시작")
-
         val idValidationRequest = IdValidationRequest(loginId = uiState.value.memberId)
-        Log.d("통신 - 아이디 중복 확인", "userIdDuplicationCheck - $idValidationRequest")
+        val idValidationRequestCall: Call<CommonResponse> =
+            DotoringRegisterAPI.retrofitService.loginIdValidation(idValidationRequest)
 
-        val idValidationRequestCall: Call<CommonResponse> = DotoringRegisterAPI.retrofitService.loginIdValidation(idValidationRequest)
-
-        idValidationRequestCall.enqueue(object: Callback<CommonResponse> {
-            override fun onResponse(call: Call<CommonResponse>, response: Response<CommonResponse>) {
-                Log.d("통신 - 아이디 중복 확인", "userIdDuplicationCheck - onResponse")
-                Log.d("통신 - 아이디 중복 확인", "userIdDuplicationCheck - response.body(): ${response.body()}")
-                Log.d("통신 - 아이디 중복 확인", "userIdDuplicationCheck - response.code(): ${response.code()}")
-
-                if( response.code() == 200 ) {
+        idValidationRequestCall.enqueue(object : Callback<CommonResponse> {
+            override fun onResponse(
+                call: Call<CommonResponse>,
+                response: Response<CommonResponse>
+            ) {
+                if (response.isSuccessful) {
                     updateIdValidationState(IdDuplicationCheckState.DuplicationCheckSuccess)
 
                 } else {
@@ -226,33 +244,29 @@ class RegisterSixthViewModel(application: Application): AndroidViewModel(applica
             }
 
             override fun onFailure(call: Call<CommonResponse>, t: Throwable) {
-                Log.d("통신 - 아이디 중복 확인", "통신 실패: $t")
-                Log.d("통신 - 아이디 중복 확인", "요청 내용 - $idValidationRequestCall")
+                val errorMessage = when (t) {
+                    is IOException -> "인터넷 연결이 끊겼습니다."
+                    is HttpException -> "알 수 없는 오류가 발생했어요."
+                    else -> t.localizedMessage
+                }
             }
         })
     }
 
     fun sendAuthenticationCode() {
         val email = uiState.value.email
-        Log.d("통신 - 인증 코드 보내기", "sendAuthenticationCode - 시작")
-        Log.d("통신 - 인증 코드 보내기", "sendAuthenticationCode - $email")
+        val authenticationCodeRequestCall: Call<CommonResponse> =
+            DotoringRegisterAPI.retrofitService.sendAuthenticationCode(email = uiState.value.email)
 
-        val authenticationCodeRequestCall: Call<CommonResponse> = DotoringRegisterAPI.retrofitService.sendAuthenticationCode(email = uiState.value.email)
-
-        authenticationCodeRequestCall.enqueue(object: Callback<CommonResponse> {
-            override fun onResponse(call: Call<CommonResponse>, response: Response<CommonResponse>) {
-                Log.d("통신 - 인증 코드 보내기", "sendAuthenticationCode - onResponse")
-                Log.d("통신 - 인증 코드 보내기", "sendAuthenticationCode - response.body() : ${response.body()}")
-                Log.d("통신 - 인증 코드 보내기", "sendAuthenticationCode - response.code() : ${response.code()}")
-
-                if (response.code() == 200) {
+        authenticationCodeRequestCall.enqueue(object : Callback<CommonResponse> {
+            override fun onResponse(
+                call: Call<CommonResponse>,
+                response: Response<CommonResponse>
+            ) {
+                if (response.isSuccessful) {
                     val json = Gson().toJson(response.body())
-                    Log.d("통신 - 인증 코드 보내기", "sendAuthenticationCode - json : $json")
                     val jsonObject = JSONObject(json)
-                    Log.d("통신 - 인증 코드 보내기", "sendAuthenticationCode - jsonObject : $jsonObject")
                     val jsonObjectSuccess = jsonObject.getBoolean("success")
-                    Log.d("통신 - 인증 코드 보내기", "sendAuthenticationCode - jsonObjectSuccess : $jsonObjectSuccess")
-
                     val response = jsonObject.getJSONObject("response")
                     val emailVerificationCode = response.optJSONObject("emailVerificationCode")
                     val emailVerificationCodeToString = emailVerificationCode?.toString() ?: ""
@@ -260,84 +274,62 @@ class RegisterSixthViewModel(application: Application): AndroidViewModel(applica
                     _uiState.update { currentState ->
                         currentState.copy(validationCode = emailVerificationCodeToString)
                     }
-
-                    Log.d("테스트 - 이메일 코드 확인", "sendAuthenticationCode - emailVerificationCodeToString: ${uiState.value.validationCode}")
                 } else {
                     updateEmailValidationState(EmailValidationState.AlreadySigned)
-                    println("이미 등록된 이메일 입니다. 아이디 찾기를 이용해 주세요.")
                 }
             }
+
             override fun onFailure(call: Call<CommonResponse>, t: Throwable) {
-                Log.d("통신 - 인증 코드 보내기", "통신 실패: $t")
-                Log.d("통신 - 인증 코드 보내기", "요청 내용 - $authenticationCodeRequestCall")
+                val errorMessage = when (t) {
+                    is IOException -> "인터넷 연결이 끊겼습니다."
+                    is HttpException -> "알 수 없는 오류가 발생했어요."
+                    else -> t.localizedMessage
+                }
             }
         })
     }
 
     fun codeCertification() {
-        Log.d("통신 - 코드 인증 하기", "codeCertification - 시작")
+        val codeCertificationRequest = EmailCertificationRequest(
+            emailVerificationCode = uiState.value.validationCode,
+            email = uiState.value.email
+        )
+        val codeCertificationRequestCall: Call<CommonResponse> =
+            DotoringRegisterAPI.retrofitService.emailCertification(codeCertificationRequest)
 
-        val codeCertificationRequest = EmailCertificationRequest(emailVerificationCode = uiState.value.validationCode, email = uiState.value.email)
-        Log.d("통신 - 코드 인증 하기", "codeCertification - codeCertificationRequest: $codeCertificationRequest")
-
-        val codeCertificationRequestCall: Call<CommonResponse> = DotoringRegisterAPI.retrofitService.emailCertification(codeCertificationRequest)
-
-        codeCertificationRequestCall.enqueue(object: Callback<CommonResponse> {
-            override fun onResponse(call: Call<CommonResponse>, response: Response<CommonResponse>) {
-                Log.d("통신 - 코드 인증 하기", "codeCertification - onResponse")
-                Log.d("통신 - 코드 인증 하기", "codeCertification - response.body() : ${response.body()}")
-                Log.d("통신 - 코드 인증 하기", "codeCertification - response.code() : ${response.code()}")
-
-                if( response.code() == 200 ) {
+        codeCertificationRequestCall.enqueue(object : Callback<CommonResponse> {
+            override fun onResponse(
+                call: Call<CommonResponse>,
+                response: Response<CommonResponse>
+            ) {
+                if (response.isSuccessful) {
                     updateEmailValidationState(EmailValidationState.Valid)
-
                 } else {
-
-                    val json = Gson().toJson(response.errorBody())
-                    Log.d("통신 - 코드 인증 하기", "codeCertification - json : $json")
-
-                    val jsonObject = JSONObject(json)
-                    Log.d("통신 - 코드 인증 하기", "codeCertification - jsonObject : $jsonObject")
-
-                    val jsonObjectError = jsonObject.getJSONObject("error")
-                    Log.d("통신 - 코드 인증 하기", "codeCertification - jsonObjectError : $jsonObjectError")
-
-                    val errorCode = jsonObjectError.getString("code")
-                    Log.d("통신 - 코드 인증 하기", "codeCertification - errorCode : $errorCode")
-
-                    if (errorCode == "4077") {
-                        println("인증 코드가 일치하지 않습니다.")
-                        updateEmailValidationState(EmailValidationState.CodeInvalid)
-                    } else {
-                        println("등록되지 않은 이메일 입니다.")
-                        updateEmailValidationState(EmailValidationState.CodeInvalid)
-                    }
+                    updateEmailValidationState(EmailValidationState.CodeInvalid)
                 }
             }
+
             override fun onFailure(call: Call<CommonResponse>, t: Throwable) {
-                Log.d("통신 - 코드 인증 하기", "통신 실패: $t")
-                Log.d("통신 - 코드 인증 하기", "요청 내용 - $codeCertificationRequestCall")
+                val errorMessage = when (t) {
+                    is IOException -> "인터넷 연결이 끊겼습니다."
+                    is HttpException -> "알 수 없는 오류가 발생했어요."
+                    else -> t.localizedMessage
+                }
             }
         })
     }
 
     fun mentorRegister(mentorInformation: MentorInformation) {
-        Log.d("통신 - 로그인 하기", "mentorRegister - 통신 시작")
         val certifications: MutableList<MultipartBody.Part> = mutableListOf<MultipartBody.Part>()
 
-        if(mentorInformation.employmentCertification != null) {
+        if (mentorInformation.employmentCertification != null) {
             certifications.add(makePart(mentorInformation.employmentCertification))
         }
-
-        if(mentorInformation.graduateCertification != null) {
+        if (mentorInformation.graduateCertification != null) {
             certifications.add(makePart(mentorInformation.graduateCertification))
         }
 
         certifications.toImmutableList()
-        Log.d("통신 - 회원 가입 하기", "mentorRegister - certifications: $certifications")
-
-        Log.d("통신 - 회원 가입 하기", "menteeRegister - menteeInformation.fields: ${mentorInformation.field}")
-        Log.d("통신 - 회원 가입 하기", "menteeRegister - menteeInformation.major: ${mentorInformation.major}")
 
         val school: RequestBody = mentorInformation.company.toRequestBody()
         val grade: Int = mentorInformation.careerLevel
@@ -349,36 +341,38 @@ class RegisterSixthViewModel(application: Application): AndroidViewModel(applica
         val password: RequestBody = uiState.value.password.toRequestBody()
         val email: RequestBody = uiState.value.email.toRequestBody()
 
-        val finalRegisterRequestCall: Call<CommonResponse> = DotoringRegisterAPI.retrofitService.signUpAsMentor(
-            school = school,
-            grade = grade,
-            fields = fields,
-            majors = majors,
-            nickname = nickname,
-            introduction = introduction,
-            loginId = loginId,
-            password = password,
-            email = email,
-            certifications = certifications
-        )
+        val finalRegisterRequestCall: Call<CommonResponse> =
+            DotoringRegisterAPI.retrofitService.signUpAsMentor(
+                school = school,
+                grade = grade,
+                fields = fields,
+                majors = majors,
+                nickname = nickname,
+                introduction = introduction,
+                loginId = loginId,
+                password = password,
+                email = email,
+                certifications = certifications
+            )
 
-        Log.d("통신 - 회원 가입 하기", "mentorRegister - finalRegisterRequestCall: $finalRegisterRequestCall")
-
-        finalRegisterRequestCall.enqueue(object: Callback<CommonResponse> {
-            override fun onResponse(call: Call<CommonResponse>, response: Response<CommonResponse>) {
-                Log.d("통신 - 회원 가입 하기", "mentorRegister - onResponse")
-                Log.d("통신 - 회원 가입 하기", "mentorRegister - response.body() : ${response.body()}")
-                Log.d("통신 - 회원 가입 하기", "mentorRegister - response.code() : ${response.code()}")
-
-                if( response.code() == 200 ) {
+        finalRegisterRequestCall.enqueue(object : Callback<CommonResponse> {
+            override fun onResponse(
+                call: Call<CommonResponse>,
+                response: Response<CommonResponse>
+            ) {
+                if (response.isSuccessful) {
                     println("멘토님, 성공적으로 회원 가입이 완료되었습니다.")
                 } else {
                     println("회원 가입에 실패했습니다.")
                 }
             }
+
             override fun onFailure(call: Call<CommonResponse>, t: Throwable) {
-                Log.d("통신 - 로그인 하기", "통신 실패: $t")
-                Log.d("통신 - 로그인 하기", "요청 내용 - $finalRegisterRequestCall")
+                val errorMessage = when (t) {
+                    is IOException -> "인터넷 연결이 끊겼습니다."
+                    is HttpException -> "알 수 없는 오류가 발생했어요."
+                    else -> t.localizedMessage
+                }
             }
         })
     }
@@ -387,7 +381,7 @@ class RegisterSixthViewModel(application: Application): AndroidViewModel(applica
         Log.d("통신 - 로그인 하기", "menteeRegister - 통신 시작")
         val certifications: MutableList<MultipartBody.Part> = mutableListOf<MultipartBody.Part>()
 
-        if(menteeInformation.enrollmentCertification != null) {
+        if (menteeInformation.enrollmentCertification != null) {
             certifications.add(makePart(menteeInformation.enrollmentCertification))
         }
 
@@ -395,7 +389,10 @@ class RegisterSixthViewModel(application: Application): AndroidViewModel(applica
         Log.d("통신 - 로그인 하기", "menteeRegister - certifications: $certifications")
         Log.d("통신 - 로그인 하기", "menteeRegister - menteeInformation: ${menteeInformation.toString()}")
 
-        Log.d("통신 - 로그인 하기", "menteeRegister - menteeInformation.fields: ${menteeInformation.field}")
+        Log.d(
+            "통신 - 로그인 하기",
+            "menteeRegister - menteeInformation.fields: ${menteeInformation.field}"
+        )
         Log.d("통신 - 로그인 하기", "menteeRegister - menteeInformation.major: ${menteeInformation.major}")
 
         val school: RequestBody = menteeInformation.school.toRequestBody()
@@ -408,36 +405,40 @@ class RegisterSixthViewModel(application: Application): AndroidViewModel(applica
         val password: RequestBody = uiState.value.password.toRequestBody()
         val email: RequestBody = uiState.value.email.toRequestBody()
 
-        val finalRegisterRequestCall: Call<CommonResponse> = DotoringRegisterAPI.retrofitService.signUpAsMentee(
-            school = school,
-            grade = grade,
-            fields = fields,
-            majors = majors,
-            nickname = nickname,
-            introduction = introduction,
-            loginId = loginId,
-            password = password,
-            email = email,
-            certifications = certifications
-        )
+        val finalRegisterRequestCall: Call<CommonResponse> =
+            DotoringRegisterAPI.retrofitService.signUpAsMentee(
+                school = school,
+                grade = grade,
+                fields = fields,
+                majors = majors,
+                nickname = nickname,
+                introduction = introduction,
+                loginId = loginId,
+                password = password,
+                email = email,
+                certifications = certifications
+            )
 
         Log.d("통신 - 로그인 하기", "menteeRegister - finalRegisterRequestCall: $finalRegisterRequestCall")
 
-        finalRegisterRequestCall.enqueue(object: Callback<CommonResponse> {
-            override fun onResponse(call: Call<CommonResponse>, response: Response<CommonResponse>) {
-                Log.d("통신 - 로그인 하기", "menteeRegister - onResponse")
-                Log.d("통신 - 로그인 하기", "menteeRegister - response.body() : ${response.body()}")
-                Log.d("통신 - 로그인 하기", "menteeRegister - response.code() : ${response.code()}")
-
-                if( response.code() == 200 ) {
+        finalRegisterRequestCall.enqueue(object : Callback<CommonResponse> {
+            override fun onResponse(
+                call: Call<CommonResponse>,
+                response: Response<CommonResponse>
+            ) {
+                if (response.isSuccessful) {
                     println("멘티님, 성공적으로 회원 가입이 완료되었습니다.")
                 } else {
                     println("회원 가입에 실패했습니다.")
                 }
             }
+
             override fun onFailure(call: Call<CommonResponse>, t: Throwable) {
-                Log.d("통신 - 로그인 하기", "통신 실패: $t")
-                Log.d("통신 - 로그인 하기", "요청 내용 - $finalRegisterRequestCall")
+                val errorMessage = when (t) {
+                    is IOException -> "인터넷 연결이 끊겼습니다."
+                    is HttpException -> "알 수 없는 오류가 발생했어요."
+                    else -> t.localizedMessage
+                }
             }
         })
     }
@@ -459,7 +460,7 @@ class RegisterSixthViewModel(application: Application): AndroidViewModel(applica
      * 파일을 절대 경로로 변환하는 함수
      */
     @SuppressLint("Range")
-    private fun absolutelyPath(path: Uri, context : Context): String {
+    private fun absolutelyPath(path: Uri, context: Context): String {
 //        val proj: Array<String> = arrayOf(MediaStore.Images.Media.DATA)
         val cursor: Cursor? = context.contentResolver.query(path, null, null, null, null)
         Log.d("파일 올리기", "absolutelyPath - c: $cursor")
@@ -490,7 +491,12 @@ class RegisterSixthViewModel(application: Application): AndroidViewModel(applica
 
         val file = File(filePath)
         Log.d("파일 경로", "createCopyAndReturnRealPath - file: $file")
-        Log.d("파일 경로", "createCopyAndReturnRealPath - contentResolver.getType(file.toUri()): ${contentResolver.getType(file.toUri())}")
+        Log.d(
+            "파일 경로",
+            "createCopyAndReturnRealPath - contentResolver.getType(file.toUri()): ${
+                contentResolver.getType(file.toUri())
+            }"
+        )
 
 
         val bytes = contentResolver.openInputStream(uri).use {
