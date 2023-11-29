@@ -1,6 +1,5 @@
 package com.example.dotoring.ui.register.third
 
-import android.util.Log
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -14,9 +13,11 @@ import com.example.dotoring.network.DotoringRegisterAPI
 import kotlinx.coroutines.flow.update
 import retrofit2.Call
 import retrofit2.Callback
+import retrofit2.HttpException
 import retrofit2.Response
+import java.io.IOException
 
-class RegisterThirdViewModel: ViewModel() {
+class RegisterThirdViewModel : ViewModel() {
 
     private val _uiState = MutableStateFlow(RegisterThirdUiState())
     val uiState: StateFlow<RegisterThirdUiState> = _uiState.asStateFlow()
@@ -39,7 +40,7 @@ class RegisterThirdViewModel: ViewModel() {
 
         enableNextButtonState()
 
-        if(!isError) {
+        if (!isError) {
             enableDuplicationCheckButtonState(true)
         } else {
             enableDuplicationCheckButtonState(false)
@@ -75,17 +76,15 @@ class RegisterThirdViewModel: ViewModel() {
 
     fun verifyMentorNickname() {
         val verifyNicknameRequest = NicknameValidationRequest(nickname = uiState.value.nickname)
-        Log.d("닉네임 중복 확인", "Request: ${verifyNicknameRequest.toString()}")
-        val verifyNicknameResponseCall: Call<CommonResponse> = DotoringRegisterAPI.retrofitService.mentoNicknameValidation(verifyNicknameRequest)
+        val verifyNicknameResponseCall: Call<CommonResponse> =
+            DotoringRegisterAPI.retrofitService.mentoNicknameValidation(verifyNicknameRequest)
 
-        verifyNicknameResponseCall.enqueue(object: Callback<CommonResponse> {
-            override fun onResponse(call: Call<CommonResponse>, response: Response<CommonResponse>) {
-
-                Log.d("닉네임 중복 확인", "onResponse")
-                Log.d("닉네임 중복 확인", "닉네임 중복 확인: ${response.body()}")
-                Log.d("닉네임 중복 확인", "닉네임 중복 확인: ${response.code()}")
-
-                if( response.code() == 200 ) {
+        verifyNicknameResponseCall.enqueue(object : Callback<CommonResponse> {
+            override fun onResponse(
+                call: Call<CommonResponse>,
+                response: Response<CommonResponse>
+            ) {
+                if (response.isSuccessful) {
                     updateNicknameDuplicationErrorState(DuplicationCheckState.DuplicationCheckSuccess)
 
                 } else {
@@ -94,26 +93,26 @@ class RegisterThirdViewModel: ViewModel() {
             }
 
             override fun onFailure(call: Call<CommonResponse>, t: Throwable) {
-                val string = t.message.toString()
-                Log.d("닉네임 중복 확인", "통신 실패: $string")
-                Log.d("닉네임 중복 확인", "요청 내용 - $verifyNicknameResponseCall")
+                val errorMessage = when (t) {
+                    is IOException -> "인터넷 연결이 끊겼습니다."
+                    is HttpException -> "알 수 없는 오류가 발생했어요."
+                    else -> t.localizedMessage
+                }
             }
         })
     }
 
     fun verifyMenteeNickname() {
         val verifyNicknameRequest = NicknameValidationRequest(nickname = uiState.value.nickname)
-        Log.d("닉네임 중복 확인", "Request: ${verifyNicknameRequest.toString()}")
-        val verifyNicknameResponseCall: Call<CommonResponse> = DotoringRegisterAPI.retrofitService.menteeNicknameValidation(verifyNicknameRequest)
+        val verifyNicknameResponseCall: Call<CommonResponse> =
+            DotoringRegisterAPI.retrofitService.menteeNicknameValidation(verifyNicknameRequest)
 
-        verifyNicknameResponseCall.enqueue(object: Callback<CommonResponse> {
-            override fun onResponse(call: Call<CommonResponse>, response: Response<CommonResponse>) {
-
-                Log.d("닉네임 중복 확인", "onResponse")
-                Log.d("닉네임 중복 확인", "response.body(): ${response.body()}")
-                Log.d("닉네임 중복 확인", "response.code(): ${response.code()}")
-
-                if( response.code() == 200 ) {
+        verifyNicknameResponseCall.enqueue(object : Callback<CommonResponse> {
+            override fun onResponse(
+                call: Call<CommonResponse>,
+                response: Response<CommonResponse>
+            ) {
+                if (response.isSuccessful) {
                     updateNicknameDuplicationErrorState(DuplicationCheckState.DuplicationCheckSuccess)
 
                 } else {
@@ -122,9 +121,11 @@ class RegisterThirdViewModel: ViewModel() {
             }
 
             override fun onFailure(call: Call<CommonResponse>, t: Throwable) {
-                val string = t.message.toString()
-                Log.d("닉네임 중복 확인", "통신 실패: $string")
-                Log.d("닉네임 중복 확인", "요청 내용 - $verifyNicknameResponseCall")
+                val errorMessage = when (t) {
+                    is IOException -> "인터넷 연결이 끊겼습니다."
+                    is HttpException -> "알 수 없는 오류가 발생했어요."
+                    else -> t.localizedMessage
+                }
             }
         })
     }
