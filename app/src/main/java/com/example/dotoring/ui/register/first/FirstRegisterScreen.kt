@@ -7,12 +7,11 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.BottomSheetScaffold
+import androidx.compose.material.BottomSheetValue
 import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material.ModalBottomSheetLayout
-import androidx.compose.material.ModalBottomSheetValue
+import androidx.compose.material.SnackbarDuration
+import androidx.compose.material.SnackbarHost
 import androidx.compose.material.rememberBottomSheetScaffoldState
-import androidx.compose.material.rememberModalBottomSheetState
-import androidx.compose.material.rememberScaffoldState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -49,11 +48,12 @@ fun FirstRegisterScreen(
     navController: NavHostController,
     isMentor: Boolean = true
 ) {
-    val filterBottomSheetState = rememberModalBottomSheetState(
-        initialValue = ModalBottomSheetValue.Hidden,
-    )
+    /*    val filterBottomSheetState = rememberModalBottomSheetState(
+            initialValue = ModalBottomSheetValue.Hidden,
+        )*/
     val bottomSheetScaffoldState = rememberBottomSheetScaffoldState()
     val scope = rememberCoroutineScope()
+
     var isMajorBottomSheet by remember { mutableStateOf(false) }
     val registerFirstUiState by registerFirstViewModel.uiState.collectAsState()
 
@@ -85,11 +85,8 @@ fun FirstRegisterScreen(
     val contentColor = colorResource(R.color.white)
 
     LaunchedEffect(Unit) {
-        registerFirstViewModel.loadFieldList()
-        registerFirstViewModel.loadMajorList()
-
         // State Change Callback
-        snapshotFlow { filterBottomSheetState.isVisible }.collect { isVisible ->
+        snapshotFlow { bottomSheetScaffoldState.bottomSheetState.currentValue == BottomSheetValue.Expanded }.collect { isVisible ->
             if (isVisible) {
                 // Sheet is visible
             } else {
@@ -103,7 +100,7 @@ fun FirstRegisterScreen(
         }
     }
 // 여기부터 ----------------------------
-    /*BottomSheetScaffold(
+    BottomSheetScaffold(
         sheetContent = {
             BottomSheetLayout(
                 title = titleText,
@@ -121,11 +118,11 @@ fun FirstRegisterScreen(
             )
         },
         scaffoldState = bottomSheetScaffoldState,
-        snackbarHost =  ,
-
+        snackbarHost = { SnackbarHost(hostState = bottomSheetScaffoldState.snackbarHostState) },
         sheetShape = sheetRadius,
         sheetBackgroundColor = backgroundColor,
-        sheetContentColor = contentColor
+        sheetContentColor = contentColor,
+        sheetPeekHeight = 0.dp,
     ) {
         Row {
             Spacer(modifier = Modifier.weight(1f))
@@ -149,22 +146,41 @@ fun FirstRegisterScreen(
 
                     FirstRegisterScreenContent(
                         onMentoringFieldClick = {
+                            registerFirstViewModel.loadFieldList()
                             isMajorBottomSheet = false
                             scope.launch {
-                                if (!filterBottomSheetState.isVisible) {
-                                    filterBottomSheetState.show()
+                                if (bottomSheetScaffoldState.bottomSheetState.currentValue == BottomSheetValue.Collapsed) {
+                                    bottomSheetScaffoldState.bottomSheetState.expand()
                                 } else {
-                                    filterBottomSheetState.hide()
+                                    bottomSheetScaffoldState.bottomSheetState.collapse()
+                                }
+
+                                if(registerFirstViewModel.isSnackbarShowing.value) {
+                                    bottomSheetScaffoldState.snackbarHostState.showSnackbar(
+                                        message = registerFirstUiState.snackbarMessage,
+                                        actionLabel = "close",
+                                        duration = SnackbarDuration.Short
+                                    )
                                 }
                             }
+
                         },
                         onMajorClick = {
+                            registerFirstViewModel.loadMajorList()
                             isMajorBottomSheet = true
                             scope.launch {
-                                if (!filterBottomSheetState.isVisible) {
-                                    filterBottomSheetState.show()
+                                if (bottomSheetScaffoldState.bottomSheetState.currentValue == BottomSheetValue.Collapsed) {
+                                    bottomSheetScaffoldState.bottomSheetState.expand()
                                 } else {
-                                    filterBottomSheetState.hide()
+                                    bottomSheetScaffoldState.bottomSheetState.collapse()
+                                }
+
+                                if(registerFirstViewModel.isSnackbarShowing.value) {
+                                    bottomSheetScaffoldState.snackbarHostState.showSnackbar(
+                                        message = registerFirstUiState.snackbarMessage,
+                                        actionLabel = "close",
+                                        duration = SnackbarDuration.Short
+                                    )
                                 }
                             }
                         },
@@ -209,9 +225,9 @@ fun FirstRegisterScreen(
             }
             Spacer(modifier = Modifier.weight(1f))
         }
-    }*/
+    }
 // 여기까지 ----------------------------
-    ModalBottomSheetLayout(
+    /*ModalBottomSheetLayout(
         sheetContent = {
             BottomSheetLayout(
                 title = titleText,
@@ -315,7 +331,7 @@ fun FirstRegisterScreen(
             }
             Spacer(modifier = Modifier.weight(1f))
         }
-    }
+    }*/
 }
 
 

@@ -2,11 +2,15 @@ package com.example.dotoring.ui.register.first
 
 import android.util.Log
 import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
@@ -30,13 +34,35 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.TextUnit
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.dotoring.R
 import com.example.dotoring.ui.theme.DotoringTheme
 
+@Composable
+fun FirstRegisterScreenContent(
+    registerFirstViewModel: RegisterFirstViewModel = viewModel(),
+    onMajorClick: () -> Unit,
+    onMentoringFieldClick: () -> Unit,
+    isMentor: Boolean
+) {
+    Column {
+        if (isMentor) {
+            MentorIntroduce(
+                registerFirstViewModel = registerFirstViewModel,
+                onMajorClick = onMajorClick,
+                onJobClick = onMentoringFieldClick
+            )
+        } else {
+            MenteeIntroduce(
+                registerFirstViewModel = registerFirstViewModel,
+                onMajorClick = onMajorClick,
+                onJobClick = onMentoringFieldClick
+            )
+        }
+    }
+}
 
 // content - Introduce
 @Composable
@@ -49,7 +75,6 @@ private fun MentorIntroduce(
     val focusManager = LocalFocusManager.current
 
     val descriptionFontSize = 20.sp
-    val letterSpace = (-1).sp
 
     Row {
         Text(
@@ -66,7 +91,10 @@ private fun MentorIntroduce(
                     value = registerFirstUiState.company,
                     onValueChange = {
                         registerFirstViewModel.updateUserCompany(it)
-                        Log.d("onValueChange 테스트", "registerFirstViewModel.updateUserCompany 실행 - it: $it")
+                        Log.d(
+                            "onValueChange 테스트",
+                            "registerFirstViewModel.updateUserCompany 실행 - it: $it"
+                        )
 
                         if (it == "") {
                             registerFirstViewModel.updateCompanyFieldState()
@@ -77,13 +105,16 @@ private fun MentorIntroduce(
                     placeholder = stringResource(id = R.string.register1_company),
                     description = stringResource(R.string.register1_belong_to_mentor),
                     keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
-                    keyboardActions = KeyboardActions(onNext = { focusManager.moveFocus(FocusDirection.Next) }),
+                    keyboardActions = KeyboardActions(onNext = {
+                        focusManager.moveFocus(
+                            FocusDirection.Next
+                        )
+                    }),
                     readOnly = false,
                     onLooseFocus = {
                         registerFirstViewModel.updateCompanyFieldState()
                         registerFirstViewModel.enableNextButton()
                     },
-                    letterSpacing = (-1).sp
                 )
                 TextFieldIntroduceContent(
                     value = registerFirstUiState.careerLevel,
@@ -95,14 +126,20 @@ private fun MentorIntroduce(
                     },
                     placeholder = stringResource(id = R.string.register1_years),
                     description = stringResource(R.string.register1_years_of_experience),
-                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number, imeAction = ImeAction.Next),
-                    keyboardActions = KeyboardActions(onNext = { focusManager.moveFocus(FocusDirection.Next) }),
+                    keyboardOptions = KeyboardOptions(
+                        keyboardType = KeyboardType.Number,
+                        imeAction = ImeAction.Next
+                    ),
+                    keyboardActions = KeyboardActions(onNext = {
+                        focusManager.moveFocus(
+                            FocusDirection.Next
+                        )
+                    }),
                     readOnly = false,
                     onLooseFocus = {
                         registerFirstViewModel.updateCareerFieldState()
                         registerFirstViewModel.enableNextButton()
                     },
-                    letterSpacing = (-1).sp
                 )
                 TextFieldIntroduceContent(
                     value = registerFirstViewModel.toString(registerFirstViewModel.selectedFieldList),
@@ -110,13 +147,19 @@ private fun MentorIntroduce(
                     placeholder = stringResource(id = R.string.register1_work),
                     description = stringResource(R.string.register1_mentor),
                     keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
-                    keyboardActions = KeyboardActions(onNext = { focusManager.moveFocus(FocusDirection.Next) }),
+                    keyboardActions = KeyboardActions(onNext = {
+                        focusManager.moveFocus(
+                            FocusDirection.Next
+                        )
+                    }),
                     readOnly = true,
                     showBottomSheet = onJobClick,
-                    letterSpacing = (-1).sp
                 )
             }
-            Log.d("리스트", "selectedFieldList: ${registerFirstViewModel.selectedFieldList.toString()}")
+            Log.d(
+                "리스트",
+                "selectedFieldList: ${registerFirstViewModel.selectedFieldList.toString()}"
+            )
 
             Column {
                 Text(
@@ -132,11 +175,12 @@ private fun MentorIntroduce(
                     description = stringResource(id = R.string.register1_go),
                     keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
                     keyboardActions = KeyboardActions(
-                        onDone = { registerFirstViewModel.enableNextButton()
-                            focusManager.clearFocus()}),
+                        onDone = {
+                            registerFirstViewModel.enableNextButton()
+                            focusManager.clearFocus()
+                        }),
                     readOnly = true,
                     showBottomSheet = onMajorClick,
-                    letterSpacing = (-1).sp
                 )
             }
         }
@@ -153,93 +197,118 @@ private fun MenteeIntroduce(
     val focusManager = LocalFocusManager.current
 
     val descriptionFontSize = 20.sp
-    val letterSpace = (-1).sp
 
     Row {
-        Text(
-            text = stringResource(id = R.string.register1_im),
-            modifier = Modifier.padding(top = 10.dp),
-            fontSize = descriptionFontSize)
+        Column(
+            horizontalAlignment = Alignment.End,
+            verticalArrangement = Arrangement.SpaceBetween
+        ) {
+            Text(
+                text = stringResource(id = R.string.register1_im),
+                modifier = Modifier.padding(top = 10.dp),
+                fontSize = descriptionFontSize
+            )
+            Spacer(modifier = Modifier.height(height = 90.dp))
+            Text(
+                text = stringResource(id = R.string.register1_im_without_a),
+                fontSize = descriptionFontSize,
+                modifier = Modifier.padding(top = 10.dp, bottom = 8.dp)
+            )
+        }
+        Column {
+            TextFieldIntroduceContent(
+                value = registerFirstUiState.company,
+                onValueChange = {
+                    registerFirstViewModel.updateUserCompany(it)
+                    Log.d(
+                        "onValueChange 테스트",
+                        "registerFirstViewModel.updateUserCompany 실행 - it: $it"
+                    )
 
-
-        Column() {
-            Column() {
-                TextFieldIntroduceContent(
-                    value = registerFirstUiState.company,
-                    onValueChange = {
-                        registerFirstViewModel.updateUserCompany(it)
-                        Log.d("onValueChange 테스트", "registerFirstViewModel.updateUserCompany 실행 - it: $it")
-
-                        if (it == "") {
-                            registerFirstViewModel.updateCompanyFieldState()
-                            registerFirstViewModel.enableNextButton()
-                            Log.d("onValueChange 테스트 뒤", "onValueChange it == null")
-                        }
-                    },
-                    placeholder = stringResource(id = R.string.register1_colleague),
-                    description = stringResource(R.string.register1_belong_to_mentee),
-                    keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
-                    keyboardActions = KeyboardActions(onNext = { focusManager.moveFocus(FocusDirection.Next) }),
-                    readOnly = false,
-                    onLooseFocus = {
+                    if (it == "") {
                         registerFirstViewModel.updateCompanyFieldState()
                         registerFirstViewModel.enableNextButton()
+                        Log.d("onValueChange 테스트 뒤", "onValueChange it == null")
                     }
-                )
-                TextFieldIntroduceContent(
-                    value = registerFirstUiState.careerLevel,
-                    onValueChange = {
-                        registerFirstViewModel.updateUserCareer(it)
-                        if (registerFirstUiState.careerLevel == "") {
-                            registerFirstViewModel.updateCareerFieldState()
-                        }
-                    },
-                    placeholder = stringResource(id = R.string.register1_grade),
-                    description = stringResource(R.string.register1_grade),
-                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number, imeAction = ImeAction.Next),
-                    keyboardActions = KeyboardActions(onNext = { focusManager.moveFocus(FocusDirection.Next) }),
-                    readOnly = false,
-                    onLooseFocus = {
+                },
+                placeholder = stringResource(id = R.string.register1_colleague),
+                description = stringResource(R.string.register1_belong_to_mentee),
+                keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
+                keyboardActions = KeyboardActions(onNext = {
+                    focusManager.moveFocus(
+                        FocusDirection.Next
+                    )
+                }),
+                readOnly = false,
+                onLooseFocus = {
+                    registerFirstViewModel.updateCompanyFieldState()
+                    registerFirstViewModel.enableNextButton()
+                }
+            )
+            TextFieldIntroduceContent(
+                value = registerFirstUiState.careerLevel,
+                onValueChange = {
+                    registerFirstViewModel.updateUserCareer(it)
+                    if (registerFirstUiState.careerLevel == "") {
                         registerFirstViewModel.updateCareerFieldState()
-                        registerFirstViewModel.enableNextButton()
                     }
-                )
-                TextFieldIntroduceContent(
-                    value = registerFirstViewModel.toString(registerFirstViewModel.selectedMajorList),
-                    onValueChange = { },
-                    placeholder = stringResource(id = R.string.register1_major),
-                    description = stringResource(R.string.register1_mentee),
-                    keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
-                    keyboardActions = KeyboardActions(onNext = { focusManager.moveFocus(FocusDirection.Next) }),
-                    readOnly = true,
-                    showBottomSheet = onMajorClick
-                )
-            }
-            Log.d("리스트", "selectedFieldList: ${registerFirstViewModel.selectedFieldList.toString()}")
-
-            Column {
+                },
+                placeholder = stringResource(id = R.string.register1_grade),
+                description = stringResource(R.string.register1_grade),
+                keyboardOptions = KeyboardOptions(
+                    keyboardType = KeyboardType.Number,
+                    imeAction = ImeAction.Next
+                ),
+                keyboardActions = KeyboardActions(onNext = {
+                    focusManager.moveFocus(
+                        FocusDirection.Next
+                    )
+                }),
+                readOnly = false,
+                onLooseFocus = {
+                    registerFirstViewModel.updateCareerFieldState()
+                    registerFirstViewModel.enableNextButton()
+                }
+            )
+            TextFieldIntroduceContent(
+                value = registerFirstViewModel.toString(registerFirstViewModel.selectedMajorList),
+                onValueChange = { },
+                placeholder = stringResource(id = R.string.register1_major),
+                description = stringResource(R.string.register1_mentee),
+                keyboardOptions = KeyboardOptions(imeAction = ImeAction.Next),
+                keyboardActions = KeyboardActions(onNext = {
+                    focusManager.moveFocus(
+                        FocusDirection.Next
+                    )
+                }),
+                readOnly = true,
+                showBottomSheet = onMajorClick
+            )
+            TextFieldIntroduceContent(
+                value = registerFirstViewModel.toString(registerFirstViewModel.selectedFieldList),
+                onValueChange = { },
+                placeholder = stringResource(id = R.string.register1_mentoring_field),
+                description = "",
+                keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
+                keyboardActions = KeyboardActions(
+                    onDone = {
+                        registerFirstViewModel.enableNextButton()
+                        focusManager.clearFocus()
+                    }),
+                readOnly = true,
+                showBottomSheet = onJobClick
+            )
+            Row {
+                Spacer(modifier = Modifier.width(width = 30.dp))
                 Text(
-                    text = stringResource(id = R.string.register1_in_the_future),
+                    text = stringResource(id = R.string.register1_want_to_meet_mentor),
                     fontSize = descriptionFontSize,
                     modifier = Modifier.padding(top = 10.dp, bottom = 8.dp)
-                )
-                TextFieldIntroduceContent(
-                    value = registerFirstViewModel.toString(registerFirstViewModel.selectedFieldList),
-                    onValueChange = { },
-                    placeholder = stringResource(id = R.string.register1_job_field),
-                    description = stringResource(id = R.string.register1_want_to),
-                    keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
-                    keyboardActions = KeyboardActions(
-                        onDone = { registerFirstViewModel.enableNextButton()
-                            focusManager.clearFocus()}),
-                    readOnly = true,
-                    showBottomSheet = onJobClick
                 )
             }
         }
     }
 }
-
 
 
 // IntroduceContent - 소속, 연차
@@ -255,10 +324,9 @@ private fun TextFieldIntroduceContent(
     readOnly: Boolean,
     showBottomSheet: () -> Unit = {},
     onLooseFocus: () -> Unit = {},
-    letterSpacing: TextUnit = (-1).sp
 ) {
     val interactionSource = remember { MutableInteractionSource() }
-    
+
     val textFieldWidth = 120.dp
     val textFieldHeight = 33.dp
     val contentPadding = TextFieldDefaults.textFieldWithoutLabelPadding(bottom = 0.5.dp)
@@ -277,7 +345,7 @@ private fun TextFieldIntroduceContent(
 
     Row(
         verticalAlignment = Alignment.CenterVertically,
-        modifier =  Modifier.padding(start = textFieldSidePadding, bottom = spaceBetweenParagraph)
+        modifier = Modifier.padding(start = textFieldSidePadding, bottom = spaceBetweenParagraph)
     ) {
         BasicTextField(
             value = value,
@@ -335,36 +403,10 @@ private fun TextFieldIntroduceContent(
     }
 }
 
-
-// ModalBottomSheetLayout - content
-@Composable
-fun FirstRegisterScreenContent(
-    registerFirstViewModel: RegisterFirstViewModel = viewModel(),
-    onMajorClick: () -> Unit,
-    onMentoringFieldClick: () -> Unit,
-    isMentor: Boolean
-) {
-    Column {
-        if(isMentor) {
-            MentorIntroduce(
-                registerFirstViewModel = registerFirstViewModel,
-                onMajorClick = onMajorClick,
-                onJobClick = onMentoringFieldClick
-            )
-        } else {
-            MenteeIntroduce(
-                registerFirstViewModel = registerFirstViewModel,
-                onMajorClick = onMajorClick,
-                onJobClick = onMentoringFieldClick
-            )
-        }
-    }
-}
-
 @Composable
 @Preview(showBackground = true)
 private fun RegisterScreenPreview() {
     DotoringTheme {
-        FirstRegisterScreenContent(onMajorClick = {}, onMentoringFieldClick = {}, isMentor = false)
+        FirstRegisterScreenContent(onMajorClick = {}, onMentoringFieldClick = {}, isMentor = true)
     }
 }

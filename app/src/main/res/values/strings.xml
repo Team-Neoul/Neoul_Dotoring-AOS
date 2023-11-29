@@ -54,9 +54,9 @@
     <string name="register1_belong_to_mentee">에 다니는</string>
     <string name="register1_grade">학년</string>
     <string name="register1_mentee">학생입니다.</string>
-    <string name="register1_in_the_future">저는 미래에</string>
-    <string name="register1_job_field">직무 분야</string>
-    <string name="register1_want_to">를 희망합니다.</string>
+    <string name="register1_im_without_a">저는</string>
+    <string name="register1_mentoring_field">멘토링 분야</string>
+    <string name="register1_want_to_meet_mentor">의 멘토를 만나길 희망합니다.</string>
 
     <!--회원 가입 두번째 화면 관련 string resource-->
     <string name="register2_q2_mentor"><font color="#8BD045">증빙서류</font>를 업로드 해 주세요.</string>

@@ -26,5 +26,7 @@ data class RegisterFirstUiState(
     val fillCareerField: Boolean = false,
     val fillJobField: Boolean = false,
     val fillMajorField: Boolean = false,
-    val firstBtnState: Boolean = false
+    val firstBtnState: Boolean = false,
+
+    val snackbarMessage: String = ""
 )

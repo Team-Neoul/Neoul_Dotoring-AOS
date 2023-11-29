@@ -5,7 +5,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
@@ -47,8 +47,8 @@ fun BottomSheetLayout(
     val spaceBetweenLists = 70.dp
 
     Column(
-        modifier = Modifier.fillMaxSize(),
-        horizontalAlignment = Alignment.CenterHorizontally
+        modifier = Modifier.heightIn(min = 0.dp, max = 517.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
     ) {
         Icon(
             painter = painterResource(R.drawable.bottomsheettopbar),

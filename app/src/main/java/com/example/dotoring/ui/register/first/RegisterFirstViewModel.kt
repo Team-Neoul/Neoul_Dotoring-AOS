@@ -15,8 +15,13 @@ import org.json.JSONObject
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import androidx.lifecycle.viewModelScope
+import com.example.dotoring.network.DotoringAPI
+import kotlinx.coroutines.launch
+import retrofit2.HttpException
+import java.io.IOException
 
-class RegisterFirstViewModel(): ViewModel() {
+class RegisterFirstViewModel() : ViewModel() {
 
     private val _selectedMajorList = mutableListOf<String>().toMutableStateList()
     val selectedMajorList: List<String>
@@ -30,18 +35,35 @@ class RegisterFirstViewModel(): ViewModel() {
     private val _uiState = MutableStateFlow(RegisterFirstUiState())
     val uiState: StateFlow<RegisterFirstUiState> = _uiState.asStateFlow()
 
+    private var _isSnackbarShowing = MutableStateFlow(false)
+    val isSnackbarShowing = _isSnackbarShowing.asStateFlow()
+    private fun showSnackBar() {
+        viewModelScope.launch {
+            _isSnackbarShowing.emit(true)
+        }
+    }
+
+    private fun updateSnackbarMessage(snackbarMessage: String) {
+        _uiState.update { currentState ->
+            currentState.copy(snackbarMessage = snackbarMessage)
+        }
+    }
+
+    private fun hideSnackBar() {
+        _isSnackbarShowing.value = false
+    }
 
     /**
      * 화면에 선택한 학과와 멘토링 분야 리스트를 보여주기 위해 String으로 변환하는 함수
      *
      * @param List<String> list - 선택한 학과 혹은 멘토링 분야의 리스트
-    */
+     */
     fun toString(list: List<String>): String {
         var rString = ""
         list.forEach {
             rString += "$it, "
         }
-        if(rString.isNotEmpty()) {
+        if (rString.isNotEmpty()) {
             return rString.substring(0, rString.length - 2)
         } else {
             return ""
@@ -49,7 +71,7 @@ class RegisterFirstViewModel(): ViewModel() {
     }
 
     fun removeAll(list: List<String>) {
-        if(list == selectedMajorList) {
+        if (list == selectedMajorList) {
             _selectedMajorList.clear()
         } else {
             _selectedFieldList.clear()
@@ -57,7 +79,7 @@ class RegisterFirstViewModel(): ViewModel() {
     }
 
     fun remove(list: List<String>, item: String) {
-        if(list == selectedMajorList) {
+        if (list == selectedMajorList) {
             _selectedMajorList.remove(item)
         } else {
             _selectedFieldList.remove(item)
@@ -65,7 +87,7 @@ class RegisterFirstViewModel(): ViewModel() {
     }
 
     fun add(list: List<String>, item: String) {
-        if(list == selectedMajorList) {
+        if (list == selectedMajorList) {
             _selectedMajorList.add(item)
         } else {
             _selectedFieldList.add(item)
@@ -169,34 +191,19 @@ class RegisterFirstViewModel(): ViewModel() {
     }
 
     fun loadFieldList() {
-        Log.d("직업 학과 목록", "loadFieldList 실행")
-
         DotoringRegisterAPI.retrofitService.getFieldList()
             .enqueue(object : Callback<CommonResponse> {
-                /**
-                * 통신 요청이 성공한 경우, 서버의 응답을 처리하기 위한 함수
-                */
-                override fun onResponse(call: Call<CommonResponse>, response: Response<CommonResponse>) {
-                    Log.d("멘토링 분야 리스트", "getFieldList - onResponse")
-                    Log.d("멘토링 분야 리스트", "getFieldList - response.code(): ${response.code()}")
-                    Log.d("멘토링 분야 리스트", "getFieldList - response.body(): ${response.body()}")
+                override fun onResponse(
+                    call: Call<CommonResponse>,
+                    response: Response<CommonResponse>
+                ) {
 
-                    val json = Gson().toJson(response.body())
-                    Log.d("멘토링 분야 리스트", "getFieldList - jsonObject: $json")
-
-                    val jsonObject = JSONObject(json.toString())
-                    Log.d("멘토링 분야 리스트", "getFieldList - jsonObject: $jsonObject")
-
-                    val jsonObjectSuccess = jsonObject.getBoolean("success")
-
-                    if (jsonObjectSuccess) {
-                        Log.d("멘토링 분야 리스트", "getFieldList - success")
+                    if (response.isSuccessful) {
+                        val json = Gson().toJson(response.body())
+                        val jsonObject = JSONObject(json.toString())
 
                         val responseJsonObject = jsonObject.getJSONObject("response")
-                        Log.d("멘토링 분야 리스트", "responseJsonObject: $responseJsonObject")
-
                         val fields = responseJsonObject.optJSONArray("fields")
-                        Log.d("멘토링 분야 리스트", "fields: $fields")
 
                         if (fields != null && fields.length() > 0) {
                             val uiFieldList: MutableList<String> = mutableListOf()
@@ -212,50 +219,43 @@ class RegisterFirstViewModel(): ViewModel() {
                                 currentState.copy(optionFieldList = uiFieldList)
                             }
                         }
-
                     } else {
-                        Log.d("멘토링 분야 리스트", "응답이 실패하거나 데이터가 없습니다.")
+                        val errorResponse = DotoringAPI.getErrorResponse(response.errorBody()!!)
+                        val json = Gson().toJson(errorResponse)
+                        val jsonObject = JSONObject(json)
+                        val jsonObjectError = jsonObject.getJSONObject("error")
+                        val errorCode = jsonObjectError.getString("message")
+                        showSnackBar()
+                        updateSnackbarMessage(errorCode)
                     }
                 }
 
-                /**
-                 * 통신 요청이 실패한 경우, 실패 이유를 보여주기 위한 함수
-                 */
                 override fun onFailure(call: Call<CommonResponse>, t: Throwable) {
-                    Log.d("멘토링 분야 리스트", "통신 실패: $t")
+                    val errorMessage = when (t) {
+                        is IOException -> "인터넷 연결이 끊겼습니다."
+                        is HttpException -> "알 수 없는 오류가 발생했어요."
+                        else -> t.localizedMessage
+                    }
+                    showSnackBar()
+                    updateSnackbarMessage(errorMessage)
                 }
             })
     }
 
     fun loadMajorList() {
-        Log.d("직업 학과 목록", "loadMajorList 실행")
-
         DotoringRegisterAPI.retrofitService.getMajorList()
             .enqueue(object : Callback<CommonResponse> {
-                /**
-                 * 통신 요청이 성공한 경우, 서버의 응답을 처리하기 위한 함수
-                 */
-                override fun onResponse(call: Call<CommonResponse>, response: Response<CommonResponse>) {
-                    Log.d("학과 리스트", "loadMajorList - onResponse")
-                    Log.d("학과 리스트", "loadMajorList - response.code(): ${response.code()}")
-                    Log.d("학과 리스트", "loadMajorList - response.body(): ${response.body()}")
 
-                    val json = Gson().toJson(response.body())
-                    Log.d("학과 리스트", "loadMajorList - jsonObject: $json")
-
-                    val jsonObject = JSONObject(json.toString())
-                    Log.d("학과 리스트", "loadMajorList - jsonObject: $jsonObject")
-
-                    val jsonObjectSuccess = jsonObject.getBoolean("success")
-
-                    if (jsonObjectSuccess) {
-                        Log.d("학과 리스트", "loadMajorList - success")
+                override fun onResponse(
+                    call: Call<CommonResponse>,
+                    response: Response<CommonResponse>
+                ) {
+                    if (response.isSuccessful) {
+                        val json = Gson().toJson(response.body())
+                        val jsonObject = JSONObject(json.toString())
 
                         val responseJsonObject = jsonObject.getJSONObject("response")
-                        Log.d("학과 리스트", "responseJsonObject: $responseJsonObject")
-
                         val majors = responseJsonObject.optJSONArray("majors")
-                        Log.d("학과 리스트", "majors: $majors")
 
                         if (majors != null && majors.length() > 0) {
                             val uiMajorList: MutableList<String> = mutableListOf()
@@ -271,17 +271,25 @@ class RegisterFirstViewModel(): ViewModel() {
                                 currentState.copy(optionMajorList = uiMajorList)
                             }
                         }
-
                     } else {
-                        Log.d("학과 리스트", "응답이 실패하거나 데이터가 없습니다.")
+                        val errorResponse = DotoringAPI.getErrorResponse(response.errorBody()!!)
+                        val json = Gson().toJson(errorResponse)
+                        val jsonObject = JSONObject(json)
+                        val jsonObjectError = jsonObject.getJSONObject("error")
+                        val errorCode = jsonObjectError.getString("message")
+                        showSnackBar()
+                        updateSnackbarMessage(errorCode)
                     }
                 }
 
-                /**
-                 * 통신 요청이 실패한 경우, 실패 이유를 보여주기 위한 함수
-                 */
                 override fun onFailure(call: Call<CommonResponse>, t: Throwable) {
-                    Log.d("학과 리스트", "통신 실패: $t")
+                    val errorMessage = when (t) {
+                        is IOException -> "인터넷 연결이 끊겼습니다."
+                        is HttpException -> "알 수 없는 오류가 발생했어요."
+                        else -> t.localizedMessage
+                    }
+                    showSnackBar()
+                    updateSnackbarMessage(errorMessage)
                 }
             })
     }
