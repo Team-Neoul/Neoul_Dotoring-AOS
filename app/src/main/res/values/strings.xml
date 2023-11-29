@@ -54,9 +54,9 @@
     <string name="register1_belong_to_mentee">에 다니는</string>
     <string name="register1_grade">학년</string>
     <string name="register1_mentee">학생입니다.</string>
-    <string name="register1_in_the_future">저는 미래에</string>
-    <string name="register1_job_field">직무 분야</string>
-    <string name="register1_want_to">를 희망합니다.</string>
+    <string name="register1_im_without_a">저는</string>
+    <string name="register1_mentoring_field">멘토링 분야</string>
+    <string name="register1_want_to_meet_mentor">의 멘토를 만나길 희망합니다.</string>
 
     <!--회원 가입 두번째 화면 관련 string resource-->
     <string name="register2_q2_mentor"><font color="#8BD045">증빙서류</font>를 업로드 해 주세요.</string>
@@ -119,11 +119,12 @@
     <string name="register6_verify">인증하기</string>
     <string name="register6_verification_error">인증 코드가 달라요.</string>
     <string name="register6_verification_successed">인증에 성공했습니다.</string>
+    <string name="register6_verification_duplicated">이미 등록된 이메일 입니다. 아이디 찾기를 이용해 주세요.</string>
     <string name="register6_to_login_page">로그인하러 가기</string>
 
     <!--홈 화면 관련 string resource-->
-    <string name="home_for_u_mentor"><font color="#8BD045">현지</font> 님을 위한</string>
-    <string name="home_for_u_mentee"><font color="#092D58">현지</font> 님을 위한</string>
+    <string name="home_for_u_mentor"><font color="#8BD045">%1$s</font> 님을 위한</string>
+    <string name="home_for_u_mentee"><font color="#092D58">%1$s</font> 님을 위한</string>
     <string name="home_recommended_mentee">추천멘티</string>
     <string name="home_recommended_mentor">추천멘토</string>
     <string name="home_major">학과</string>
