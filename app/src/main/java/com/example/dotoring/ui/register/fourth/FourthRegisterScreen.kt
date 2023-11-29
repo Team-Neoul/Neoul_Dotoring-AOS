@@ -40,7 +40,7 @@ import com.example.dotoring.ui.theme.DotoringTheme
 import com.example.dotoring.ui.util.TopRegisterScreen
 import com.example.dotoring.ui.util.register.MenteeInformation
 import com.example.dotoring.ui.util.register.MentorInformation
-import com.example.dotoring.ui.util.register.RegisterScreenNextButton
+import com.example.dotoring.ui.util.common.RegisterScreenNextButton
 
 /**
  * 네번째 회원 가입 화면 composable

@@ -38,7 +38,7 @@ import com.example.dotoring.ui.util.TopRegisterScreen
 import com.example.dotoring.ui.util.bottomsheet.BottomSheetLayout
 import com.example.dotoring.ui.util.register.MenteeInformation
 import com.example.dotoring.ui.util.register.MentorInformation
-import com.example.dotoring.ui.util.register.RegisterScreenNextButton
+import com.example.dotoring.ui.util.common.RegisterScreenNextButton
 
 // 메인 화면
 @OptIn(ExperimentalMaterialApi::class)

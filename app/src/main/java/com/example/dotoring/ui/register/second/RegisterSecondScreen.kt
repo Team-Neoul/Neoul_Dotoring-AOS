@@ -19,7 +19,7 @@ import com.example.dotoring.ui.theme.DotoringTheme
 import com.example.dotoring.ui.util.TopRegisterScreen
 import com.example.dotoring.ui.util.register.MenteeInformation
 import com.example.dotoring.ui.util.register.MentorInformation
-import com.example.dotoring.ui.util.register.RegisterScreenNextButton
+import com.example.dotoring.ui.util.common.RegisterScreenNextButton
 
 @Composable
 fun SecondRegisterScreen(
