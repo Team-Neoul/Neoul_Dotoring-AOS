@@ -19,7 +19,7 @@ import com.example.dotoring.ui.theme.DotoringTheme
 import com.example.dotoring.ui.util.TopRegisterScreen
 import com.example.dotoring.ui.util.register.MenteeInformation
 import com.example.dotoring.ui.util.register.MentorInformation
-import com.example.dotoring.ui.util.common.RegisterScreenNextButton
+import com.example.dotoring.ui.util.common.BottomButtonLong
 
 
 @Composable
@@ -55,7 +55,7 @@ fun SixthRegisterScreen(
             Spacer(modifier = Modifier.weight(1f))
 
 
-            RegisterScreenNextButton(
+            BottomButtonLong(
                 onClick = {
                     if(isMentor) {
                         if(mentorInformation != null) {
@@ -71,7 +71,6 @@ fun SixthRegisterScreen(
                 enabled = registerSixthUiState.isToLoginButtonEnabled,
                 isMentor = isMentor,
                 innerText = stringResource(R.string.register6_to_login_page),
-                width = 370.dp
             )
             Spacer(modifier = Modifier.weight(3f))
         }
