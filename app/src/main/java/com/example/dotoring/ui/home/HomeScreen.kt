@@ -63,7 +63,7 @@ fun HomeScreen_(
 
     Box(
         modifier = Modifier.fillMaxSize()
-    ){
+    ) {
         Image(
             painter = painterResource(R.drawable.home_background),
             contentDescription = null,
@@ -77,10 +77,16 @@ fun HomeScreen_(
             Spacer(modifier = Modifier.height(titlePadding))
             HomeTitle(
                 isMentor = isMentor,
-                forYouText = if(isMentor) {
-                    String.format(stringResource(id = R.string.home_for_u_mentor), homeUiState.nickname)
+                forYouText = if (isMentor) {
+                    String.format(
+                        stringResource(id = R.string.home_for_u_mentor),
+                        homeUiState.nickname
+                    )
                 } else {
-                    String.format(stringResource(id = R.string.home_for_u_mentee), homeUiState.nickname)
+                    String.format(
+                        stringResource(id = R.string.home_for_u_mentee),
+                        homeUiState.nickname
+                    )
                 }
             )
             Spacer(modifier = Modifier.height(spaceBetweenTitleAndTab))
@@ -99,7 +105,7 @@ fun HomeScreen_(
                 navController = navController,
                 isMentor = isMentor,
                 onListBottomReached = {
-                    if(isMentor) {
+                    if (isMentor) {
                         homeViewModel.loadMenteeList()
                     } else {
                         homeViewModel.loadMentorList()
@@ -135,7 +141,7 @@ private fun HomeTitle(
         Spacer(modifier = Modifier.size(5.dp))
 
         Text(
-            text = if(isMentor) {
+            text = if (isMentor) {
                 stringResource(id = R.string.home_recommended_mentee)
             } else {
                 stringResource(id = R.string.home_recommended_mentor)
@@ -143,6 +149,7 @@ private fun HomeTitle(
             fontSize = boldTextSize,
             fontWeight = FontWeight.ExtraBold
         )
+
     }
 }
 
@@ -198,24 +205,24 @@ fun MainScreen(
     val chosenMajorList = homeViewModel.selectedMajorList
     val chosenFieldList = homeViewModel.selectedFieldList
 
-    val titleText = if(isMajorBottomSheet) {
+    val titleText = if (isMajorBottomSheet) {
         stringResource(R.string.home_modal_major_filter)
     } else {
         stringResource(R.string.home_modal_field_filter)
     }
-    val selectedDataList = if(isMajorBottomSheet) {
+    val selectedDataList = if (isMajorBottomSheet) {
         chosenMajorList
     } else {
         chosenFieldList
     }
-    val optionDataList = if(isMajorBottomSheet) {
+    val optionDataList = if (isMajorBottomSheet) {
         homeUiState.optionMajorList
     } else {
         homeUiState.optionFieldList
     }
 
     val sheetRadius = RoundedCornerShape(topStart = 40.dp, topEnd = 40.dp)
-    val backgroundColor = if(isMentor) {
+    val backgroundColor = if (isMentor) {
         colorResource(R.color.green)
     } else {
         colorResource(R.color.navy)
@@ -246,7 +253,7 @@ fun MainScreen(
                 homeViewModel.updateFieldFieldState()
             }
         }
-        Log.d("홈","loadMentiList - 성공 확인")
+        Log.d("홈", "loadMentiList - 성공 확인")
     }
 
     ModalBottomSheetLayout(
@@ -264,7 +271,8 @@ fun MainScreen(
                     Log.d("리스트", "selectedDataList: $selectedDataList")
                 },
                 isMentor = isMentor
-            ) },
+            )
+        },
         sheetState = filterBottomSheetState,
         sheetShape = sheetRadius,
         sheetBackgroundColor = backgroundColor,
@@ -277,26 +285,38 @@ fun MainScreen(
             onMajorClick = {
                 isMajorBottomSheet = true
                 scope.launch {
-                    if(!filterBottomSheetState.isVisible) {
+                    if (!filterBottomSheetState.isVisible) {
                         filterBottomSheetState.show()
                     } else {
                         filterBottomSheetState.hide()
                     }
                 }
-                Log.d("리스트 확인", "HomeScreen - homeViewModel.selectedFieldList: ${homeViewModel.selectedFieldList.toList()}")
-                Log.d("리스트 확인", "HomeScreen - homeUiState.selectedFieldList: ${homeUiState.chosenFieldList.toList()}")
+                Log.d(
+                    "리스트 확인",
+                    "HomeScreen - homeViewModel.selectedFieldList: ${homeViewModel.selectedFieldList.toList()}"
+                )
+                Log.d(
+                    "리스트 확인",
+                    "HomeScreen - homeUiState.selectedFieldList: ${homeUiState.chosenFieldList.toList()}"
+                )
             },
             onFieldClick = {
                 isMajorBottomSheet = false
                 scope.launch {
-                    if(!filterBottomSheetState.isVisible) {
+                    if (!filterBottomSheetState.isVisible) {
                         filterBottomSheetState.show()
                     } else {
                         filterBottomSheetState.hide()
                     }
                 }
-                Log.d("리스트 확인", "HomeScreen - homeViewModel.selectedMajorList: ${homeViewModel.selectedMajorList.toList()}")
-                Log.d("리스트 확인", "HomeScreen - homeUiState.selectedMajorList: ${homeUiState.chosenMajorList.toList()}")
+                Log.d(
+                    "리스트 확인",
+                    "HomeScreen - homeViewModel.selectedMajorList: ${homeViewModel.selectedMajorList.toList()}"
+                )
+                Log.d(
+                    "리스트 확인",
+                    "HomeScreen - homeUiState.selectedMajorList: ${homeUiState.chosenMajorList.toList()}"
+                )
             },
             homeViewModel = homeViewModel
         )
@@ -320,20 +340,20 @@ private fun FilteringButton(
         modifier = modifier,
         colors = ButtonDefaults.buttonColors(
             contentColor = colorResource(id = R.color.white),
-            backgroundColor = if(isMentor) {
-                if(hasChosenData) {
+            backgroundColor = if (isMentor) {
+                if (hasChosenData) {
                     colorResource(id = R.color.green)
                 } else {
                     colorResource(id = R.color.grey_500)
                 }
 
             } else {
-                if(hasChosenData) {
+                if (hasChosenData) {
                     colorResource(id = R.color.navy)
                 } else {
                     colorResource(id = R.color.grey_500)
                 }
-                   },
+            },
             disabledBackgroundColor = colorResource(id = R.color.grey_700),
             disabledContentColor = colorResource(id = R.color.white)
         ),
@@ -401,12 +421,12 @@ fun LazyListState.OnBottomReached(
                 return@derivedStateOf true
 
             // Check if last visible item is the last item in the list
-            lastVisibleItem.index >=  layoutInfo.totalItemsCount - 1 - buffer
+            lastVisibleItem.index >= layoutInfo.totalItemsCount - 1 - buffer
         }
     }
 
     // Convert the state into a cold flow and collect
-    LaunchedEffect(shouldLoadMore){
+    LaunchedEffect(shouldLoadMore) {
         snapshotFlow { shouldLoadMore.value }
             .collect {
                 // if should load more, then invoke loadMore
