@@ -159,4 +159,12 @@
     <string name="alert_dialog_subtext">승인에 최대 3일의 시간이 소요됩니다.</string>
     <string name="alert_dialog_yes">네</string>
     <string name="alert_dialog_no">아니오</string>
+
+    <!--마이페이지 서류 제출 페이지 관련 string resource-->
+    <string name="submit_doc_screen_main_title">수정된 내용에 맞는 서류를 업로드 해 주세요.</string>
+    <string name="submit_doc_screen_sub_title">A. <b><u>재학증명서</u></b> 업로드하기</string>
+    <string name="submit_doc_screen_pdf_or_image">PDF 또는 이미지</string>
+    <string name="submit_doc_screen_cancel">취소</string>
+    <string name="submit_doc_screen_update">수정 완료</string>
+
 </resources>
