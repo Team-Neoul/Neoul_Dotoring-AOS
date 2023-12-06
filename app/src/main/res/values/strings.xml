@@ -29,7 +29,7 @@
     <string name="branch_mentee">멘티</string>
 
     <!--회원 가입 공통 화면 관련 string resource-->
-    <string name="register_title_mentor"><font color="#8BD045" >멘토</font>로 회원 가입</string>
+    <string name="register_title_mentor"><font color="#8BD045">멘토</font>로 회원 가입</string>
     <string name="register_title_mentee"><font color="#092D58">멘티</font>로 회원 가입</string>
     <string name="register_Q">Q. </string>
     <string name="register_A">A. </string>
@@ -153,4 +153,10 @@
     <!--쪽지함 상세 화면 관련 string resource-->
     <string name="message_info">쪽지 내용은 300자 이내로 제한됩니다.</string>
     <string name="message_textField">내용을 입력해 주세요.</string>
+
+    <!--마이페이지 Alert Dialog 관련 string resource-->
+    <string name="alert_dialog_message">학교, 분야, 학년, 학과 수정 시\n<font color="#FF7B7B">새로운 증빙서류</font>가 요청됩니다.\n계속하시겠습니까?</string>
+    <string name="alert_dialog_subtext">승인에 최대 3일의 시간이 소요됩니다.</string>
+    <string name="alert_dialog_yes">네</string>
+    <string name="alert_dialog_no">아니오</string>
 </resources>
