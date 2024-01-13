@@ -43,3 +43,26 @@ fun BottomButtonLong(
     }
 }
 
+@Composable
+fun EnabledBottomButtonLong(
+    onClick: () -> Unit = {},
+    innerText: String = stringResource(id = R.string.register1_next),
+) {
+    Button(
+        onClick = onClick,
+        modifier = Modifier.size(width = 320.dp, height = 45.dp),
+        colors = ButtonDefaults.buttonColors(
+            contentColor = colorResource(id = R.color.grey_500),
+            backgroundColor = colorResource(id = R.color.grey_200),
+            disabledBackgroundColor = colorResource(id = R.color.grey_200),
+            disabledContentColor = colorResource(id = R.color.grey_500)
+        ),
+        shape = RoundedCornerShape(30.dp),
+        enabled = true
+    ) {
+        Text(
+            text = innerText,
+            fontSize = 15.sp
+        )
+    }
+}
