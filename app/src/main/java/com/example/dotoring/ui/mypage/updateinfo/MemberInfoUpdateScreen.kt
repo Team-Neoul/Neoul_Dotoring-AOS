@@ -1,4 +1,4 @@
-package com.example.dotoring.ui.mypage
+package com.example.dotoring.ui.mypage.updateinfo
 
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
