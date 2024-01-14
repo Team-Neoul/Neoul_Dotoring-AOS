@@ -1,36 +1,46 @@
 package com.example.dotoring.ui.register.fourth
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.requiredWidth
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
-import androidx.compose.foundation.text.KeyboardActionScope
-import androidx.compose.material.ContentAlpha
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.ExperimentalMaterialApi
-import androidx.compose.material.LocalContentColor
+import androidx.compose.material.Icon
+import androidx.compose.runtime.setValue
+import androidx.compose.runtime.getValue
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
+import androidx.compose.material.TextFieldDefaults
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.State
 import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.ExperimentalComposeUiApi
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalFocusManager
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.res.colorResource
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.text.input.ImeAction
+import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
@@ -40,7 +50,7 @@ import com.example.dotoring.ui.theme.DotoringTheme
 import com.example.dotoring.ui.util.TopRegisterScreen
 import com.example.dotoring.ui.util.register.MenteeInformation
 import com.example.dotoring.ui.util.register.MentorInformation
-import com.example.dotoring.ui.util.register.RegisterScreenNextButton
+import com.example.dotoring.ui.util.common.BottomButtonLong
 
 /**
  * 네번째 회원 가입 화면 composable
@@ -53,10 +63,9 @@ fun FourthRegisterScreen(
     menteeInformation: MenteeInformation?,
     isMentor: Boolean
 ) {
-    val registerFourthUiState by registerFourthViewModel.uiState.collectAsState()
-    val focusManager = LocalFocusManager.current
+    val registerFourthUiState = registerFourthViewModel.uiState.collectAsState()
 
-    val question = if(isMentor) {
+    val question = if (isMentor) {
         R.string.register4_q4_mentor
     } else {
         R.string.register4_q4_mentee
@@ -73,52 +82,28 @@ fun FourthRegisterScreen(
                 guide = stringResource(id = R.string.register4_guide),
                 isMentor = isMentor
             )
-            Spacer(modifier = Modifier.weight(1f))
+            Spacer(modifier = Modifier.height(23.dp))
 
 
-            Column {
-                Text(text = stringResource(id = R.string.register_A))
-                Spacer(modifier = Modifier.size(10.dp))
-                RoundedCornerTextField(
-                    value = registerFourthUiState.memberIntroduction,
-                    onValueChange = {
-                        registerFourthViewModel.updateIntroductionInput(it)
-
-                        if(it.length in 10..80) {
-                            registerFourthViewModel.updateNextButtonState(true)
-                        } else {
-                            registerFourthViewModel.updateNextButtonState(false)
-                        }
-                    },
-                    onDone = {
-                        focusManager.clearFocus()
-                    },
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .clip(RoundedCornerShape(15.dp))
-                        .background(colorResource(R.color.grey_200))
-                        .padding(16.dp)
-                )
-                Spacer(modifier = Modifier.height(2.dp))
+            Row {
                 Text(
-                    text = if(!registerFourthUiState.nextButtonState) {
-                        stringResource(id = R.string.register4_error_condition_not_satisfied)
-                    } else {
-                        ""
-                    },
-                    modifier = Modifier
-                        .padding(start = 2.dp, top = 3.dp),
-                    color = Color(0xffff7B7B),
-                    fontSize = 10.sp
+                    text = stringResource(id = R.string.register_A),
+                    modifier = Modifier.padding(top = 15.dp)
+                )
+                Spacer(modifier = Modifier.size(7.dp))
+                TagContent(
+                    addTag = { tag -> (registerFourthViewModel::addTag)(tag) },
+                    deleteTag = { tag -> (registerFourthViewModel::deleteTag)(tag) },
+                    registerFourthUiState = registerFourthUiState
                 )
             }
             Spacer(modifier = Modifier.weight(1f))
 
 
-            RegisterScreenNextButton(
+            BottomButtonLong(
                 onClick = {
-                    if(isMentor) {
-                        if(mentorInformation != null) {
+                    if (isMentor) {
+                        if (mentorInformation != null) {
                             val mentorInfo = MentorInformation(
                                 company = mentorInformation.company,
                                 careerLevel = mentorInformation.careerLevel,
@@ -127,7 +112,7 @@ fun FourthRegisterScreen(
                                 employmentCertification = mentorInformation.employmentCertification,
                                 graduateCertification = mentorInformation.graduateCertification,
                                 nickname = mentorInformation.nickname,
-                                introduction = registerFourthUiState.memberIntroduction
+                                introduction = registerFourthUiState.value.tags.joinToString(separator = " ")
                             )
                             navController.currentBackStackEntry?.savedStateHandle?.set(
                                 key = "mentorInfo",
@@ -135,7 +120,7 @@ fun FourthRegisterScreen(
                             )
                         }
                     } else {
-                        if(menteeInformation != null) {
+                        if (menteeInformation != null) {
                             val menteeInfo = MenteeInformation(
                                 school = menteeInformation.school,
                                 grade = menteeInformation.grade,
@@ -143,7 +128,7 @@ fun FourthRegisterScreen(
                                 major = menteeInformation.major,
                                 enrollmentCertification = menteeInformation.enrollmentCertification,
                                 nickname = menteeInformation.nickname,
-                                introduction = registerFourthUiState.memberIntroduction
+                                introduction = registerFourthUiState.value.tags.joinToString(separator = " ")
                             )
                             navController.currentBackStackEntry?.savedStateHandle?.set(
                                 key = "menteeInfo",
@@ -153,7 +138,7 @@ fun FourthRegisterScreen(
                     }
                     navController.navigate(AuthScreen.Register5.passScreenState(isMentor))
                 },
-                enabled = registerFourthUiState.nextButtonState,
+                enabled = registerFourthUiState.value.tags.size in 1 .. 3,
                 isMentor = isMentor
             )
             Spacer(modifier = Modifier.weight(5f))
@@ -162,45 +147,90 @@ fun FourthRegisterScreen(
     }
 }
 
-/**
- * 회원 가입 네번째 화면 텍스트필드 composable
- */
-@OptIn(ExperimentalMaterialApi::class)
+@OptIn(ExperimentalMaterialApi::class, ExperimentalComposeUiApi::class)
 @Composable
-fun RoundedCornerTextField(
-    value: String,
-    onValueChange: (String) -> Unit,
-    modifier: Modifier = Modifier,
-    hintText: String = "",
-    textStyle: TextStyle = MaterialTheme.typography.body1,
-    maxLines: Int = 5,
-    onDone: (KeyboardActionScope.() -> Unit)?
+fun TagContent(
+    addTag: (String) -> Unit,
+    deleteTag: (String) -> Unit,
+    registerFourthUiState: State<RegisterFourthUiState>
 ) {
-    BasicTextField(
-        value = value,
-        onValueChange = onValueChange,
-        textStyle = textStyle,
-        maxLines = maxLines,
-        decorationBox = {innerTextField ->
-            Box(modifier = modifier) {
-                if(value.isEmpty()) {
-                    Text(
-                        text = hintText,
-                        color = LocalContentColor.current.copy(alpha = ContentAlpha.medium)
-                    )
-                }
-                innerTextField()
+    var tag by remember { mutableStateOf("") }
+    val interactionSource = remember { MutableInteractionSource() }
+    val keyboardController = LocalSoftwareKeyboardController.current
+
+    if(" " in tag) {
+        addTag(tag)
+        tag = ""
+        keyboardController?.hide()
+    }
+
+    Column {
+        LazyColumn {
+            items(registerFourthUiState.value.tags) { tag ->
+                Tag(
+                    tag = tag,
+                    deleteTag = { deleteTag(tag) }
+                )
+                Spacer(modifier = Modifier.size(11.dp))
             }
         }
-    )
+        if(registerFourthUiState.value.tags.size < 3) {
+            BasicTextField(
+                value = tag,
+                onValueChange = { tag = it },
+                textStyle = MaterialTheme.typography.body1,
+                maxLines = 1,
+                keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
+                keyboardActions = KeyboardActions(
+                    onDone = {
+                        addTag(tag)
+                        tag = ""
+                        keyboardController?.hide()
+
+                    },
+                ),
+                decorationBox = @Composable { innerTextField ->
+                    TextFieldDefaults.TextFieldDecorationBox(
+                        value = tag,
+                        innerTextField = innerTextField,
+                        placeholder = { Text(text = "#태그") },
+                        singleLine = true,
+                        enabled = true,
+                        interactionSource = interactionSource,
+                        visualTransformation = VisualTransformation.None
+                    )
+                }
+            )
+        }
+    }
 }
 
-/**
- * 회원 가입 네번째 화면 미리보기
- */
+@Composable
+private fun Tag(tag: String, deleteTag: () -> Unit) {
+    Box(
+        modifier = Modifier
+            .clip(RoundedCornerShape(10.dp))
+            .background(colorResource(R.color.grey_100))
+            .padding(horizontal = 14.dp, vertical = 11.dp)
+    ) {
+        Row(
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Text("#$tag")
+            Spacer(modifier = Modifier.size(7.dp))
+            Icon(
+                painter = painterResource(id = R.drawable.tag_erase_button_12dp),
+                contentDescription = null,
+                modifier = Modifier
+                    .clickable { deleteTag() }
+            )
+        }
+    }
+}
+
 @Preview(showSystemUi = true)
 @Composable
-private fun RegisterScreenPreview() {
+private fun NewFourthScreenPreview() {
     DotoringTheme {
         FourthRegisterScreen(
             navController = rememberNavController(),

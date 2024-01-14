@@ -1,8 +1,5 @@
 package com.example.dotoring.ui.register.fourth
 
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -15,27 +12,30 @@ class RegisterFourthViewModel: ViewModel() {
     private val _uiState = MutableStateFlow(RegisterFourthUiState())
     val uiState: StateFlow<RegisterFourthUiState> = _uiState.asStateFlow()
 
-    var introductionInput by mutableStateOf("")
-        private set
 
+    fun addTag(tag: String) {
+        if(uiState.value.tags.size < 3) {
+            val originalTagList = uiState.value.tags
+            val updatedTagList = originalTagList + tag
 
-    /**
-     * 소개 입력받는 텍스트 필드 업데이트
-     */
-    fun updateIntroductionInput(introduction: String) {
-        introductionInput = introduction
-
-        _uiState.update { currentState ->
-            currentState.copy(memberIntroduction = introductionInput)
+            _uiState.update { currentState ->
+                currentState.copy(tags = updatedTagList)
+            }
+        } else {
+            /* TODO */
         }
     }
 
-    /**
-     * 회원 가입 네번째 화면 다음 버튼 활성화
-     */
-    fun updateNextButtonState(nextButtonEnabled: Boolean) {
-        _uiState.update { currentState ->
-            currentState.copy(nextButtonState = nextButtonEnabled)
+    fun deleteTag(tag: String) {
+        if(uiState.value.tags.isNotEmpty()) {
+            val originalTagList = uiState.value.tags
+            val updatedTagList = originalTagList - tag
+
+            _uiState.update { currentState ->
+                currentState.copy(tags = updatedTagList)
+            }
+        } else {
+            /* TODO */
         }
     }
 }

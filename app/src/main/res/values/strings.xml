@@ -29,7 +29,7 @@
     <string name="branch_mentee">멘티</string>
 
     <!--회원 가입 공통 화면 관련 string resource-->
-    <string name="register_title_mentor"><font color="#8BD045" >멘토</font>로 회원 가입</string>
+    <string name="register_title_mentor"><font color="#8BD045">멘토</font>로 회원 가입</string>
     <string name="register_title_mentee"><font color="#092D58">멘티</font>로 회원 가입</string>
     <string name="register_Q">Q. </string>
     <string name="register_A">A. </string>
@@ -80,7 +80,7 @@
     <!--회원 가입 네번째 화면 관련 string resource-->
     <string name="register4_q4_mentor"><font color="#8BD045">멘토</font> 님을 더 알고 싶어요!</string>
     <string name="register4_q4_mentee"><font color="#092D58">멘티</font> 님을 더 알고 싶어요!</string>
-    <string name="register4_guide">10자 이상, 80자 이하로 작성</string>
+    <string name="register4_guide">본인에 대해서 3개 이하 태그로 작성, 글자 수 6자 이하\nex) #AOS_개발</string>
     <string name="register4_placeholder_mentor">멘토 분야에 대해 소개해 주세요.</string>
     <string name="register4_placeholder_mentee">멘티 분야에 대해 소개해 주세요.</string>
     <string name="register4_error_condition_not_satisfied">소개글은 10자 이상, 80자 이하로 작성해주세요.</string>
@@ -153,4 +153,17 @@
     <!--쪽지함 상세 화면 관련 string resource-->
     <string name="message_info">쪽지 내용은 300자 이내로 제한됩니다.</string>
     <string name="message_textField">내용을 입력해 주세요.</string>
+
+    <!--마이페이지 Alert Dialog 관련 string resource-->
+    <string name="alert_dialog_message">학교, 분야, 학년, 학과 수정 시\n<font color="#FF7B7B">새로운 증빙서류</font>가 요청됩니다.\n계속하시겠습니까?</string>
+    <string name="alert_dialog_subtext">승인에 최대 3일의 시간이 소요됩니다.</string>
+    <string name="alert_dialog_yes">네</string>
+    <string name="alert_dialog_no">아니오</string>
+
+    <!--마이페이지 서류 제출 페이지 관련 string resource-->
+    <string name="submit_doc_screen_main_title">수정된 내용에 맞는\n<font color="#8BD045"><b>서류</b></font>를 업로드 해 주세요.</string>
+    <string name="submit_doc_screen_sub_title">A. <b><u>재학증명서</u></b> 업로드하기</string>
+    <string name="submit_doc_screen_pdf_or_image">PDF 또는 이미지</string>
+    <string name="submit_doc_screen_cancel">수정 취소</string>
+    <string name="submit_doc_screen_update">완료</string>
 </resources>

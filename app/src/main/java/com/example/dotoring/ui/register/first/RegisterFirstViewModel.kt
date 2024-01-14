@@ -276,9 +276,9 @@ class RegisterFirstViewModel() : ViewModel() {
                         val json = Gson().toJson(errorResponse)
                         val jsonObject = JSONObject(json)
                         val jsonObjectError = jsonObject.getJSONObject("error")
-                        val errorCode = jsonObjectError.getString("message")
+                        val errorMessage = jsonObjectError.getString("message")
                         showSnackBar()
-                        updateSnackbarMessage(errorCode)
+                        updateSnackbarMessage(errorMessage)
                     }
                 }
 
