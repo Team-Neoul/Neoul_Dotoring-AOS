@@ -19,7 +19,7 @@ import com.example.dotoring.ui.theme.DotoringTheme
 import com.example.dotoring.ui.util.TopRegisterScreen
 import com.example.dotoring.ui.util.register.MenteeInformation
 import com.example.dotoring.ui.util.register.MentorInformation
-import com.example.dotoring.ui.util.register.RegisterScreenNextButton
+import com.example.dotoring.ui.util.common.BottomButtonLong
 
 @Composable
 fun SecondRegisterScreen(
@@ -58,7 +58,7 @@ fun SecondRegisterScreen(
 
 
             if(isMentor) {
-                RegisterScreenNextButton(
+                BottomButtonLong(
                     onClick = {
                         Log.d("파일 업로드 테스트", "employmentFileUploaded: ${registerSecondUiState.employmentFileUploaded}")
                         if (mentorInformation != null) {
@@ -81,7 +81,7 @@ fun SecondRegisterScreen(
                     isMentor = true
                 )
             } else {
-                RegisterScreenNextButton(
+                BottomButtonLong(
                     onClick = {
                         Log.d("파일 업로드 테스트", "employmentFileUploaded: ${registerSecondUiState.employmentFileUploaded}")
                         if (menteeInformation != null) {

@@ -13,6 +13,7 @@
 
     <color name="green">#8BD045</color>
     <color name="paragraph_green">#42691A</color>
+    <color name="grey_100">#F4F4F4</color>
     <color name="grey_200">#EBEBEB</color>
     <color name="grey_300">#B3B3B3</color>
     <color name="grey_500">#979797</color>

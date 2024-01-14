@@ -12,9 +12,11 @@ import kotlinx.coroutines.flow.update
 import org.json.JSONObject
 import retrofit2.Call
 import retrofit2.Callback
+import retrofit2.HttpException
 import retrofit2.Response
+import java.io.IOException
 
-class MemberDetailedViewModel: ViewModel() {
+class MemberDetailedViewModel : ViewModel() {
     private val _uiState = MutableStateFlow(MemberDetailedUiState())
     val uiState: StateFlow<MemberDetailedUiState> = _uiState.asStateFlow()
 
@@ -25,7 +27,7 @@ class MemberDetailedViewModel: ViewModel() {
         isMentor: Boolean,
         memberId: Int
     ) {
-        if(isMentor) {
+        if (isMentor) {
             loadMenteeDetailedInfo(memberId)
         } else {
             loadMentorDetailedInfo(memberId)
@@ -33,32 +35,18 @@ class MemberDetailedViewModel: ViewModel() {
     }
 
     private fun loadMenteeDetailedInfo(id: Int) {
-        Log.d("멘티 디테일 로드", "loadMenteeDetailed 실행")
-
         DotoringAPI.retrofitService.loadMenteeDetailedInfo(id = id)
             .enqueue(object : Callback<CommonResponse> {
-                override fun onResponse(call: Call<CommonResponse>, response: Response<CommonResponse>) {
-                    Log.d("멘티 디테일 로드", "loadMenteeDetailed - onResponse")
-                    Log.d("멘티 디테일 로드", "loadMenteeDetailed - response.code(): ${response.code()}")
-                    Log.d("멘티 디테일 로드", "loadMenteeDetailed - response.body(): ${response.body()}")
-
-                    val json = Gson().toJson(response.body())
-                    Log.d("멘티 디테일 로드", "loadMenteeDetailed - json: $json")
-
-                    val jsonObject = JSONObject(json.toString())
-                    Log.d("멘티 디테일 로드", "loadMenteeDetailed - jsonObject: $jsonObject")
-
-                    val jsonObjectSuccess = jsonObject.getBoolean("success")
-
-                    if (jsonObjectSuccess) {
-                        Log.d("멘티 디테일 로드", "loadMenteeDetailed - success")
-
+                override fun onResponse(
+                    call: Call<CommonResponse>,
+                    response: Response<CommonResponse>
+                ) {
+                    if (response.isSuccessful) {
+                        val json = Gson().toJson(response.body())
+                        val jsonObject = JSONObject(json.toString())
                         val responseJsonObject = jsonObject.getJSONObject("response")
-                        Log.d("멘티 디테일 로드", "loadMenteeDetailed - responseJsonObject: $responseJsonObject")
-
-
                         val fields = responseJsonObject.optJSONArray("fields")
-                        Log.d("멘티 디테일 로드", "loadMenteeDetailed - field: $fields")
+
                         if (fields != null && fields.length() > 0) {
                             val uiFieldList: MutableList<String> = mutableListOf()
 
@@ -73,6 +61,7 @@ class MemberDetailedViewModel: ViewModel() {
                                 currentState.copy(fields = uiFieldList)
                             }
                         }
+
                         val majors = responseJsonObject.optJSONArray("majors")
                         if (majors != null && majors.length() > 0) {
                             val uiMajorList: MutableList<String> = mutableListOf()
@@ -106,65 +95,61 @@ class MemberDetailedViewModel: ViewModel() {
                                 grade = grade
                             )
                         }
-
                     } else {
-                        Log.d("멘티 디테일 로드", "loadMenteeDetailed - 응답이 실패하거나 데이터가 없습니다.")
+                        val errorResponse = DotoringAPI.getErrorResponse(response.errorBody()!!)
+                        val json = Gson().toJson(errorResponse)
+                        val jsonObject = JSONObject(json)
+                        val jsonObjectError = jsonObject.getJSONObject("error")
+                        val errorMessage = jsonObjectError.getString("message")
+                        Log.d("멘티 디테일 로드", errorMessage)
                     }
                 }
 
                 override fun onFailure(call: Call<CommonResponse>, t: Throwable) {
-                    Log.d("멘티 디테일 로드", "loadMenteeDetailed - 통신 실패: $t")
+                    val errorMessage = when (t) {
+                        is IOException -> "인터넷 연결이 끊겼습니다."
+                        is HttpException -> "알 수 없는 오류가 발생했어요."
+                        else -> t.localizedMessage
+                    }
                 }
             })
     }
 
     private fun loadMentorDetailedInfo(id: Int) {
-        Log.d("멘토 디테일 로드", "loadMenteeDetailed 실행")
-
         DotoringAPI.retrofitService.loadMentorDetailedInfo(id = id)
             .enqueue(object : Callback<CommonResponse> {
-                override fun onResponse(call: Call<CommonResponse>, response: Response<CommonResponse>) {
-                    Log.d("멘토 디테일 로드", "loadMenteeDetailed - onResponse")
-                    Log.d("멘토 디테일 로드", "loadMenteeDetailed - response.code(): ${response.code()}")
-                    Log.d("멘토 디테일 로드", "loadMenteeDetailed - response.body(): ${response.body()}")
+                override fun onResponse(
+                    call: Call<CommonResponse>,
+                    response: Response<CommonResponse>
+                ) {
 
-                    if(response.code() == 200) {
+                    if (response.isSuccessful) {
                         val json = Gson().toJson(response.body())
-                        Log.d("멘토 디테일 로드", "loadMenteeDetailed - json: $json")
-
                         val jsonObject = JSONObject(json.toString())
-                        Log.d("멘토 디테일 로드", "loadMenteeDetailed - jsonObject: $jsonObject")
-
-                        Log.d("멘토 디테일 로드", "loadMenteeDetailed - success")
-
                         val responseJsonObject = jsonObject.getJSONObject("response")
-                        Log.d("멘토 디테일 로드", "loadMenteeDetailed - responseJsonObject: $responseJsonObject")
 
                         val fields = responseJsonObject.optJSONArray("fields")
-                        Log.d("멘토 디테일 로드", "loadMenteeDetailed - field: $fields")
                         if (fields != null && fields.length() > 0) {
                             val uiFieldList: MutableList<String> = mutableListOf()
 
                             for (i in 0 until fields.length()) {
-
                                 val fieldString = fields.optString(i)
                                 uiFieldList.add(fieldString)
-
                             }
 
                             _uiState.update { currentState ->
                                 currentState.copy(fields = uiFieldList)
                             }
                         }
+
+
                         val majors = responseJsonObject.optJSONArray("majors")
                         if (majors != null && majors.length() > 0) {
                             val uiMajorList: MutableList<String> = mutableListOf()
 
                             for (i in 0 until majors.length()) {
-
                                 val majorString = majors.optString(i)
                                 uiMajorList.add(majorString)
-
                             }
 
                             _uiState.update { currentState ->
@@ -190,12 +175,21 @@ class MemberDetailedViewModel: ViewModel() {
                             )
                         }
                     } else {
-                        Log.d("멘토 디테일 로드", "loadMenteeDetailed - 응답이 실패하거나 데이터가 없습니다.")
+                        val errorResponse = DotoringAPI.getErrorResponse(response.errorBody()!!)
+                        val json = Gson().toJson(errorResponse)
+                        val jsonObject = JSONObject(json)
+                        val jsonObjectError = jsonObject.getJSONObject("error")
+                        val errorMessage = jsonObjectError.getString("message")
+                        Log.d("멘토 디테일 로드", errorMessage)
                     }
                 }
 
                 override fun onFailure(call: Call<CommonResponse>, t: Throwable) {
-                    Log.d("멘토 디테일 로드", "loadMenteeDetailed - 통신 실패: $t")
+                    val errorMessage = when (t) {
+                        is IOException -> "인터넷 연결이 끊겼습니다."
+                        is HttpException -> "알 수 없는 오류가 발생했어요."
+                        else -> t.localizedMessage
+                    }
                 }
             })
     }
